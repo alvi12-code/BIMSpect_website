@@ -395,7 +395,7 @@ export function HomePage({ content, languageHref, shouldSuggestFinnish = false }
                       alt={member.name}
                       width={member.portrait.width}
                       height={member.portrait.height}
-                      sizes="(max-width: 520px) calc(100vw - 40px), (max-width: 800px) calc(100vw - 80px), (max-width: 1200px) calc((100vw - 120px) / 2), 500px"
+                      sizes="(max-width: 700px) calc(100vw - 40px), (max-width: 1100px) calc((100vw - 80px) / 2), 280px"
                       style={{ objectPosition: member.portrait.objectPosition }}
                     />
                   </div>
