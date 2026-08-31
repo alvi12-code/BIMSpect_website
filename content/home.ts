@@ -34,25 +34,25 @@ const teamPortraits = {
     src: "/images/bimspect/Eelon.png",
     width: 1402,
     height: 1122,
-    objectPosition: "52% 50%"
+    objectPosition: "52% 26%"
   },
   HA: {
     src: "/images/bimspect/Hisham.png",
     width: 1122,
     height: 1402,
-    objectPosition: "50% 50%"
+    objectPosition: "50% 35%"
   },
   AL: {
     src: "/images/bimspect/Albin.png",
     width: 1122,
     height: 1402,
-    objectPosition: "50% 50%"
+    objectPosition: "50% 34%"
   },
   OS: {
     src: "/images/bimspect/Olli.png",
     width: 1122,
     height: 1402,
-    objectPosition: "50% 50%"
+    objectPosition: "50% 30%"
   }
 } satisfies Record<string, TeamPortrait>;
 

@@ -389,13 +389,15 @@ export function HomePage({ content, languageHref, shouldSuggestFinnish = false }
             <div className="home-team-grid">
               {content.team.members.map((member, index) => (
                 <Reveal className="home-team-member" delay={index * 55} key={member.initials}>
-                  <div className="home-team-portrait">
+                  <div
+                    className={`home-team-portrait home-team-portrait-${member.initials.toLowerCase()}`}
+                  >
                     <Image
                       src={member.portrait.src}
                       alt={member.name}
                       width={member.portrait.width}
                       height={member.portrait.height}
-                      sizes="(max-width: 700px) calc(100vw - 40px), (max-width: 1100px) calc((100vw - 80px) / 2), 280px"
+                      sizes="(max-width: 700px) 100px, 140px"
                       style={{ objectPosition: member.portrait.objectPosition }}
                     />
                   </div>
