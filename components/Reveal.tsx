@@ -64,6 +64,10 @@ export function useInViewOnce<T extends HTMLElement = HTMLElement>(
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
+    if (!prefersReducedMotion()) {
+      document.documentElement.classList.add("motion-ready");
+    }
+
     const element = ref.current;
 
     if (!element || visible) {
@@ -93,13 +97,15 @@ type RevealProps = {
   children: ReactNode;
   className?: string;
   delay?: number;
+  id?: string;
 };
 
 export function Reveal({
   as = "div",
   children,
   className = "",
-  delay = 0
+  delay = 0,
+  id
 }: RevealProps) {
   const [ref, visible] = useInViewOnce();
   const classes = ["reveal", visible ? "is-visible" : "", className]
@@ -107,5 +113,5 @@ export function Reveal({
     .join(" ");
   const style = { "--reveal-delay": `${delay}ms` } as CSSProperties;
 
-  return createElement(as, { ref, className: classes, style }, children);
+  return createElement(as, { ref, className: classes, id, style }, children);
 }

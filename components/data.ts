@@ -285,70 +285,87 @@ export const pricingComparison = [
   }
 ];
 
-export const pricingPlans = [
+type PricingFeature = {
+  label: string;
+  note?: string;
+};
+
+type PricingPlan = {
+  tier: string;
+  name: string;
+  price: string;
+  priceSuffix: string | null;
+  description: string;
+  features: PricingFeature[];
+  cta: string;
+  href: string;
+  featured: boolean;
+  featuredLabel?: string;
+};
+
+export const pricingPlans: PricingPlan[] = [
   {
-    tier: "Early adopter",
-    name: "Single User",
+    tier: "Individual",
+    name: "BIMSpect Individual",
+    price: "€59",
+    priceSuffix: "/month",
     description:
-      "For BIM coordinators and early adopters analysing IFC model changes across their own projects.",
-    priceNote: "Named user licence",
-    note:
-      "Designed for individual professional use. Multiple projects can be analysed, but access is not shared with a wider project team.",
+      "For an individual BIM coordinator, consultant or design manager working across several projects.",
     features: [
-      "One named user",
-      "Multiple projects for personal professional use",
-      "IFC version history analysis",
-      "Design Buzz heat maps",
-      "Change views by discipline, zone, object type and severity",
-      "Ontology-based plain-language findings",
-      "Exportable summary reports",
-      "Email support"
+      { label: "One user" },
+      { label: "Up to 5 active projects" },
+      { label: "Manual IFC uploads" },
+      { label: "IFC version comparisons" },
+      { label: "Process analytics" },
+      { label: "Exportable reports" }
     ],
-    cta: "Start as single user",
+    cta: "Start individually",
     href: "#contact",
     featured: false
   },
   {
-    tier: "Main product",
-    name: "Project License",
+    tier: "Project",
+    name: "BIMSpect Project",
+    price: "€1,490",
+    priceSuffix: "/month",
     description:
-      "For active BIM projects that need shared IFC change visibility across the project team.",
-    priceNote: "Project-based monthly licence",
-    note:
-      "Includes a shared project workspace and 10 users. Additional users can be added with a low-cost monthly add-on.",
+      "For one active project and the team responsible for BIM and design coordination.",
     features: [
-      "One active project workspace",
-      "10 included users",
-      "Low-cost add-on for additional users",
-      "IFC version history and time-series analytics",
-      "Design Buzz heat maps across model releases",
-      "Discipline, zone, object type and severity-based views",
-      "Management-level plain-language reports",
-      "Project onboarding session"
+      { label: "One active project" },
+      { label: "Up to 10 users" },
+      { label: "Shared project dashboards" },
+      { label: "Automated IFC model version tracking" },
+      {
+        label: "One standard CDE integration included",
+        note: "For a documented API and standard authentication flow."
+      },
+      {
+        label: "Additional users available",
+        note: "Available at a preferential rate for larger project teams."
+      }
     ],
-    cta: "Request project license",
+    cta: "Discuss project access",
     href: "#contact",
-    featured: true
+    featured: true,
+    featuredLabel: "Best for project teams"
   },
   {
-    tier: "Organisation-wide",
-    name: "Portfolio / Enterprise",
+    tier: "Enterprise",
+    name: "BIMSpect Enterprise",
+    price: "Custom pricing",
+    priceSuffix: null,
     description:
-      "For organisations standardising IFC change analytics across multiple projects.",
-    priceNote: "Tailored offer",
-    note:
-      "For contractors, developers, design offices, public clients and BIM-intensive organisations managing several projects.",
+      "For organisations managing multiple projects, programmes or BIM portfolios.",
     features: [
-      "Multiple project workspaces",
-      "Portfolio-level Design Buzz overview",
-      "Organisation-wide reporting templates",
-      "Cross-project design stability indicators",
-      "User and role management",
-      "API or data pipeline integration",
-      "Security and data handling documentation",
-      "Dedicated onboarding and account support"
+      { label: "Multiple active projects" },
+      { label: "Portfolio-level dashboards" },
+      { label: "Organisation-wide analytics" },
+      { label: "Continuous model monitoring" },
+      { label: "Tailored CDE and data integrations" },
+      { label: "Custom onboarding and support" },
+      { label: "Flexible portfolio configuration" }
     ],
-    cta: "Request tailored offer",
+    cta: "Discuss enterprise access",
     href: "#contact",
     featured: false
   }
@@ -363,7 +380,7 @@ export const adoptionSteps = [
   {
     number: "02",
     title: "Share",
-    body: "Adopt a Project License for a common project view."
+    body: "Adopt BIMSpect Project for a common project view."
   },
   {
     number: "03",

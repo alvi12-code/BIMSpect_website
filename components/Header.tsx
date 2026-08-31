@@ -1,23 +1,55 @@
 "use client";
 
+import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { commercialNavLinks, technicalNavLinks } from "./data";
 import { DesktopNavigation } from "./DesktopNavigation";
+import { LanguageSwitcher, type LanguageSwitcherProps } from "./LanguageSwitcher";
 import { MobileNavigation } from "./MobileNavigation";
 
 type HeaderVariant = "commercial" | "technical";
 
-type HeaderProps = {
-  variant?: HeaderVariant;
+export type NavigationLink = {
+  href: string;
+  label: string;
 };
 
-export function Header({ variant = "commercial" }: HeaderProps) {
+export type NavigationCta = {
+  href: string;
+  label: string;
+} | null;
+
+type HeaderProps = {
+  variant?: HeaderVariant;
+  links?: NavigationLink[];
+  cta?: NavigationCta;
+  homeHref?: string;
+  languageSwitcher?: LanguageSwitcherProps & {
+    navigationLabel: string;
+    mobileNavigationLabel: string;
+    menuLabel: string;
+    homeLabel: string;
+  };
+};
+
+export function Header({
+  variant = "commercial",
+  links: customLinks,
+  cta: customCta,
+  homeHref = "#home",
+  languageSwitcher
+}: HeaderProps) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const isTechnical = variant === "technical";
-  const links = isTechnical ? technicalNavLinks : commercialNavLinks;
-  const cta = isTechnical ? null : { href: "#contact", label: "Request analysis" };
+  const links = customLinks ?? (isTechnical ? technicalNavLinks : commercialNavLinks);
+  const cta =
+    customCta === undefined
+      ? isTechnical
+        ? null
+        : { href: "#contact", label: "Request analysis" }
+      : customCta;
 
   const closeMenu = useCallback((restoreFocus = false) => {
     setOpen(false);
@@ -54,12 +86,30 @@ export function Header({ variant = "commercial" }: HeaderProps) {
 
   return (
     <header className={scrolled ? "site-header is-scrolled" : "site-header"}>
-      <nav className="primary-nav" aria-label="Main navigation">
+      <nav
+        className="primary-nav"
+        aria-label={languageSwitcher?.navigationLabel ?? "Main navigation"}
+      >
         <div className="wrap nav-inner">
-          <a className="logo" href="#home">
-            <span>BIM</span>Spect
+          <a
+            className="logo"
+            href={homeHref}
+            aria-label={languageSwitcher?.homeLabel ?? "BIMSpect home"}
+          >
+            <Image
+              src="/brand/bimspect-logo.png"
+              alt="BIMSpect"
+              className="brand-logo"
+              width={365}
+              height={86}
+              sizes="132px"
+              priority
+            />
           </a>
           <DesktopNavigation links={links} />
+          {languageSwitcher ? (
+            <LanguageSwitcher {...languageSwitcher} className="desktop-language-switcher" />
+          ) : null}
           {cta ? (
             <a className="btn btn-primary nav-cta" href={cta.href}>
               {cta.label}
@@ -121,7 +171,7 @@ export function Header({ variant = "commercial" }: HeaderProps) {
                 </>
               )}
             </svg>
-            Menu
+            {languageSwitcher?.menuLabel ?? "Menu"}
           </button>
         </div>
       </nav>
@@ -130,6 +180,7 @@ export function Header({ variant = "commercial" }: HeaderProps) {
         onNavigate={() => closeMenu(false)}
         links={links}
         cta={cta}
+        languageSwitcher={languageSwitcher}
       />
     </header>
   );

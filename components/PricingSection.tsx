@@ -11,12 +11,11 @@ export function PricingSection() {
             Pricing &amp; access
           </Reveal>
           <Reveal as="h2" delay={90}>
-            Start as an individual expert. Scale to project-wide design visibility.
+            Start individually. Expand to a project. Scale across a portfolio.
           </Reveal>
           <Reveal as="p" className="section-lead" delay={160}>
-            BIMSpect is built for analysing IFC model version history over time —
-            from individual BIM coordinators to full project teams and
-            portfolio-level use.
+            Choose the access model that matches the way your organisation works
+            with IFC model versions.
           </Reveal>
         </div>
 
@@ -64,18 +63,40 @@ export function PricingSection() {
                 .join(" ")}
               key={plan.name}
             >
+              {plan.featuredLabel ? (
+                <span className="pricing-featured-label">
+                  {plan.featuredLabel}
+                </span>
+              ) : null}
               <div className="pricing-tier">{plan.tier}</div>
               <h3 className="pricing-name">{plan.name}</h3>
+              <div
+                className={[
+                  "pricing-price",
+                  "pricing-price-main",
+                  plan.priceSuffix ? "" : "pricing-price-custom"
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
+              >
+                {plan.price}
+                {plan.priceSuffix ? <span>{plan.priceSuffix}</span> : null}
+              </div>
               <p className="pricing-desc">{plan.description}</p>
-              <div className="pricing-price">{plan.priceNote}</div>
-              <p className="pricing-note">{plan.note}</p>
               <div className="pricing-features">
                 {plan.features.map((feature) => (
-                  <div className="pricing-feature" key={feature}>
+                  <div className="pricing-feature" key={feature.label}>
                     <span className="pricing-feature-icon" aria-hidden="true">
                       ✓
                     </span>
-                    {feature}
+                    <span>
+                      {feature.label}
+                      {feature.note ? (
+                        <span className="pricing-feature-note">
+                          {feature.note}
+                        </span>
+                      ) : null}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -85,6 +106,13 @@ export function PricingSection() {
             </article>
           ))}
         </StaggerContainer>
+
+        <p className="pricing-footnote">
+          Prices exclude VAT. Project and Enterprise access are subject to an
+          agreed scope, data-handling terms and technical feasibility.
+          Customer-specific middleware, extensive data migration and non-standard
+          custom development may be quoted separately.
+        </p>
 
         <div className="adoption-path">
           <Reveal className="adoption-card">
@@ -129,10 +157,10 @@ export function PricingSection() {
             </div>
             <div className="form-field">
               <label htmlFor="access-model">Access model</label>
-              <select id="access-model" defaultValue="Project License">
-                <option>Single User</option>
-                <option>Project License</option>
-                <option>Portfolio / Enterprise</option>
+              <select id="access-model" defaultValue="BIMSpect Project">
+                <option>BIMSpect Individual</option>
+                <option>BIMSpect Project</option>
+                <option>BIMSpect Enterprise</option>
               </select>
             </div>
           </div>

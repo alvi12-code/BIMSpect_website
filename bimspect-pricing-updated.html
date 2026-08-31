@@ -530,8 +530,22 @@
     padding: 36px 30px;
     display: flex;
     flex-direction: column;
+    position: relative;
   }
   .pricing-card.featured { background: var(--ink); color: var(--white); }
+  .pricing-featured-label {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: var(--accent);
+    color: var(--white);
+    font-family: var(--f-mono);
+    font-size: 10px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
   .pricing-tier {
     font-family: var(--f-mono);
     font-size: 11px;
@@ -549,8 +563,16 @@
   .pricing-feature-icon { flex-shrink: 0; margin-top: 1px; color: var(--accent); }
   .pricing-card.featured .pricing-feature { color: rgba(255,255,255,.85); }
   .pricing-card.featured .pricing-feature-icon { color: #73DFA3; }
+  .pricing-feature small { display: block; margin-top: 3px; color: var(--ink-muted); font-size: 12px; line-height: 1.45; }
+  .pricing-card.featured .pricing-feature small { color: rgba(255,255,255,.62); }
   .pricing-price { font-size: 14px; color: var(--ink-muted); margin-bottom: 20px; font-style: italic; }
   .pricing-card.featured .pricing-price { color: rgba(255,255,255,.5); }
+  .pricing-price-main { color: var(--ink); font-size: 38px; font-style: normal; font-weight: 700; letter-spacing: -.04em; line-height: 1; }
+  .pricing-card.featured .pricing-price-main { color: var(--white); }
+  .pricing-price-main span { margin-left: 5px; color: var(--ink-muted); font-size: 15px; font-weight: 400; letter-spacing: 0; }
+  .pricing-card.featured .pricing-price-main span { color: rgba(255,255,255,.5); }
+  .pricing-price-custom { font-size: 30px; }
+  .pricing-footnote { max-width: 950px; margin: 24px auto 0; color: var(--ink-muted); font-size: 12px; line-height: 1.55; text-align: center; }
   .pricing-note {
     font-size: 13px;
     color: var(--ink-muted);
@@ -1304,9 +1326,9 @@
 <section id="pricing" class="section pricing-section">
   <div class="wrap">
     <div class="section-header pricing-header">
-      <p class="eyebrow">Pricing &amp; access</p>
-      <h2>Start as an individual expert. Scale to project-wide design visibility.</h2>
-      <p class="section-lead">BIMSpect is built for analysing IFC model version history over time — from individual BIM coordinators to full project teams and portfolio-level use.</p>
+      <p class="eyebrow">BIMSpect pricing</p>
+      <h2>Start individually. Expand to a project. Scale across a portfolio.</h2>
+      <p class="section-lead">Choose the access model that matches the way your organisation works with IFC model versions.</p>
     </div>
 
     <div class="pricing-comparison" aria-label="Manual IFC change review compared with BIMSpect">
@@ -1338,62 +1360,57 @@
 
     <div class="pricing-grid">
       <article class="pricing-card">
-        <div class="pricing-tier">Early adopter</div>
-        <h3 class="pricing-name">Single User</h3>
-        <p class="pricing-desc">For BIM coordinators and early adopters analysing IFC model changes across their own projects.</p>
-        <div class="pricing-price">Named user licence</div>
-        <p class="pricing-note">Designed for individual professional use. Multiple projects can be analysed, but access is not shared with a wider project team.</p>
+        <div class="pricing-tier">Individual</div>
+        <h3 class="pricing-name">BIMSpect Individual</h3>
+        <div class="pricing-price pricing-price-main">€59<span>/month</span></div>
+        <p class="pricing-desc">For an individual BIM coordinator, consultant or design manager working across several projects.</p>
         <div class="pricing-features">
-          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> One named user</div>
-          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> Multiple projects for personal professional use</div>
-          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> IFC version history analysis</div>
-          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> Design Buzz heat maps</div>
-          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> Change views by discipline, zone, object type and severity</div>
-          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> Ontology-based plain-language findings</div>
-          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> Exportable summary reports</div>
-          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> Email support</div>
+          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> One user</div>
+          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> Up to 5 active projects</div>
+          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> Manual IFC uploads</div>
+          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> IFC version comparisons</div>
+          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> Process analytics</div>
+          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> Exportable reports</div>
         </div>
-        <a class="btn btn-secondary" href="#contact">Start as single user</a>
+        <a class="btn btn-secondary" href="#contact">Start individually</a>
       </article>
 
       <article class="pricing-card featured">
-        <div class="pricing-tier">Main product</div>
-        <h3 class="pricing-name">Project License</h3>
-        <p class="pricing-desc">For active BIM projects that need shared IFC change visibility across the project team.</p>
-        <div class="pricing-price">Project-based monthly licence</div>
-        <p class="pricing-note">Includes a shared project workspace and 10 users. Additional users can be added with a low-cost monthly add-on.</p>
+        <div class="pricing-featured-label">Best for project teams</div>
+        <div class="pricing-tier">Project</div>
+        <h3 class="pricing-name">BIMSpect Project</h3>
+        <div class="pricing-price pricing-price-main">€1,490<span>/month</span></div>
+        <p class="pricing-desc">For one active project and the team responsible for BIM and design coordination.</p>
         <div class="pricing-features">
-          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> One active project workspace</div>
-          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> 10 included users</div>
-          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> Low-cost add-on for additional users</div>
-          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> IFC version history and time-series analytics</div>
-          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> Design Buzz heat maps across model releases</div>
-          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> Discipline, zone, object type and severity-based views</div>
-          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> Management-level plain-language reports</div>
-          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> Project onboarding session</div>
+          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> One active project</div>
+          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> Up to 10 users</div>
+          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> Shared project dashboards</div>
+          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> Automated IFC model version tracking</div>
+          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> One standard CDE integration included<br><small>For a documented API and standard authentication flow.</small></div>
+          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> Additional users available<br><small>Available at a preferential rate for larger project teams.</small></div>
         </div>
-        <a class="btn-inv" href="#contact">Request project license</a>
+        <a class="btn-inv" href="#contact">Discuss project access</a>
       </article>
 
       <article class="pricing-card">
-        <div class="pricing-tier">Organisation-wide</div>
-        <h3 class="pricing-name">Portfolio / Enterprise</h3>
-        <p class="pricing-desc">For organisations standardising IFC change analytics across multiple projects.</p>
-        <div class="pricing-price">Tailored offer</div>
-        <p class="pricing-note">For contractors, developers, design offices, public clients and BIM-intensive organisations managing several projects.</p>
+        <div class="pricing-tier">Enterprise</div>
+        <h3 class="pricing-name">BIMSpect Enterprise</h3>
+        <div class="pricing-price pricing-price-main pricing-price-custom">Custom pricing</div>
+        <p class="pricing-desc">For organisations managing multiple projects, programmes or BIM portfolios.</p>
         <div class="pricing-features">
-          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> Multiple project workspaces</div>
-          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> Portfolio-level Design Buzz overview</div>
-          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> Organisation-wide reporting templates</div>
-          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> Cross-project design stability indicators</div>
-          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> User and role management</div>
-          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> API or data pipeline integration</div>
-          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> Security and data handling documentation</div>
-          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> Dedicated onboarding and account support</div>
+          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> Multiple active projects</div>
+          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> Portfolio-level dashboards</div>
+          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> Organisation-wide analytics</div>
+          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> Continuous model monitoring</div>
+          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> Tailored CDE and data integrations</div>
+          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> Custom onboarding and support</div>
+          <div class="pricing-feature"><span class="pricing-feature-icon">✓</span> Flexible portfolio configuration</div>
         </div>
-        <a class="btn btn-secondary" href="#contact">Request tailored offer</a>
+        <a class="btn btn-secondary" href="#contact">Discuss enterprise access</a>
       </article>
     </div>
+
+    <p class="pricing-footnote">Prices exclude VAT. Project and Enterprise access are subject to an agreed scope, data-handling terms and technical feasibility. Customer-specific middleware, extensive data migration and non-standard custom development may be quoted separately.</p>
 
     <div class="adoption-path">
       <div class="adoption-card">
@@ -1411,7 +1428,7 @@
         <div class="growth-step">
           <div class="growth-step-num">02</div>
           <strong>Share</strong>
-          <span>Adopt a Project License for a common project view.</span>
+          <span>Adopt BIMSpect Project for a common project view.</span>
         </div>
         <div class="growth-step">
           <div class="growth-step-num">03</div>
@@ -1445,7 +1462,7 @@
         </div>
         <div>
           <label style="display:block;font-size:13px;font-weight:600;margin-bottom:6px;">Access model</label>
-          <div style="height:44px;border:1px solid var(--rule);border-radius:6px;background:var(--bg);display:flex;align-items:center;padding:0 14px;color:var(--ink-muted);font-size:14px;">Single User / Project License / Portfolio</div>
+          <div style="height:44px;border:1px solid var(--rule);border-radius:6px;background:var(--bg);display:flex;align-items:center;padding:0 14px;color:var(--ink-muted);font-size:14px;">BIMSpect Individual / BIMSpect Project / BIMSpect Enterprise</div>
         </div>
         <div style="grid-column:1 / -1;">
           <label style="display:block;font-size:13px;font-weight:600;margin-bottom:6px;">What would you like to analyse?</label>

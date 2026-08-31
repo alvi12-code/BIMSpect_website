@@ -1,0 +1,57 @@
+# Inactive production cutover template for the existing public gateway.
+# Do not enable until bimspect.com is ready to move from Vercel and the gateway
+# is attached to the external bimspect_marketing_proxy Docker network. The
+# current gateway already defines Docker's 127.0.0.11 resolver at the http level.
+
+upstream marketing_nextjs_production {
+    zone marketing_nextjs_production 64k;
+    server marketing-web:3000 resolve;
+}
+
+server {
+    listen 80;
+    server_name bimspect.com www.bimspect.com;
+
+    return 301 https://bimspect.com$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    http2 on;
+    server_name www.bimspect.com;
+
+    ssl_certificate     /etc/nginx/certs/bimspect-origin.crt;
+    ssl_certificate_key /etc/nginx/certs/bimspect-origin.key;
+
+    return 301 https://bimspect.com$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    http2 on;
+    server_name bimspect.com;
+
+    ssl_certificate     /etc/nginx/certs/bimspect-origin.crt;
+    ssl_certificate_key /etc/nginx/certs/bimspect-origin.key;
+
+    location ~ /\.(?!well-known/) {
+        return 404;
+    }
+
+    location / {
+        proxy_pass http://marketing_nextjs_production;
+        proxy_http_version 1.1;
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+
+        proxy_connect_timeout 10s;
+        proxy_read_timeout 60s;
+        proxy_send_timeout 60s;
+        proxy_redirect off;
+    }
+}
