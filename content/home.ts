@@ -438,7 +438,7 @@ const en: HomeContent = {
       { initials: "EL", name: "Dr. Eelon Lappalainen", role: "CEO & Co-Founder", bio: "Construction and BIM researcher. Background in work study methodology and digital construction systems. Leads business development and product strategy.", portrait: teamPortraits.EL },
       { initials: "HA", name: "Dr. Hisham Abou-Ibrahim", role: "CPO & Co-Founder", bio: "BIM and construction informatics specialist. Leads product development and design. Research background in building information modelling and design management.", portrait: teamPortraits.HA },
       { initials: "AL", name: "Albin Lamichhane", role: "CTO & Co-Founder", bio: "Software engineer leading technical development. Responsible for BIMSpect's IFC processing engine and report generation pipeline.", portrait: teamPortraits.AL },
-      { initials: "OS", name: "Prof. Olli Seppänen", role: "Scientific Advisor", bio: "Professor of construction management at Aalto University. Scientific advisor on construction project management and lean construction research.", portrait: teamPortraits.OS }
+      { initials: "OS", name: "Prof. Olli Seppänen", role: "Scientific Advisor & Co-Founder", bio: "Professor of construction management at Aalto University. Scientific advisor on construction project management and lean construction research.", portrait: teamPortraits.OS }
     ]
   },
   contact: {
@@ -646,7 +646,7 @@ const fi: HomeContent = {
       { initials: "EL", name: "Dr. Eelon Lappalainen", role: "Toimitusjohtaja ja toinen perustaja", bio: "Rakentamisen ja BIMin tutkija. Taustana työn tutkimuksen menetelmät ja digitaalisen rakentamisen järjestelmät. Vastaa liiketoiminnan kehityksestä ja tuotestrategiasta.", portrait: teamPortraits.EL },
       { initials: "HA", name: "Dr. Hisham Abou-Ibrahim", role: "Tuotejohtaja ja toinen perustaja", bio: "BIMin ja rakennusinformatiikan asiantuntija. Vastaa tuotekehityksestä ja suunnittelusta. Tutkimustausta rakennusten tietomallinnuksessa ja suunnittelun hallinnassa.", portrait: teamPortraits.HA },
       { initials: "AL", name: "Albin Lamichhane", role: "Teknologiajohtaja ja toinen perustaja", bio: "Ohjelmistoinsinööri, joka johtaa teknistä kehitystä. Vastaa BIMSpectin IFC-käsittelymoottorista ja raporttien tuotantoputkesta.", portrait: teamPortraits.AL },
-      { initials: "OS", name: "Prof. Olli Seppänen", role: "Tieteellinen neuvonantaja", bio: "Aalto Universityn rakentamisen johtamisen professori. Tieteellinen neuvonantaja rakentamisen projektinhallinnan ja lean-rakentamisen tutkimuksessa.", portrait: teamPortraits.OS }
+      { initials: "OS", name: "Prof. Olli Seppänen", role: "Tieteellinen neuvonantaja ja toinen perustaja", bio: "Aalto Universityn rakentamisen johtamisen professori. Tieteellinen neuvonantaja rakentamisen projektinhallinnan ja lean-rakentamisen tutkimuksessa.", portrait: teamPortraits.OS }
     ]
   },
   contact: {
