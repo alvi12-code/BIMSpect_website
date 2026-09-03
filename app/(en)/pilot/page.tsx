@@ -1,29 +1,31 @@
 import type { Metadata } from "next";
+import Image from "next/image";
+import { HomeDemoVideo } from "@/components/HomeDemoVideo";
+import { ModelAttribution } from "@/components/ModelAttribution";
+import { PricingSection } from "@/components/PricingSection";
 import {
   CampaignHero,
   CampaignShell,
   SectionHeading
 } from "@/components/campaign/CampaignLayout";
 import {
-  CampaignImageFrame,
-  CampaignVideo
-} from "@/components/campaign/CampaignMedia";
-import {
   CampaignBenefits,
-  LeadSection,
-  ProductShowcase
+  CampaignWorkflow,
+  LeadSection
 } from "@/components/campaign/CampaignSections";
 import {
-  campaignMedia,
-  pilotBenefits,
-  pilotNavigation
+  pilotCommercialCampaign,
+  pilotNavigation,
+  pilotTrustBenefits,
+  pilotWorkflow
 } from "@/components/campaign/content";
 import styles from "@/components/campaign/campaign.module.css";
+import { homeContent } from "@/content/home";
 
 export const metadata: Metadata = {
-  title: "BIMSpect Pilot | Continue the conversation",
+  title: "BIMSpect Pilot | Early customer offer",
   description:
-    "For BIMSpect pilot organisations: continue the conversation as BIMSpect moves from Aalto University’s Research to Business (R2B) development phase to commercial operations.",
+    "For BIMSpect pilot organisations: continue using BIMSpect in real project work under early-customer terms.",
   alternates: {
     canonical: "/pilot"
   },
@@ -32,9 +34,9 @@ export const metadata: Metadata = {
     follow: false
   },
   openGraph: {
-    title: "BIMSpect Pilot | Continue the conversation",
+    title: "BIMSpect Pilot | Early customer offer",
     description:
-      "For BIMSpect pilot organisations: continue the conversation as BIMSpect moves from Aalto University’s Research to Business development phase to commercial operations.",
+      "For BIMSpect pilot organisations: continue using BIMSpect in real project work under early-customer terms.",
     url: "/pilot",
     siteName: "BIMSpect",
     type: "website",
@@ -49,9 +51,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "BIMSpect Pilot | Continue the conversation",
+    title: "BIMSpect Pilot | Early customer offer",
     description:
-      "For BIMSpect pilot organisations: continue the conversation as BIMSpect moves from Aalto University’s Research to Business development phase to commercial operations.",
+      "For BIMSpect pilot organisations: continue using BIMSpect in real project work under early-customer terms.",
     images: ["/brand/bimspect-og-image.jpg"]
   }
 };
@@ -60,90 +62,178 @@ export default function PilotPage() {
   return (
     <CampaignShell
       landingPage="pilot"
+      campaign={pilotCommercialCampaign}
       navigation={pilotNavigation}
-      navigationCta={{ href: "#contact", label: "Talk to us" }}
-    >
+      navigationCta={{ href: "#pricing", label: "View pricing" }}
+      >
       <CampaignHero
         className={styles.pilotHero}
-        eyebrow="BIMSPECT PILOT"
+        eyebrow="Early customer offer for pilot companies"
         heading={
           <>
-            BIMSpect is entering its <em>next chapter.</em>
-            <span className={styles.heroThankYou}>
-              Thank you for being part of our pilot journey.
-            </span>
+            Continue with BIMSpect in <em>real project work.</em>
           </>
         }
         supportingCopy={[
-          "BIMSpect is moving from Aalto University’s Research to Business (R2B) development phase to commercial operations. We want to continue the conversation with the organizations and people who helped shape the product."
+          "BIMSpect Oy is now operational. We are inviting selected pilot companies to continue using BIMSpect under early-customer terms.",
+          "Analyse IFC model version history over time, visualise design activity through Design Buzz, and turn technical model changes into understandable reports for BIM coordination and design management."
         ]}
         ctas={[
-          { href: "#contact", label: "Talk to us", primary: true },
-          { href: "#analytics", label: "See what’s new in BIMSpect" }
+          { href: "#pricing", label: "View pricing", primary: true },
+          { href: "#walkthrough", label: "Watch product walkthrough" }
         ]}
         browserStatement={
           <>
-            <strong>Browser-based.</strong> No installation required.
+            <strong>Browser-based</strong>
+            <span>
+              · No installation · IFC2x3 / IFC4 · EU-based processing · No AI training
+              on client files
+            </span>
           </>
+        }
+        visual={
+          <figure className="home-hero-visual">
+            <div className="home-hero-model">
+              <Image
+                src="/images/bimspect/bimspect-model-overview.webp"
+                alt={homeContent.en.images.heroAlt}
+                width={1672}
+                height={941}
+                sizes="(max-width: 768px) calc(100vw - 40px), (max-width: 1100px) 52vw, 620px"
+                priority
+              />
+            </div>
+            <ModelAttribution
+              className="home-hero-attribution"
+              content={homeContent.en.attribution}
+            />
+          </figure>
         }
       />
 
-      <section id="analytics" className={styles.section}>
-        <div className="wrap">
-          <ProductShowcase
-            eyebrow="Design intelligence"
-            heading="From model changes to design insight"
-            copy="BIMSpect turns model-version changes into clear indicators and visual summaries for design review."
-            image={campaignMedia.analytics}
-            imageLabel="BIMSpect · design analytics"
-            annotations={[
-              "Design completion",
-              "Design confidence",
-              "Stability",
-              "Rework pressure",
-              "Review priorities"
-            ]}
-          />
-        </div>
-      </section>
+      <PricingSection
+        eyebrow="Choose how you want to continue"
+        heading="Straightforward access for individual, project and enterprise use."
+        copy="Public pricing is shown here. Choose the option that best fits the way you work."
+        showComparison={false}
+        showAdoptionPath={false}
+        contactLandingPage="pilot"
+        campaign={pilotCommercialCampaign}
+        afterPricingDisclosure={
+          <aside className={styles.pilotTerms} aria-labelledby="pilot-terms-title">
+            <p className="eyebrow">Early-customer terms</p>
+            <h3 id="pilot-terms-title">Pilot organisations can continue with confidence.</h3>
+            <p>
+              Pilot organisations may be eligible for early-customer terms. Contact us
+              if you would like to discuss the applicable arrangement.
+            </p>
+          </aside>
+        }
+      />
 
-      <section id="demo" className={styles.section}>
+      <section id="product" className={styles.sectionAlt}>
         <div className="wrap">
           <SectionHeading
-            eyebrow="Design-change demo"
-            heading="Review colour-coded design changes in 3D."
-            copy="See the BIMSpect model viewer focus the review with colour-coded changes and change-type filters."
+            eyebrow="Design intelligence"
+            heading="See where the design is moving."
+            copy="Follow IFC model version history, locate change concentration with Design Buzz, and bring clear evidence to coordination and design-management reviews."
           />
-          <CampaignVideo
+          <div className={styles.pilotProofGrid}>
+            <figure className={`home-product-image ${styles.pilotProofPrimary}`}>
+              <Image
+                src="/images/bimspect/bimspect-model-change-intensity.webp"
+                alt={homeContent.en.images.changeAlt}
+                width={1672}
+                height={941}
+                sizes="(max-width: 768px) calc(100vw - 40px), (max-width: 1100px) 58vw, 700px"
+              />
+              <figcaption>{homeContent.en.change.caption}</figcaption>
+            </figure>
+            <div className={styles.pilotProofStack}>
+              <figure className="home-product-image">
+                <Image
+                  src="/images/bimspect/bimspect-model-classifier.webp"
+                  alt={homeContent.en.images.focusAlt}
+                  width={1672}
+                  height={941}
+                  sizes="(max-width: 768px) calc(100vw - 40px), (max-width: 1100px) 42vw, 460px"
+                />
+                <figcaption>{homeContent.en.focus.title}</figcaption>
+              </figure>
+              <figure className="home-analytics-image">
+                <Image
+                  src="/images/bimspect/bimspect-discipline-analytics-dashboard.png"
+                  alt={homeContent.en.images.analyticsAlt}
+                  width={1352}
+                  height={728}
+                  sizes="(max-width: 768px) calc(100vw - 40px), (max-width: 1100px) 42vw, 460px"
+                />
+                <figcaption>{homeContent.en.analytics.caption}</figcaption>
+              </figure>
+            </div>
+            <ModelAttribution
+              className={styles.pilotProofAttribution}
+              content={homeContent.en.attribution}
+            />
+          </div>
+        </div>
+      </section>
+
+      <section id="walkthrough" className={styles.section}>
+        <div className="wrap">
+          <SectionHeading
+            eyebrow="Product walkthrough"
+            heading="Review design activity in the model context."
+            copy="Use the colour-coded change view and filters to focus attention on the areas that need review."
+          />
+          <HomeDemoVideo
+            content={homeContent.en.demo.video}
             landingPage="pilot"
-            label="BIMSpect 3D design-change review"
-            caption="Colour-coded model changes and change-type filters in the BIMSpect viewer."
+            campaign={pilotCommercialCampaign}
+            ariaDescribedBy="pilot-walkthrough-description"
+          />
+          <p id="pilot-walkthrough-description" className={styles.visuallyHidden}>
+            {homeContent.en.demo.description}
+          </p>
+          <ModelAttribution
+            className="home-demo-attribution"
+            content={homeContent.en.attribution}
           />
         </div>
       </section>
 
-      <section id="capabilities" className={styles.sectionAlt}>
+      <section id="how-it-works" className={styles.sectionAlt}>
         <div className="wrap">
-          <CampaignBenefits benefits={pilotBenefits} />
+          <SectionHeading
+            eyebrow="How BIMSpect works"
+            heading="A focused workflow for IFC change review."
+            copy="Upload releases, review the activity that matters, and share the findings."
+          />
+          <CampaignWorkflow steps={pilotWorkflow} />
+        </div>
+      </section>
+
+      <section id="data-handling" className={styles.section}>
+        <div className="wrap">
+          <SectionHeading
+            eyebrow="Data handling"
+            heading="Project data deserves serious handling."
+            copy="The practical information teams need before sharing IFC model files."
+          />
+          <CampaignBenefits benefits={pilotTrustBenefits} />
         </div>
       </section>
 
       <LeadSection
         id="contact"
-        eyebrow="Talk to BIMSpect"
-        heading="Let’s discuss continuing with BIMSpect"
-        copy="Tell us about your project or how you would like to continue using BIMSpect. We’ll follow up personally."
+        eyebrow="Talk with BIMSpect"
+        heading="Questions about the right setup?"
+        copy="Ask about the plans, early-customer terms, or the best way to use BIMSpect in your project."
         kind="pilot-enquiry"
         landingPage="pilot"
-        submitLabel="Talk to BIMSpect"
+        campaign={pilotCommercialCampaign}
+        submitLabel="Talk with BIMSpect"
         includeQuestion
-        aside={
-          <CampaignImageFrame
-            {...campaignMedia.viewer}
-            label="BIMSpect · model-change evidence"
-            caption="Visual change context in BIMSpect"
-          />
-        }
       />
     </CampaignShell>
   );

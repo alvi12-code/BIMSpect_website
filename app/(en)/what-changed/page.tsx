@@ -15,7 +15,7 @@ import {
   LeadSection,
   PricingBridge,
   ProductShowcase,
-  ReportPlaceholder
+  ReportPreview
 } from "@/components/campaign/CampaignSections";
 import {
   campaignBusinessConfig,
@@ -196,7 +196,7 @@ export default function WhatChangedPage() {
         kind="sample-report"
         landingPage="what-changed"
         submitLabel="Send me the sample report"
-        aside={<ReportPlaceholder />}
+        aside={<ReportPreview />}
       />
 
       <PricingBridge

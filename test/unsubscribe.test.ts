@@ -279,47 +279,59 @@ test("language switching preserves only recognised attribution parameters", () =
   );
 });
 
-test("campaign pages keep pricing route-specific and include the generic footer link", async () => {
-  const [pilot, whatChanged, content, form, campaignShell] = await Promise.all([
+test("pilot prioritises public pricing while retaining the shared campaign infrastructure", async () => {
+  const [pilot, whatChanged, content, form, campaignShell, footer] = await Promise.all([
     readFile(new URL("../app/(en)/pilot/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/(en)/what-changed/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../components/campaign/content.ts", import.meta.url), "utf8"),
     readFile(new URL("../components/campaign/CampaignForm.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../components/campaign/CampaignLayout.tsx", import.meta.url), "utf8")
+    readFile(new URL("../components/campaign/CampaignLayout.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../components/Footer.tsx", import.meta.url), "utf8")
   ]);
 
-  assert.equal(pilot.includes("PilotPricingSection"), false);
-  assert.equal(pilot.includes("View pricing"), false);
+  assert.ok(pilot.indexOf("<CampaignHero") < pilot.indexOf("<PricingSection"));
+  assert.ok(pilot.indexOf("<PricingSection") < pilot.indexOf('id="product"'));
+  assert.equal(pilot.includes('eyebrow="Choose how you want to continue"'), true);
+  assert.equal(pilot.includes("showComparison={false}"), true);
+  assert.equal(pilot.includes("showAdoptionPath={false}"), true);
+  assert.equal(pilot.includes('href: "#pricing", label: "View pricing"'), true);
+  assert.equal(pilot.includes('href: "#walkthrough", label: "Watch product walkthrough"'), true);
   assert.equal(pilot.includes("#offer"), false);
-  assert.equal(pilot.includes("#pricing"), false);
-  assert.equal(pilot.includes("BIMSpect is entering its"), true);
-  assert.equal(pilot.includes("Thank you for being part of our pilot journey."), true);
+  assert.equal(pilot.includes("BIMSpect is entering its"), false);
+  assert.equal(pilot.includes("Thank you for being part of our pilot journey."), false);
+  assert.equal(pilot.includes("BIMSpect Oy is now operational."), true);
+  assert.equal(pilot.includes("Pilot organisations may be eligible for early-customer terms."), true);
+  assert.equal(pilot.replace(/\s+/g, " ").includes("No AI training on client files"), true);
+  assert.equal(pilot.includes("HomeDemoVideo"), true);
+  assert.equal(pilot.includes("campaignMedia.viewer"), false);
+  assert.equal(pilot.includes('src="/images/bimspect/bimspect-model-overview.webp"'), true);
+  assert.equal(pilot.includes('src="/images/bimspect/bimspect-model-change-intensity.webp"'), true);
+  assert.equal(pilot.includes('src="/images/bimspect/bimspect-model-classifier.webp"'), true);
   assert.equal(
-    pilot.includes("Aalto University’s Research to Business (R2B) development phase to commercial operations."),
+    pilot.includes('src="/images/bimspect/bimspect-discipline-analytics-dashboard.png"'),
     true
   );
-  assert.equal(pilot.includes("Browser-based."), true);
-  assert.equal(pilot.includes("No installation required."), true);
-  assert.equal(pilot.includes("CampaignVideo"), true);
-  assert.equal(pilot.includes('id="analytics"'), true);
-  assert.equal(pilot.includes('id="pilot-journey"'), false);
-  assert.equal(pilot.includes("CommercialContinuation"), false);
-  assert.equal(pilot.includes("FinalCta"), false);
-  assert.equal(pilot.includes("Let’s discuss continuing with BIMSpect"), true);
+  assert.equal(pilot.includes('id="data-handling"'), true);
+  assert.equal(pilot.includes('heading="Questions about the right setup?"'), true);
+  assert.equal(pilot.includes('campaign={pilotCommercialCampaign}'), true);
+  assert.equal(pilot.includes("mailto:"), false);
   assert.equal(whatChanged.includes("PricingBridge"), true);
   assert.equal(whatChanged.includes('href: "#pricing"'), true);
   assert.equal(content.includes('{ href: "/unsubscribe", label: "Unsubscribe from BIMSpect emails" }'), true);
+  assert.equal(content.includes('{ href: "/", label: "bimspect.com" }'), true);
   assert.equal(content.includes('label: "hello@bimspect.com"'), true);
   assert.equal(content.includes('{ href: "#offer", label: "Pricing" }'), false);
-  assert.equal(content.includes('{ href: "#analytics", label: "Analytics" }'), true);
+  assert.equal(content.includes('{ href: "#product", label: "Product" }'), true);
+  assert.equal(content.includes('{ href: "#pricing", label: "Pricing" }'), true);
+  assert.equal(content.includes('{ href: "#data-handling", label: "Data handling" }'), true);
   assert.equal(content.includes('{ href: "#contact", label: "Contact" }'), true);
-  assert.equal(content.includes('title: "Understand stability and review priorities"'), true);
+  assert.equal(content.includes('pilot-commercial-conversion-2026'), true);
   assert.equal(form.includes('name="name"'), true);
   assert.equal(form.includes('name="company"'), true);
   assert.equal(form.includes('name="workEmail"'), true);
   assert.equal(form.includes('name="question"'), true);
   assert.equal(campaignShell.includes("useBrandImage"), true);
-  assert.equal(campaignShell.includes('"© 2026 BIMSpect"'), true);
+  assert.equal(footer.includes('"© 2026 BIMSpect Oy · Business ID 3651764-2"'), true);
 });
 
 test("marketing reuses the exact CRM logo artwork", async () => {

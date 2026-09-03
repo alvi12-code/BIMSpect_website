@@ -1638,7 +1638,7 @@ p {
 }
 
 .pricing-card.featured .pricing-tier {
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.82);
 }
 
 .pricing-featured-label {
@@ -1668,7 +1668,7 @@ p {
 }
 
 .pricing-card.featured .pricing-desc {
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .pricing-features {
@@ -1709,7 +1709,7 @@ p {
 }
 
 .pricing-card.featured .pricing-feature-note {
-  color: rgba(255, 255, 255, 0.62);
+  color: rgba(255, 255, 255, 0.82);
 }
 
 .pricing-price {
@@ -1720,7 +1720,7 @@ p {
 }
 
 .pricing-card.featured .pricing-price {
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.82);
 }
 
 .pricing-note {
@@ -1732,7 +1732,7 @@ p {
 }
 
 .pricing-card.featured .pricing-note {
-  color: rgba(255, 255, 255, 0.62);
+  color: rgba(255, 255, 255, 0.82);
 }
 
 .pricing-card .btn,
@@ -1762,7 +1762,7 @@ p {
 }
 
 .pricing-card.featured .pricing-price-main span {
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.82);
 }
 
 .pricing-price-sub {
@@ -3604,6 +3604,12 @@ html.motion-ready .stagger-container.is-visible > .stagger-child {
   color: rgba(255, 255, 255, 0.7);
   margin: 0 auto;
   max-width: 560px;
+}
+
+.home-contact-form {
+  margin: clamp(30px, 5vw, 44px) auto 0;
+  max-width: 660px;
+  text-align: left;
 }
 
 .home-final-actions {

@@ -363,6 +363,10 @@
   grid-template-columns: repeat(3, 1fr);
 }
 
+.workflowFour {
+  grid-template-columns: repeat(4, 1fr);
+}
+
 .workflowStep {
   min-height: 250px;
   padding: 34px 50px 36px 28px;
@@ -539,7 +543,7 @@
 }
 
 .pricingFeatured .pricingLabel {
-  color: rgba(255, 255, 255, 0.48);
+  color: rgba(255, 255, 255, 0.82);
 }
 
 .pricingCard h3 {
@@ -554,7 +558,7 @@
 }
 
 .pricingFeatured > p:not(.pricingLabel) {
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .pricingPrice {
@@ -587,7 +591,7 @@
 }
 
 .pricingFeatured .pricingPricePeriod {
-  color: rgba(255, 255, 255, 0.62);
+  color: rgba(255, 255, 255, 0.82);
 }
 
 .pricingCard > a {
@@ -603,6 +607,10 @@
   display: grid;
   gap: clamp(42px, 6vw, 80px);
   grid-template-columns: minmax(0, 1fr) minmax(330px, 0.84fr);
+}
+
+.leadGridSingle {
+  grid-template-columns: minmax(0, 760px);
 }
 
 .form {
@@ -703,7 +711,7 @@
   top: 94px;
 }
 
-.reportPlaceholder {
+.reportPreview {
   background: var(--white);
   border: 1px solid var(--rule);
   border-radius: 10px;
@@ -1010,6 +1018,63 @@
 
 /* Pilot campaign */
 
+.pilotTerms {
+  background: var(--accent-lt);
+  border: 1px solid color-mix(in srgb, var(--accent) 26%, var(--rule));
+  border-radius: 10px;
+  margin: 28px auto 0;
+  max-width: 780px;
+  padding: clamp(22px, 3vw, 30px);
+  text-align: center;
+}
+
+.pilotTerms :global(.eyebrow) {
+  color: var(--ink-mid);
+  margin-bottom: 9px;
+}
+
+.pilotTerms h3 {
+  font-size: clamp(21px, 2.4vw, 28px);
+  margin-bottom: 9px;
+}
+
+.pilotTerms p:last-child {
+  color: var(--ink-mid);
+  font-size: 16px;
+  line-height: 1.58;
+}
+
+.pilotProofGrid {
+  align-items: start;
+  display: grid;
+  gap: clamp(18px, 3vw, 30px);
+  grid-template-columns: minmax(0, 1.3fr) minmax(280px, 0.7fr);
+}
+
+.pilotProofPrimary {
+  grid-row: span 1;
+}
+
+.pilotProofStack {
+  display: grid;
+  gap: clamp(18px, 3vw, 30px);
+}
+
+.pilotProofAttribution {
+  grid-column: 1 / -1;
+  margin-top: -8px;
+}
+
+.visuallyHidden {
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
 .journeyGrid {
   align-items: center;
   display: grid;
@@ -1076,6 +1141,26 @@
     grid-template-columns: minmax(240px, 0.72fr) minmax(0, 1.28fr);
   }
 
+  .pilotProofGrid {
+    grid-template-columns: minmax(0, 1.1fr) minmax(250px, 0.9fr);
+  }
+
+  .workflowFour {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .workflowFour .workflowStep:nth-child(3) {
+    border-left: 0;
+  }
+
+  .workflowFour .workflowStep:nth-child(n + 3) {
+    border-top: 1px solid var(--rule);
+  }
+
+  .workflowFour .workflowArrow {
+    display: none;
+  }
+
   .flowArrow {
     padding: 0 8px;
   }
@@ -1097,7 +1182,8 @@
   .leadGrid,
   .solutionIntro,
   .journeyGrid,
-  .continuationGrid {
+  .continuationGrid,
+  .pilotProofGrid {
     grid-template-columns: 1fr;
   }
 
@@ -1116,7 +1202,8 @@
 
   .benefitGrid,
   .pricingGrid,
-  .workflow {
+  .workflow,
+  .workflowFour {
     grid-template-columns: 1fr;
   }
 
@@ -1234,7 +1321,7 @@
     width: 100%;
   }
 
-  .reportPlaceholder {
+  .reportPreview {
     transform: none;
   }
 
@@ -1262,7 +1349,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .reportPlaceholder {
+  .reportPreview {
     transform: none;
   }
 }

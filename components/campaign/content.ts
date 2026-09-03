@@ -2,13 +2,12 @@ export const campaignBusinessConfig = {
   campaign: "september-2026",
   contactEmail: "hello@bimspect.com",
   pricingHref: "/#pricing",
-  // TODO: Add the approved Privacy Policy route when legal content is published.
   privacyHref: null as string | null,
-  // TODO: Add the approved pilot offer PDF after commercial approval.
   pilotOfferPdfHref: null as string | null,
-  // TODO: Add the approved sample report asset when it is available.
   sampleReportAssetHref: null as string | null
 };
+
+export const pilotCommercialCampaign = "pilot-commercial-conversion-2026";
 
 export const campaignMedia = {
   video: "/videos/bimspect-design-change-demo-attributed.mp4",
@@ -27,9 +26,7 @@ export const campaignMedia = {
 };
 
 export const campaignFooterLinks = [
-  { href: "/#workflow", label: "Workflow" },
-  { href: "/#sample-report", label: "Sample Report" },
-  { href: "/#about", label: "About" },
+  { href: "/", label: "bimspect.com" },
   { href: "mailto:hello@bimspect.com", label: "hello@bimspect.com" },
   { href: "/unsubscribe", label: "Unsubscribe from BIMSpect emails" },
   {
@@ -47,7 +44,9 @@ export const whatChangedNavigation = [
 ];
 
 export const pilotNavigation = [
-  { href: "#analytics", label: "Analytics" },
+  { href: "#product", label: "Product" },
+  { href: "#pricing", label: "Pricing" },
+  { href: "#data-handling", label: "Data handling" },
   { href: "#contact", label: "Contact" }
 ];
 
@@ -73,6 +72,48 @@ export const pilotBenefits = [
 ];
 
 export type PilotBenefit = (typeof pilotBenefits)[number];
+
+export const pilotTrustBenefits = [
+  {
+    icon: "browser" as const,
+    title: "Browser-based access",
+    description: "Use BIMSpect without installation, with IFC2x3 and IFC4 model files."
+  },
+  {
+    icon: "compare" as const,
+    title: "EU-based processing",
+    description: "Project-file processing takes place within the EU."
+  },
+  {
+    icon: "collaborate" as const,
+    title: "Your data stays yours",
+    description:
+      "Customer project files are not used for AI training without written permission."
+  }
+] satisfies PilotBenefit[];
+
+export const pilotWorkflow = [
+  {
+    number: "01",
+    title: "Upload releases",
+    description: "Bring the IFC model versions you need to compare into BIMSpect."
+  },
+  {
+    number: "02",
+    title: "Choose a view",
+    description: "Focus the comparison by the project context that matters to your review."
+  },
+  {
+    number: "03",
+    title: "Review Design Buzz",
+    description: "Map change concentration and inspect the model areas with the most activity."
+  },
+  {
+    number: "04",
+    title: "Report findings",
+    description: "Share clear findings for BIM coordination and design-management discussions."
+  }
+];
 
 export const pilotPricing = [
   {
