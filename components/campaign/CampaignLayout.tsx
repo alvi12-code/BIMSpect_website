@@ -11,19 +11,21 @@ type CampaignShellProps = {
   landingPage: "pilot" | "what-changed";
   navigation: NavigationLink[];
   navigationCta: Exclude<NavigationCta, null>;
+  campaign?: string;
 };
 
 export function CampaignShell({
   children,
   landingPage,
   navigation,
-  navigationCta
+  navigationCta,
+  campaign = campaignBusinessConfig.campaign
 }: CampaignShellProps) {
   return (
     <div className={styles.page}>
       <CampaignAnalytics
         landingPage={landingPage}
-        campaign={campaignBusinessConfig.campaign}
+        campaign={campaign}
       />
       <a className="skip-link" href="#main-content">
         Skip to main content
@@ -38,7 +40,6 @@ export function CampaignShell({
         links={campaignFooterLinks}
         homeHref="/"
         useBrandImage
-        copyrightText={landingPage === "pilot" ? "© 2026 BIMSpect" : undefined}
       />
     </div>
   );

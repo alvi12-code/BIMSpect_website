@@ -25,7 +25,7 @@ export function Footer({
   links: customLinks,
   homeHref = "#home",
   useBrandImage = false,
-  copyrightText = "© 2026 BIMSpect Ltd",
+  copyrightText = "© 2026 BIMSpect Oy · Business ID 3651764-2",
   accessibility
 }: FooterProps) {
   const links =

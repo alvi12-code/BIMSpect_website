@@ -1,3 +1,9 @@
+import {
+  currentOfferCheckoutHref,
+  currentPurchaseOffer,
+  formatOfferAmount
+} from "@/lib/payment/offer";
+
 export const commercialNavLinks = [
   { href: "#workflow", label: "Workflow" },
   { href: "#benefits", label: "Benefits" },
@@ -273,14 +279,14 @@ export const pricingComparison = [
     title: "BIMSpect",
     tone: "positive",
     items: [
-      "IFC version history analytics",
-      "Design Buzz heat maps over time",
-      "Select views by discipline, zone, object type or severity",
-      "Automatic change concentration mapping",
-      "Ontology-based plain-language findings",
-      "Shared reports for design management and coordination"
+      "IFC version history",
+      "Change heat maps over time",
+      "Filter changes by discipline, zone or object type",
+      "Change concentration mapping",
+      "Plain-language change findings",
+      "Shared coordination reports"
     ],
-    cta: "Request project analysis",
+    cta: "Talk to BIMSpect",
     href: "#contact"
   }
 ];
@@ -290,7 +296,7 @@ type PricingFeature = {
   note?: string;
 };
 
-type PricingPlan = {
+export type PricingPlan = {
   tier: string;
   name: string;
   price: string;
@@ -301,16 +307,44 @@ type PricingPlan = {
   href: string;
   featured: boolean;
   featuredLabel?: string;
+  purchaseOfferId?: string;
 };
+
+export type PricingPlanAction = {
+  href: string;
+  label: string;
+  offerId?: string;
+};
+
+export function pricingPlanAction(
+  plan: PricingPlan,
+  checkoutEnabled: boolean
+): PricingPlanAction {
+  if (plan.purchaseOfferId && !checkoutEnabled) {
+    return { href: "#contact", label: "Contact us" };
+  }
+
+  return {
+    href: plan.href,
+    label: plan.cta,
+    offerId: plan.purchaseOfferId
+  };
+}
+
+const currentOfferPrice = formatOfferAmount(
+  currentPurchaseOffer.amount,
+  currentPurchaseOffer.currency
+);
 
 export const pricingPlans: PricingPlan[] = [
   {
     tier: "Individual",
-    name: "BIMSpect Individual",
-    price: "€59",
-    priceSuffix: "/month",
-    description:
-      "For an individual BIM coordinator, consultant or design manager working across several projects.",
+    name: currentPurchaseOffer.name,
+    price: currentOfferPrice ?? "",
+    priceSuffix: currentPurchaseOffer.billingPeriod
+      ? `/${currentPurchaseOffer.billingPeriod}`
+      : null,
+    description: currentPurchaseOffer.description,
     features: [
       { label: "One user" },
       { label: "Up to 5 active projects" },
@@ -319,9 +353,10 @@ export const pricingPlans: PricingPlan[] = [
       { label: "Process analytics" },
       { label: "Exportable reports" }
     ],
-    cta: "Start individually",
-    href: "#contact",
-    featured: false
+    cta: "Buy now",
+    href: currentOfferCheckoutHref,
+    featured: false,
+    purchaseOfferId: currentPurchaseOffer.id
   },
   {
     tier: "Project",
@@ -385,7 +420,7 @@ export const adoptionSteps = [
   {
     number: "03",
     title: "Standardise",
-    body: "Use recurring Design Buzz reviews and reporting templates."
+    body: "Use recurring change reviews and reporting templates."
   },
   {
     number: "04",

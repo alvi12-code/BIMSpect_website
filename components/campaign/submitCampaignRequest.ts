@@ -1,6 +1,9 @@
 import type { CampaignAttribution } from "./attribution";
 
-export type CampaignRequestKind = "pilot-enquiry" | "sample-report";
+export type CampaignRequestKind =
+  | "homepage-enquiry"
+  | "pilot-enquiry"
+  | "sample-report";
 
 type CampaignRequest = {
   kind: CampaignRequestKind;

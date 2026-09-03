@@ -259,6 +259,7 @@ const navigation = [
   { href: "#workflow", label: "How it works" },
   { href: "#analytics", label: "Analytics" },
   { href: "#sample-report", label: "Sample report" },
+  { href: "#pricing", label: "Pricing" },
   { href: "#security", label: "Data handling" },
   { href: "#about", label: "Team" }
 ];
@@ -287,7 +288,7 @@ const en: HomeContent = {
     { href: "#research", label: "Research" },
     { href: "https://www.linkedin.com/company/bimspect", label: "LinkedIn", external: true }
   ],
-  headerCta: "Request analysis",
+  headerCta: "Talk to BIMSpect",
   languageSwitcher: {
     currentLabel: "EN",
     targetLabel: "FI",
@@ -320,8 +321,8 @@ const en: HomeContent = {
     titleEmphasis: "Understand what matters.",
     description:
       "BIMSpect compares IFC model versions and turns design changes into clear visual information for BIM coordination and design management.",
-    primaryCta: "See how it works",
-    secondaryCta: "View sample report",
+    primaryCta: "See BIMSpect in action",
+    secondaryCta: "Talk to BIMSpect",
     capabilityOne: "Browser-based",
     capabilityTwo: "No installation"
   },
@@ -443,9 +444,8 @@ const en: HomeContent = {
   },
   contact: {
     eyebrow: "Next model version",
-    title: "See what changed in your next model version.",
-    description:
-      "Tell us about your IFC comparison need and we will show how BIMSpect can support the review.",
+    title: "Talk to BIMSpect",
+    description: "Tell us about your project, access needs or questions.",
     primaryCta: "Request project analysis",
     secondaryCta: "Book a product walkthrough"
   },

@@ -64,7 +64,12 @@ type WorkflowStep = {
 
 export function CampaignWorkflow({ steps }: { steps: WorkflowStep[] }) {
   return (
-    <StaggerContainer className={styles.workflow} stagger={90}>
+    <StaggerContainer
+      className={[styles.workflow, steps.length === 4 ? styles.workflowFour : ""]
+        .filter(Boolean)
+        .join(" ")}
+      stagger={90}
+    >
       {steps.map((step, index) => (
         <article className={styles.workflowStep} key={step.number}>
           <div className={styles.workflowNumber}>{step.number}</div>
@@ -156,9 +161,9 @@ export function CommercialContinuation() {
   );
 }
 
-export function ReportPlaceholder() {
+export function ReportPreview() {
   return (
-    <div className={styles.reportPlaceholder} aria-label="Sample report preview placeholder">
+    <div className={styles.reportPreview} aria-label="Sample report preview">
       <div className={styles.reportTopline}>
         <span>BIMSpect</span>
         <span>Sample change report</span>
@@ -200,6 +205,7 @@ type LeadSectionProps = {
   submitLabel: string;
   includeQuestion?: boolean;
   aside?: ReactNode;
+  campaign?: string;
 };
 
 export function LeadSection({
@@ -211,11 +217,16 @@ export function LeadSection({
   landingPage,
   submitLabel,
   includeQuestion = false,
-  aside
+  aside,
+  campaign
 }: LeadSectionProps) {
   return (
     <section id={id} className={styles.leadSection}>
-      <div className={`wrap ${styles.leadGrid}`}>
+      <div
+        className={`wrap ${[styles.leadGrid, aside ? "" : styles.leadGridSingle]
+          .filter(Boolean)
+          .join(" ")}`}
+      >
         <div>
           <SectionHeading eyebrow={eyebrow} heading={heading} copy={copy} />
           <Reveal delay={100}>
@@ -224,6 +235,7 @@ export function LeadSection({
               landingPage={landingPage}
               submitLabel={submitLabel}
               includeQuestion={includeQuestion}
+              campaign={campaign}
             />
           </Reveal>
         </div>

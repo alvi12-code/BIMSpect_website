@@ -5,7 +5,10 @@ import { HomeDemoVideo } from "@/components/HomeDemoVideo";
 import { LanguageSuggestion } from "@/components/LanguageSuggestion";
 import { CountdownTimer } from "@/components/launch/CountdownTimer";
 import { ModelAttribution } from "@/components/ModelAttribution";
+import { PricingSection } from "@/components/PricingSection";
 import { Reveal } from "@/components/Reveal";
+import { CampaignContactLink } from "@/components/campaign/CampaignContactLink";
+import { CampaignForm } from "@/components/campaign/CampaignForm";
 import type { HomeContent, Locale } from "@/content/home";
 import { getRemainingTime, hasLaunched, launchTimestamp } from "@/lib/launch";
 
@@ -20,6 +23,69 @@ function formatLaunchDate(locale: Locale) {
     dateStyle: "medium",
     timeZone: "Europe/Helsinki"
   }).format(new Date(launchTimestamp));
+}
+
+function CredibilitySections({ content }: { content: HomeContent }) {
+  return (
+    <>
+      <section id="research" className="home-research" aria-labelledby="research-title">
+        <div className="wrap home-wrap home-research-layout">
+          <div>
+            <Reveal as="p" className="eyebrow">
+              {content.research.eyebrow}
+            </Reveal>
+            <Reveal as="h2" delay={70} id="research-title">
+              {content.research.title}
+            </Reveal>
+          </div>
+          <div className="home-research-facts">
+            {content.research.facts.map((fact, index) => (
+              <Reveal delay={index * 60} key={fact.title}>
+                <h3>{fact.title}</h3>
+                <p>{fact.body}</p>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="about" className="home-team" aria-labelledby="team-title">
+        <div className="wrap home-wrap">
+          <div className="home-section-heading home-team-heading">
+            <Reveal as="p" className="eyebrow">
+              {content.team.eyebrow}
+            </Reveal>
+            <Reveal as="h2" delay={70} id="team-title">
+              {content.team.title}
+            </Reveal>
+          </div>
+          <div className="home-team-grid">
+            {content.team.members.map((member, index) => (
+              <Reveal className="home-team-member" delay={index * 55} key={member.initials}>
+                <div
+                  className={`home-team-portrait home-team-portrait-${member.initials.toLowerCase()}`}
+                >
+                  <Image
+                    src={member.portrait.src}
+                    alt={member.name}
+                    width={member.portrait.width}
+                    height={member.portrait.height}
+                    sizes="(max-width: 700px) 100px, 140px"
+                    style={{ objectPosition: member.portrait.objectPosition }}
+                  />
+                </div>
+                <div className="home-team-member-content">
+                  <h3>{member.name}</h3>
+                  <p className="home-team-role">{member.role}</p>
+                  <p className="home-team-bio">{member.bio}</p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+    </>
+  );
 }
 
 export function HomePage({ content, languageHref, shouldSuggestFinnish = false }: HomePageProps) {
@@ -72,12 +138,23 @@ export function HomePage({ content, languageHref, shouldSuggestFinnish = false }
               </h1>
               <p className="home-hero-lead">{content.hero.description}</p>
               <div className="home-hero-actions">
-                <a className="btn btn-primary" href="#workflow">
+                <a
+                  className="btn btn-primary"
+                  href={content.locale === "en" ? "#demo" : "#workflow"}
+                >
                   {content.hero.primaryCta}
                 </a>
-                <a className="btn btn-secondary" href="#sample-report">
-                  {content.hero.secondaryCta}
-                </a>
+                {content.locale === "en" ? (
+                  <CampaignContactLink
+                    className="btn btn-secondary"
+                    interest="a BIMSpect walkthrough"
+                    label={content.hero.secondaryCta}
+                  />
+                ) : (
+                  <a className="btn btn-secondary" href="#sample-report">
+                    {content.hero.secondaryCta}
+                  </a>
+                )}
               </div>
               <p className="home-capabilities">
                 {content.hero.capabilityOne} <span aria-hidden="true">·</span> IFC2x3 / IFC4
@@ -129,7 +206,7 @@ export function HomePage({ content, languageHref, shouldSuggestFinnish = false }
           </div>
         </section>
 
-        <section className="home-demo" aria-labelledby="demo-title">
+        <section id="demo" className="home-demo" aria-labelledby="demo-title">
           <div className="wrap home-wrap home-demo-wrap">
             <Reveal className="home-demo-heading">
               <p className="eyebrow">{content.demo.eyebrow}</p>
@@ -290,12 +367,20 @@ export function HomePage({ content, languageHref, shouldSuggestFinnish = false }
               <p className="eyebrow">{content.report.eyebrow}</p>
               <h2 id="report-title">{content.report.title}</h2>
               <p>{content.report.description}</p>
-              <a
-                className="btn btn-secondary"
-                href="mailto:hello@bimspect.com?subject=Request%20a%20BIMSpect%20sample%20report"
-              >
-                {content.report.cta}
-              </a>
+              {content.locale === "en" ? (
+                <CampaignContactLink
+                  className="btn btn-secondary"
+                  interest="the BIMSpect sample report"
+                  label={content.report.cta}
+                />
+              ) : (
+                <a
+                  className="btn btn-secondary"
+                  href="mailto:hello@bimspect.com?subject=Request%20a%20BIMSpect%20sample%20report"
+                >
+                  {content.report.cta}
+                </a>
+              )}
             </Reveal>
             <Reveal as="figure" className="home-report-preview" delay={100}>
               <div className="home-report-topline">
@@ -355,62 +440,9 @@ export function HomePage({ content, languageHref, shouldSuggestFinnish = false }
           </div>
         </section>
 
-        <section id="research" className="home-research" aria-labelledby="research-title">
-          <div className="wrap home-wrap home-research-layout">
-            <div>
-              <Reveal as="p" className="eyebrow">
-                {content.research.eyebrow}
-              </Reveal>
-              <Reveal as="h2" delay={70} id="research-title">
-                {content.research.title}
-              </Reveal>
-            </div>
-            <div className="home-research-facts">
-              {content.research.facts.map((fact, index) => (
-                <Reveal delay={index * 60} key={fact.title}>
-                  <h3>{fact.title}</h3>
-                  <p>{fact.body}</p>
-                </Reveal>
-              ))}
-            </div>
-          </div>
-        </section>
+        {content.locale === "fi" ? <CredibilitySections content={content} /> : null}
 
-        <section id="about" className="home-team" aria-labelledby="team-title">
-          <div className="wrap home-wrap">
-            <div className="home-section-heading home-team-heading">
-              <Reveal as="p" className="eyebrow">
-                {content.team.eyebrow}
-              </Reveal>
-              <Reveal as="h2" delay={70} id="team-title">
-                {content.team.title}
-              </Reveal>
-            </div>
-            <div className="home-team-grid">
-              {content.team.members.map((member, index) => (
-                <Reveal className="home-team-member" delay={index * 55} key={member.initials}>
-                  <div
-                    className={`home-team-portrait home-team-portrait-${member.initials.toLowerCase()}`}
-                  >
-                    <Image
-                      src={member.portrait.src}
-                      alt={member.name}
-                      width={member.portrait.width}
-                      height={member.portrait.height}
-                      sizes="(max-width: 700px) 100px, 140px"
-                      style={{ objectPosition: member.portrait.objectPosition }}
-                    />
-                  </div>
-                  <div className="home-team-member-content">
-                    <h3>{member.name}</h3>
-                    <p className="home-team-role">{member.role}</p>
-                    <p className="home-team-bio">{member.bio}</p>
-                  </div>
-                </Reveal>
-              ))}
-            </div>
-          </div>
-        </section>
+        {content.locale === "en" ? <PricingSection /> : null}
 
         <section id="contact" className="home-final-cta" aria-labelledby="contact-title">
           <div className="wrap home-wrap">
@@ -423,16 +455,30 @@ export function HomePage({ content, languageHref, shouldSuggestFinnish = false }
             <Reveal as="p" delay={130}>
               {content.contact.description}
             </Reveal>
-            <Reveal className="home-final-actions" delay={190}>
-              <a className="btn btn-primary" href="mailto:hello@bimspect.com">
-                {content.contact.primaryCta}
-              </a>
-              <a className="btn btn-secondary" href="mailto:hello@bimspect.com">
-                {content.contact.secondaryCta}
-              </a>
-            </Reveal>
+            {content.locale === "en" ? (
+              <Reveal className="home-contact-form" delay={170}>
+                <CampaignForm
+                  kind="homepage-enquiry"
+                  landingPage="homepage"
+                  submitLabel="Talk to BIMSpect"
+                  includeQuestion
+                />
+              </Reveal>
+            ) : null}
+            {content.locale === "fi" ? (
+              <Reveal className="home-final-actions" delay={190}>
+                <a className="btn btn-primary" href="mailto:hello@bimspect.com">
+                  {content.contact.primaryCta}
+                </a>
+                <a className="btn btn-secondary" href="mailto:hello@bimspect.com">
+                  {content.contact.secondaryCta}
+                </a>
+              </Reveal>
+            ) : null}
           </div>
         </section>
+
+        {content.locale === "en" ? <CredibilitySections content={content} /> : null}
       </main>
       <Footer
         variant="technical"

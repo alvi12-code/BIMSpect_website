@@ -1,0 +1,358 @@
+.page {
+  background: var(--bg);
+  min-height: 100vh;
+}
+
+.main {
+  min-height: calc(100vh - 230px);
+}
+
+.section {
+  padding: clamp(48px, 8vw, 92px) 0;
+}
+
+.intro {
+  margin-bottom: clamp(28px, 4vw, 46px);
+  max-width: 720px;
+}
+
+.intro .eyebrow {
+  margin-bottom: 13px;
+}
+
+.intro h1 {
+  font-size: clamp(38px, 5vw, 62px);
+  letter-spacing: -0.035em;
+}
+
+.intro p:last-child {
+  font-size: 18px;
+  margin-top: 14px;
+  max-width: 650px;
+}
+
+.checkoutGrid {
+  align-items: start;
+  display: grid;
+  gap: clamp(24px, 5vw, 68px);
+  grid-template-columns: minmax(0, 1.08fr) minmax(280px, 0.72fr);
+}
+
+.formCard,
+.summary,
+.mockCard,
+.outcomeCard,
+.unavailableCard {
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+}
+
+.formCard {
+  padding: clamp(24px, 4vw, 38px);
+}
+
+.formCard h2,
+.summary h2 {
+  margin-bottom: 22px;
+}
+
+.form {
+  display: grid;
+  gap: 18px;
+}
+
+.formGrid {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.field {
+  color: var(--ink);
+  display: grid;
+  font-size: 14px;
+  font-weight: 600;
+  gap: 7px;
+}
+
+.field em {
+  color: var(--ink-muted);
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+}
+
+.field input {
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  color: var(--ink);
+  min-height: 48px;
+  padding: 10px 12px;
+}
+
+.field input:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+
+.checkbox {
+  align-items: flex-start;
+  color: var(--ink-mid);
+  display: flex;
+  font-size: 14px;
+  gap: 10px;
+  line-height: 1.55;
+}
+
+.checkbox input {
+  accent-color: var(--accent);
+  flex: 0 0 auto;
+  height: 18px;
+  margin-top: 3px;
+  width: 18px;
+}
+
+.secureNote,
+.muted {
+  color: var(--ink-muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.secureNote span {
+  color: var(--accent);
+  font-size: 18px;
+  font-weight: 700;
+  margin-right: 4px;
+}
+
+.error {
+  color: #a82e09;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.summary {
+  background: var(--surface);
+  padding: clamp(24px, 3vw, 30px);
+  position: sticky;
+  top: 84px;
+}
+
+.summaryPlan {
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 18px;
+}
+
+.summaryPlan p,
+.summaryMeta {
+  color: var(--ink-muted);
+  font-size: 14px;
+}
+
+.price {
+  color: var(--ink);
+  display: block;
+  font-family: var(--f-mono);
+  font-size: 28px;
+  font-weight: 500;
+  line-height: 1.2;
+  margin-top: 8px;
+}
+
+.price small {
+  color: var(--ink-muted);
+  font-family: var(--f-body);
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.summaryMeta {
+  border-bottom: 1px solid var(--rule);
+  padding: 16px 0;
+}
+
+.summaryMeta p + p {
+  margin-top: 6px;
+}
+
+.invoiceNote {
+  color: var(--ink-mid);
+  font-size: 14px;
+  line-height: 1.6;
+  margin-top: 17px;
+}
+
+.invoiceNote a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.mockBanner {
+  background: #fff3c4;
+  border: 1px solid #e6c75d;
+  border-radius: var(--radius);
+  color: #6f5200;
+  font-family: var(--f-mono);
+  font-size: 13px;
+  margin-bottom: 24px;
+  padding: 11px 13px;
+  text-transform: uppercase;
+}
+
+.mockCard,
+.outcomeCard,
+.unavailableCard {
+  margin: 0 auto;
+  max-width: 760px;
+  padding: clamp(26px, 5vw, 48px);
+}
+
+.mockCard h1,
+.outcomeCard h1,
+.unavailableCard h1 {
+  font-size: clamp(34px, 4vw, 48px);
+  letter-spacing: -0.03em;
+  margin-bottom: 12px;
+}
+
+.orderDetails {
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 28px 0;
+  padding: 20px;
+}
+
+.orderDetails div {
+  min-width: 0;
+}
+
+.orderDetails dt {
+  color: var(--ink-muted);
+  font-family: var(--f-mono);
+  font-size: 11px;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+
+.orderDetails dd {
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.mockControls {
+  border-top: 1px solid var(--rule);
+  margin-top: 26px;
+  padding-top: 22px;
+}
+
+.mockControls > p:first-child {
+  color: var(--ink);
+  font-family: var(--f-mono);
+  font-size: 12px;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+.mockActions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.cancelButton {
+  background: transparent;
+  border: 0;
+  color: var(--ink-mid);
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  padding: 10px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.outcomeCard {
+  text-align: center;
+}
+
+.outcomeIcon {
+  align-items: center;
+  background: var(--accent-lt);
+  border-radius: 50%;
+  color: var(--accent);
+  display: inline-flex;
+  font-size: 27px;
+  height: 58px;
+  justify-content: center;
+  margin-bottom: 20px;
+  width: 58px;
+}
+
+.outcomeIconFailed {
+  background: var(--warn-lt);
+  color: var(--warn);
+}
+
+.outcomeDetails {
+  margin: 25px auto;
+  max-width: 470px;
+  text-align: left;
+}
+
+.testStatus {
+  background: #fff3c4;
+  border: 1px solid #e6c75d;
+  border-radius: var(--radius);
+  color: #6f5200;
+  font-size: 14px;
+  margin: 22px auto;
+  max-width: 570px;
+  padding: 12px 14px;
+}
+
+.outcomeActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+}
+
+@media (max-width: 760px) {
+  .checkoutGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .summary {
+    position: static;
+  }
+}
+
+@media (max-width: 520px) {
+  .formGrid,
+  .orderDetails {
+    grid-template-columns: 1fr;
+  }
+
+  .mockActions,
+  .mockActions .btn {
+    align-items: stretch;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .cancelButton {
+    text-align: center;
+  }
+}

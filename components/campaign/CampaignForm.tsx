@@ -1,8 +1,9 @@
 "use client";
 
-import { useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { getCampaignAttribution } from "./attribution";
 import { campaignEventProperties, trackCampaignEvent } from "./analytics";
+import { CAMPAIGN_ENQUIRY_INTEREST_EVENT } from "./CampaignContactLink";
 import { campaignBusinessConfig } from "./content";
 import {
   submitCampaignRequest,
@@ -19,30 +20,62 @@ type FormState =
 
 type CampaignFormProps = {
   kind: CampaignRequestKind;
-  landingPage: "pilot" | "what-changed";
+  landingPage: "homepage" | "pilot" | "what-changed";
   submitLabel: string;
   includeQuestion?: boolean;
+  campaign?: string;
 };
 
 export function CampaignForm({
   kind,
   landingPage,
   submitLabel,
-  includeQuestion = false
+  includeQuestion = false,
+  campaign = campaignBusinessConfig.campaign
 }: CampaignFormProps) {
   const [state, setState] = useState<FormState>({ status: "idle" });
   const [turnstileToken, setTurnstileToken] = useState("");
   const [turnstileResetVersion, setTurnstileResetVersion] = useState(0);
+  const [question, setQuestion] = useState("");
   const hasStarted = useRef(false);
   const isSubmittingRef = useRef(false);
   const submissionIdempotencyKey = useRef<string | undefined>(undefined);
-  const prefix = kind === "sample-report" ? "sample" : "pilot";
+  const prefix =
+    kind === "sample-report"
+      ? "sample"
+      : kind === "homepage-enquiry"
+        ? "homepage"
+        : "pilot";
   const statusId = `${prefix}-form-status`;
   const eventProperties = () =>
     campaignEventProperties({
       landingPage,
-      campaign: campaignBusinessConfig.campaign
+      campaign
     });
+
+  useEffect(() => {
+    if (!includeQuestion) {
+      return;
+    }
+
+    function prefillQuestionFromPricing(event: Event) {
+      const interest = (event as CustomEvent<unknown>).detail;
+
+      if (typeof interest !== "string" || !interest.trim()) {
+        return;
+      }
+
+      setQuestion((currentQuestion) =>
+        currentQuestion.trim()
+          ? currentQuestion
+          : `I’m interested in ${interest.trim()}.`
+      );
+    }
+
+    window.addEventListener(CAMPAIGN_ENQUIRY_INTEREST_EVENT, prefillQuestionFromPricing);
+    return () =>
+      window.removeEventListener(CAMPAIGN_ENQUIRY_INTEREST_EVENT, prefillQuestionFromPricing);
+  }, [includeQuestion]);
 
   function trackFormStart() {
     if (hasStarted.current) {
@@ -101,7 +134,7 @@ export function CampaignForm({
         message: includeQuestion
           ? String(formData.get("question") ?? "").trim()
           : undefined,
-        campaign: campaignBusinessConfig.campaign,
+        campaign,
         attribution: getCampaignAttribution(),
         turnstile_token: turnstileToken || undefined,
         idempotencyKey: retryKey()
@@ -111,6 +144,7 @@ export function CampaignForm({
         status: "success",
         message: "We’ll be in touch with you shortly."
       });
+      trackCampaignEvent("form_success", eventProperties());
     } catch {
       setState({
         status: "error",
@@ -180,6 +214,8 @@ export function CampaignForm({
             name="question"
             rows={5}
             required
+            value={question}
+            onChange={(event) => setQuestion(event.target.value)}
           />
         </div>
       ) : null}

@@ -10,9 +10,15 @@ type CampaignVideoProps = {
   landingPage: "pilot" | "what-changed";
   label: string;
   caption: string;
+  campaign?: string;
 };
 
-export function CampaignVideo({ landingPage, label, caption }: CampaignVideoProps) {
+export function CampaignVideo({
+  landingPage,
+  label,
+  caption,
+  campaign = campaignBusinessConfig.campaign
+}: CampaignVideoProps) {
   return (
     <figure className={styles.mediaFigure}>
       <div className={styles.browserFrame}>
@@ -37,7 +43,7 @@ export function CampaignVideo({ landingPage, label, caption }: CampaignVideoProp
                 "video_play",
                 campaignEventProperties({
                   landingPage,
-                  campaign: campaignBusinessConfig.campaign
+                  campaign
                 })
               );
             }}
@@ -94,6 +100,7 @@ export function CampaignImageFrame({
         </div>
       </div>
       {caption ? <figcaption className={styles.imageCaption}>{caption}</figcaption> : null}
+      <ModelAttribution className={styles.modelAttribution} />
     </figure>
   );
 }

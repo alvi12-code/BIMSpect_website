@@ -10,7 +10,19 @@ type CampaignEventName =
   | "cta_click"
   | "form_start"
   | "form_submit"
+  | "form_success"
   | "form_error";
+
+type PaymentEventName =
+  | "buy_clicked"
+  | "checkout_started"
+  | "checkout_submitted"
+  | "payment_order_created"
+  | "mock_payment_success"
+  | "mock_payment_failed"
+  | "checkout_cancelled";
+
+type BimspectAnalyticsEventName = CampaignEventName | PaymentEventName;
 
 type CampaignEventProperties = Record<string, string | undefined>;
 
@@ -39,8 +51,8 @@ export function campaignEventProperties({
   };
 }
 
-export function trackCampaignEvent(
-  event: CampaignEventName,
+export function trackBimspectEvent(
+  event: BimspectAnalyticsEventName,
   properties: CampaignEventProperties
 ) {
   if (typeof window === "undefined") {
@@ -57,6 +69,35 @@ export function trackCampaignEvent(
   if (analytics.gtag) {
     analytics.gtag("event", event, properties);
   }
+}
+
+// Kept for existing campaign components while payments use the same provider
+// bridge instead of introducing a separate browser analytics implementation.
+export function trackCampaignEvent(
+  event: CampaignEventName,
+  properties: CampaignEventProperties
+) {
+  trackBimspectEvent(event, properties);
+}
+
+export function paymentEventProperties({
+  offerId,
+  orderReference
+}: {
+  offerId?: string;
+  orderReference?: string;
+} = {}): CampaignEventProperties {
+  const attribution = getCampaignAttribution();
+
+  return {
+    offer_id: offerId,
+    order_reference: orderReference,
+    utm_source: attribution.utm_source,
+    utm_medium: attribution.utm_medium,
+    utm_campaign: attribution.utm_campaign,
+    utm_content: attribution.utm_content,
+    utm_term: attribution.utm_term
+  };
 }
 
 export function CampaignAnalytics({

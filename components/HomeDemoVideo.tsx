@@ -2,8 +2,21 @@
 
 import { useState } from "react";
 import type { HomeDemoVideoContent } from "@/content/home";
+import { campaignEventProperties, trackCampaignEvent } from "./campaign/analytics";
 
-export function HomeDemoVideo({ content }: { content: HomeDemoVideoContent }) {
+type HomeDemoVideoProps = {
+  content: HomeDemoVideoContent;
+  ariaDescribedBy?: string;
+  campaign?: string;
+  landingPage?: "pilot" | "what-changed";
+};
+
+export function HomeDemoVideo({
+  content,
+  ariaDescribedBy = "demo-description",
+  campaign,
+  landingPage
+}: HomeDemoVideoProps) {
   const [isPlaying, setIsPlaying] = useState(false);
 
   return (
@@ -14,9 +27,18 @@ export function HomeDemoVideo({ content }: { content: HomeDemoVideoContent }) {
         playsInline
         preload="metadata"
         poster="/images/bimspect/bimspect-model-change-intensity.webp"
-        aria-describedby="demo-description"
+        aria-describedby={ariaDescribedBy}
         aria-label={content.ariaLabel}
-        onPlay={() => setIsPlaying(true)}
+        onPlay={() => {
+          setIsPlaying(true);
+
+          if (campaign && landingPage) {
+            trackCampaignEvent(
+              "video_play",
+              campaignEventProperties({ landingPage, campaign })
+            );
+          }
+        }}
         onPause={() => setIsPlaying(false)}
         onEnded={() => setIsPlaying(false)}
       >
