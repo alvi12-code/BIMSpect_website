@@ -437,7 +437,7 @@ const en: HomeContent = {
     title: "Construction insight meets BIM technology.",
     members: [
       { initials: "EL", name: "Dr. Eelon Lappalainen", role: "Co-Founder", bio: "Construction and BIM researcher. Background in work study methodology and digital construction systems. Leads business development and product strategy.", portrait: teamPortraits.EL },
-      { initials: "HA", name: "Dr. Hisham Abou-Ibrahim", role: "Co-Founder", bio: "BIM and construction informatics specialist. Leads product development and design. Research background in building information modelling and design management.", portrait: teamPortraits.HA },
+      { initials: "HA", name: "Dr. Hisham Abou-Ibrahim", role: "Co-Founder", bio: "BIM and construction informatics specialist. Research background in building information modelling and design management.", portrait: teamPortraits.HA },
       { initials: "AL", name: "Albin Lamichhane", role: "Co-Founder", bio: "Software engineer leading technical development. Responsible for BIMSpect's IFC processing engine and report generation pipeline.", portrait: teamPortraits.AL },
       { initials: "OS", name: "Prof. Olli Seppänen", role: "Scientific Advisor", bio: "Professor of construction management at Aalto University. Scientific advisor on construction project management and lean construction research.", portrait: teamPortraits.OS }
     ]
