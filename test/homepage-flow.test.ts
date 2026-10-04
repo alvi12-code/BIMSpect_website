@@ -3,21 +3,22 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 async function homepageSources() {
-  const [home, pricing, data, content, pilot, campaignForm] = await Promise.all([
+  const [home, pricing, data, content, pilot, campaignForm, hero] = await Promise.all([
     readFile(new URL("../components/home/HomePage.tsx", import.meta.url), "utf8"),
     readFile(new URL("../components/PricingSection.tsx", import.meta.url), "utf8"),
     readFile(new URL("../components/data.ts", import.meta.url), "utf8"),
     readFile(new URL("../content/home.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/(en)/pilot/page.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../components/campaign/CampaignForm.tsx", import.meta.url), "utf8")
+    readFile(new URL("../components/campaign/CampaignForm.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../components/hero/HeroContent.tsx", import.meta.url), "utf8")
   ]);
 
-  return { home, pricing, data, content, pilot, campaignForm };
+  return { home, pricing, data, content, pilot, campaignForm, hero };
 }
 
 test("English homepage places pricing and contact before research and team", async () => {
   const { home } = await homepageSources();
-  const pricing = home.indexOf('{content.locale === "en" ? <PricingSection /> : null}');
+  const pricing = home.indexOf('{content.locale === "en" ? <PricingSection heading={content.pricingHeading} /> : null}');
   const contact = home.indexOf('id="contact"');
   const credibility = home.lastIndexOf(
     '{content.locale === "en" ? <CredibilitySections content={content} /> : null}'
@@ -61,13 +62,13 @@ test("commercial values, checkout links, and shared form contracts remain intact
 });
 
 test("English commercial CTAs use the shared contact path while Finnish fallbacks remain separate", async () => {
-  const { home, content } = await homepageSources();
+  const { home, content, hero } = await homepageSources();
 
   assert.equal(content.includes('primaryCta: "See BIMSpect in action"'), true);
   assert.equal(content.includes('secondaryCta: "Talk to BIMSpect"'), true);
   assert.equal(content.includes('headerCta: "Talk to BIMSpect"'), true);
-  assert.equal(home.includes('href={content.locale === "en" ? "#demo" : "#workflow"}'), true);
-  assert.equal(home.includes('interest="a BIMSpect walkthrough"'), true);
+  assert.equal(hero.includes('href={content.locale === "en" ? "#demo" : "#workflow"}'), true);
+  assert.equal(hero.includes('interest="a BIMSpect walkthrough"'), true);
   assert.equal(home.includes('interest="the BIMSpect sample report"'), true);
   assert.equal(home.includes('content.locale === "fi" ? ('), true);
   assert.equal(home.includes('fetch("/api/'), false);

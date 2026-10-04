@@ -17,7 +17,7 @@ services:
     image: bimspect-website:latest
     init: true
     ports:
-      - "127.0.0.1:${MARKETING_PORT:-3001}:3000"
+      - "3000:3000"
     expose:
       - "3000"
     environment:
@@ -47,7 +47,7 @@ services:
       - /tmp:size=64m,mode=1777
       - /app/.next/cache:size=128m,uid=1001,gid=1001,mode=0755
     networks:
-      marketing_proxy:
+      bimspect_network:
         aliases:
           - marketing-web
     logging: *default-logging
@@ -58,7 +58,7 @@ services:
       web:
         condition: service_healthy
     ports:
-      - "127.0.0.1:${NGINX_TEST_PORT:-8081}:80"
+      - "8081:80"
     volumes:
       - ./nginx/local.conf:/etc/nginx/conf.d/default.conf:ro
     restart: unless-stopped
@@ -70,7 +70,7 @@ services:
       - /var/run:size=1m
       - /tmp:size=16m
     networks:
-      - marketing_proxy
+      - bimspect_network
     healthcheck:
       test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1/"]
       interval: 30s
@@ -80,6 +80,5 @@ services:
     logging: *default-logging
 
 networks:
-  marketing_proxy:
-    name: bimspect_marketing_proxy
-    external: true
+  bimspect_network:
+    driver: bridge

@@ -71,6 +71,34 @@ export type HomeDemoVideoContent = {
   caption: string;
 };
 
+export type HeroExperienceContent = {
+  version: string;
+  model: string;
+  compare: string;
+  result: string;
+  scroll: string;
+  illustration: string;
+  sceneDescription: string;
+  finalTitle: string;
+  finalEmphasis: string;
+  added: string;
+  removed: string;
+  changed: string;
+  wall: string;
+  moved: string;
+  window: string;
+  windowDetail: string;
+};
+
+export type ModelControlsContent = {
+  modelState: string; changesState: string;
+  caption: string; modelUnavailable: string;
+};
+export type DisciplineModelContent = {
+  title: string; environment: string; description: string; sceneDescription: string;
+  changes: Array<{ kind: "added" | "changed" | "removed"; detail: string }>;
+};
+
 export type HomeContent = {
   locale: Locale;
   metadata: {
@@ -83,6 +111,7 @@ export type HomeContent = {
   navigation: NavigationLink[];
   footerLinks: NavigationLink[];
   headerCta: string;
+  pricingHeading: string;
   languageSwitcher: {
     currentLabel: string;
     targetLabel: string;
@@ -123,6 +152,7 @@ export type HomeContent = {
     secondaryCta: string;
     capabilityOne: string;
     capabilityTwo: string;
+    experience: HeroExperienceContent;
   };
   problem: {
     eyebrow: string;
@@ -150,6 +180,10 @@ export type HomeContent = {
     items: string[];
   };
   context: CopyPair & { eyebrow: string };
+  disciplineModels: {
+    controls: ModelControlsContent;
+    plumbing: DisciplineModelContent; electrical: DisciplineModelContent;
+  };
   workflow: {
     eyebrow: string;
     title: string;
@@ -289,6 +323,7 @@ const en: HomeContent = {
     { href: "https://www.linkedin.com/company/bimspect", label: "LinkedIn", external: true }
   ],
   headerCta: "Talk to BIMSpect",
+  pricingHeading: "Individual. Project. Portfolio.",
   languageSwitcher: {
     currentLabel: "EN",
     targetLabel: "FI",
@@ -317,14 +352,23 @@ const en: HomeContent = {
   },
   hero: {
     eyebrow: "IFC model change intelligence",
-    title: "See what changed.",
-    titleEmphasis: "Understand what matters.",
+    title: "Know",
+    titleEmphasis: "what changed.",
     description:
-      "BIMSpect compares IFC model versions and turns design changes into clear visual information for BIM coordination and design management.",
+      "BIMSpect compares BIM model versions and makes every design change immediately understandable.",
     primaryCta: "See BIMSpect in action",
     secondaryCta: "Talk to BIMSpect",
     capabilityOne: "Browser-based",
-    capabilityTwo: "No installation"
+    capabilityTwo: "No installation",
+    experience: {
+      version: "Version", model: "Version A", compare: "Version B", result: "The changes",
+      scroll: "Scroll to compare", illustration: "Illustrative model · Sample changes",
+      sceneDescription: "A five-storey office with a three-storey connected wing. Version A becomes Version B: a wall moves 300 mm, a window enlarges and an entrance door relocates. A partition and facade panel are added; an old entrance canopy is removed and ghosted. Six illustrative changes: 2 added, 3 changed, 1 removed. Not project data.",
+      finalTitle: "Every change.", finalEmphasis: "Clearly visible.",
+      added: "Added", removed: "Removed", changed: "Changed",
+      wall: "Wall", moved: "Moved 300 mm",
+      window: "Window", windowDetail: "Resized"
+    }
   },
   problem: {
     eyebrow: "A new IFC version arrives",
@@ -348,7 +392,7 @@ const en: HomeContent = {
   },
   change: {
     eyebrow: "Change visibility",
-    title: "Turn model differences into something you can see.",
+    title: "See the difference.",
     description:
       "BIMSpect identifies added, deleted and modified IFC objects between versions. Colour-coded model views make concentrated change areas easier to find before the detailed review begins.",
     labels: ["Added", "Deleted", "Modified", "Change intensity"],
@@ -356,7 +400,7 @@ const en: HomeContent = {
   },
   focus: {
     eyebrow: "Relevant elements",
-    title: "Move from thousands of objects to the elements that matter.",
+    title: "Focus on what matters.",
     description:
       "Use model categories to focus the viewer on a meaningful set of elements. Isolate object types and levels so review time stays with the parts of the building that need it.",
     items: [
@@ -367,13 +411,29 @@ const en: HomeContent = {
   },
   context: {
     eyebrow: "Model context",
-    title: "Focus on the change without losing the building around it.",
+    title: "Change, in context.",
     body:
-      "Transparent background context keeps surrounding elements visible while you inspect a focus set. It gives a change its place in the model rather than removing the information needed to understand it."
+      "Keep the surrounding building in view while you inspect a change. Its location and connections give the revision context."
+  },
+  disciplineModels: {
+    controls: { modelState: "Version A", changesState: "Version B",
+      caption: "Illustrative comparison · 3 service changes", modelUnavailable: "Static comparison shown. The example changes are described above." },
+    plumbing: {
+      title: "A new route. Same context.", environment: "Plumbing / service room",
+      description: "A riser moves 400 mm. The pipework takes a new route and a branch is added. See the revision in the room it serves.",
+      sceneDescription: "A service-room cutaway with a floor slab and open shaft, two walls, columns, drainage and domestic-water risers, supported pipework, valves and a pump manifold. Three illustrative revisions: a riser moves 400 mm, a pipe reroutes 420 mm and a new branch connects to a valve. Old routes are ghosted; new routes are highlighted.",
+      changes: [{ kind: "changed", detail: "Pipe rerouted · 420 mm" }, { kind: "added", detail: "New branch connection" }, { kind: "changed", detail: "Riser moved · 400 mm" }]
+    },
+    electrical: {
+      title: "Follow the new route.", environment: "Electrical / ceiling & riser",
+      description: "A new wall changes the cable-tray route. A branch is added and the riser moves 400 mm. The surrounding floor stays in view.",
+      sceneDescription: "An office electrical zone with a floor slab, open service shaft, walls and columns, partial ceiling and suspended cable trays connected to a distribution board. Three illustrative revisions: a tray reroutes around a new partition, a branch connects to a junction box and the riser moves 400 mm. Old routes are ghosted alongside their highlighted replacements.",
+      changes: [{ kind: "changed", detail: "Tray rerouted around new wall" }, { kind: "added", detail: "New tray branch" }, { kind: "changed", detail: "Riser moved · 400 mm" }]
+    }
   },
   workflow: {
     eyebrow: "A clear review path",
-    title: "From a new version to a useful conversation.",
+    title: "Compare. Understand. Act.",
     steps: [
       { number: "01", title: "Compare", body: "Upload IFC model versions for a structured comparison." },
       { number: "02", title: "Understand", body: "See added, deleted and modified objects between versions." },
@@ -383,14 +443,14 @@ const en: HomeContent = {
   },
   analytics: {
     eyebrow: "Analytics and management view",
-    title: "From model changes to project understanding.",
+    title: "See the bigger picture.",
     body:
       "The same model-version information can be reviewed at a higher level: helping teams discuss design status, review priorities and the evidence behind the next coordination step.",
     caption: "Genuine BIMSpect analytics view."
   },
   report: {
     eyebrow: "Sample report",
-    title: "Make the change understandable beyond the model viewer.",
+    title: "Share the change.",
     description:
       "BIMSpect Change Reports turn a version comparison into a concise basis for design coordination meetings and management review.",
     cta: "Request sample report",
@@ -406,7 +466,7 @@ const en: HomeContent = {
   },
   trust: {
     eyebrow: "Data handling",
-    title: "Project data deserves serious handling.",
+    title: "Your data. Handled with care.",
     points: [
       { label: "Open IFC formats", body: "IFC2x3 and IFC4 model files; no proprietary-format lock-in." },
       { label: "EU-based processing", body: "Project-file processing takes place within the EU." },
@@ -416,7 +476,7 @@ const en: HomeContent = {
   },
   research: {
     eyebrow: "Research origin",
-    title: "Built from construction research. Designed for project work.",
+    title: "Research, put to work.",
     facts: [
       {
         title: "Aalto University Research to Business",
@@ -496,6 +556,7 @@ const fi: HomeContent = {
     { href: "https://www.linkedin.com/company/bimspect", label: "LinkedIn", external: true }
   ],
   headerCta: "Pyydä analyysi",
+  pricingHeading: "Yksilö. Projekti. Portfolio.",
   languageSwitcher: {
     currentLabel: "FI",
     targetLabel: "EN",
@@ -524,14 +585,23 @@ const fi: HomeContent = {
   },
   hero: {
     eyebrow: "IFC-mallimuutosten hallinta",
-    title: "Näe, mikä muuttui.",
-    titleEmphasis: "Ymmärrä, mikä on olennaista.",
+    title: "Näe muutos.",
+    titleEmphasis: "Ymmärrä ero.",
     description:
       "BIMSpect vertailee IFC-malliversioita ja muuttaa suunnittelumuutokset selkeäksi visuaaliseksi tiedoksi BIM-koordinointia ja suunnittelun hallintaa varten.",
     primaryCta: "Katso, miten se toimii",
     secondaryCta: "Katso esimerkkiraportti",
     capabilityOne: "Selainpohjainen",
-    capabilityTwo: "Ei asennusta"
+    capabilityTwo: "Ei asennusta",
+    experience: {
+      version: "Versio", model: "Versio A", compare: "Versio B", result: "Muutokset",
+      scroll: "Vieritä ja vertaile", illustration: "Havainnollistava malli · Esimerkkimuutokset",
+      sceneDescription: "Viisikerroksinen toimistorakennus ja kolmikerroksinen siipi. Versio A vaihtuu versioon B: seinä siirtyy 300 mm, ikkuna suurenee ja sisäänkäynnin ovi siirtyy. Väliseinä ja julkisivupaneeli lisätään; vanha sisäänkäyntikatos poistetaan ja näytetään haamukuvana. Kuusi esimerkkimuutosta: 2 lisättyä, 3 muokattua, 1 poistettu. Ei projektidataa.",
+      finalTitle: "Jokainen muutos.", finalEmphasis: "Selvästi näkyviin.",
+      added: "Lisätty", removed: "Poistettu", changed: "Muokattu",
+      wall: "Seinä", moved: "Siirretty 300 mm",
+      window: "Ikkuna", windowDetail: "Kokoa muutettu"
+    }
   },
   problem: {
     eyebrow: "Uusi IFC-versio saapuu",
@@ -555,7 +625,7 @@ const fi: HomeContent = {
   },
   change: {
     eyebrow: "Muutosten näkyvyys",
-    title: "Tee mallien eroista näkyviä.",
+    title: "Näe mallien erot.",
     description:
       "BIMSpect tunnistaa malliversioiden välillä lisätyt, poistetut ja muokatut IFC-objektit. Värikoodatut mallinäkymät helpottavat muutosten keskittymien löytämistä ennen yksityiskohtaista tarkastelua.",
     labels: ["Lisätty", "Poistettu", "Muokattu", "Muutoksen voimakkuus"],
@@ -563,7 +633,7 @@ const fi: HomeContent = {
   },
   focus: {
     eyebrow: "Olennaiset kohteet",
-    title: "Siirry tuhansista objekteista olennaisiin rakennusosiin.",
+    title: "Keskity olennaiseen.",
     description:
       "Rajaa näkymä malliluokkien avulla merkitykselliseen kohdejoukkoon. Erottele objektityypit ja tasot, jotta tarkasteluaika kohdistuu rakennuksen osiin, jotka sitä tarvitsevat.",
     items: [
@@ -574,13 +644,29 @@ const fi: HomeContent = {
   },
   context: {
     eyebrow: "Mallikonteksti",
-    title: "Tarkastele muutosta menettämättä rakennuksen kokonaisuutta.",
+    title: "Muutos osana kokonaisuutta.",
     body:
-      "Läpinäkyvä taustakonteksti pitää ympäröivät rakennusosat näkyvissä, kun tarkastelet valittua kohdejoukkoa. Muutos säilyy osana mallia sen sijaan, että ymmärtämiseen tarvittava tieto poistettaisiin."
+      "Pidä ympäröivät rakennusosat näkyvissä, kun tarkastelet muutosta. Sijainti ja yhteydet auttavat ymmärtämään uuden version kokonaisuutta."
+  },
+  disciplineModels: {
+    controls: { modelState: "Versio A", changesState: "Versio B",
+      caption: "Havainnollistava vertailu · 3 taloteknistä muutosta", modelUnavailable: "Näytetään staattinen vertailu. Esimerkkimuutokset on kuvattu yllä." },
+    plumbing: {
+      title: "Uusi reitti. Sama kokonaisuus.", environment: "Putkisto / tekninen tila",
+      description: "Nousu siirtyy 400 mm. Putkireitti muuttuu ja uusi haara lisätään. Näe muutos siinä tilassa, jota putkisto palvelee.",
+      sceneDescription: "Teknisen tilan leikkaus: lattialaatta ja avoin kuilu, kaksi seinää, pilarit, viemäri- ja käyttövesinousut, kannatetut putket, venttiilit sekä pumppu ja jakotukki. Kolme esimerkkimuutosta: nousu siirtyy 400 mm, putkireitti muuttuu 420 mm ja uusi haara liittyy venttiiliin. Vanhat reitit näkyvät haamukuvina ja uudet korostettuina.",
+      changes: [{ kind: "changed", detail: "Putkireitti muutettu · 420 mm" }, { kind: "added", detail: "Uusi haaraliitäntä" }, { kind: "changed", detail: "Nousu siirretty · 400 mm" }]
+    },
+    electrical: {
+      title: "Seuraa uutta reittiä.", environment: "Sähkö / alakatto ja nousu",
+      description: "Uusi seinä muuttaa kaapelihyllyn reittiä. Uusi haara lisätään ja nousu siirtyy 400 mm. Ympäröivä kerros pysyy näkyvissä.",
+      sceneDescription: "Toimistokerroksen sähköalue: lattialaatta, avoin kuilu, seinät ja pilarit, osittainen alakatto sekä jakokeskukseen liittyvät kannatetut kaapelihyllyt. Kolme esimerkkimuutosta: hylly kiertää uuden väliseinän, uusi haara liittyy jakorasiaan ja nousu siirtyy 400 mm. Vanhat reitit näkyvät haamukuvina korostettujen uusien reittien rinnalla.",
+      changes: [{ kind: "changed", detail: "Hylly kiertää uuden seinän" }, { kind: "added", detail: "Uusi kaapelihyllyhaara" }, { kind: "changed", detail: "Nousu siirretty · 400 mm" }]
+    }
   },
   workflow: {
     eyebrow: "Selkeä tarkastuspolku",
-    title: "Uudesta malliversiosta hyödylliseen keskusteluun.",
+    title: "Vertaile. Ymmärrä. Toimi.",
     steps: [
       { number: "01", title: "Vertaile", body: "Lataa IFC-malliversiot jäsenneltyä vertailua varten." },
       { number: "02", title: "Ymmärrä", body: "Näe lisätyt, poistetut ja muokatut objektit versioiden välillä." },
@@ -590,14 +676,14 @@ const fi: HomeContent = {
   },
   analytics: {
     eyebrow: "Analytiikan ja johdon näkymä",
-    title: "Mallimuutoksista projektin ymmärrykseen.",
+    title: "Näe kokonaiskuva.",
     body:
       "Samaa malliversiotietoa voidaan tarkastella myös ylemmällä tasolla: se auttaa tiimejä keskustelemaan suunnittelun tilasta, tarkastelun painopisteistä ja seuraavan koordinointivaiheen taustalla olevasta tiedosta.",
     caption: "Aito BIMSpect-analytiikkanäkymä."
   },
   report: {
     eyebrow: "Esimerkkiraportti",
-    title: "Tee muutoksista ymmärrettäviä myös mallikatselimen ulkopuolella.",
+    title: "Jaa muutostieto.",
     description:
       "BIMSpect-muutosraportit tekevät malliversioiden vertailusta tiiviin pohjan suunnittelun koordinointipalavereihin ja johdon tarkasteluun.",
     cta: "Pyydä esimerkkiraportti",
@@ -613,7 +699,7 @@ const fi: HomeContent = {
   },
   trust: {
     eyebrow: "Tietojen käsittely",
-    title: "Projektitietoa on käsiteltävä huolellisesti.",
+    title: "Projektitiedot hyvissä käsissä.",
     points: [
       { label: "Avoimet IFC-formaatit", body: "IFC2x3- ja IFC4-mallitiedostot; ei riippuvuutta suljetuista tiedostomuodoista." },
       { label: "EU-pohjainen käsittely", body: "Projektitiedostot käsitellään EU:n alueella." },
@@ -651,7 +737,7 @@ const fi: HomeContent = {
   },
   contact: {
     eyebrow: "Seuraava malliversio",
-    title: "Näe, mikä muuttui seuraavassa malliversiossasi.",
+    title: "Puhutaan mallimuutoksista.",
     description:
       "Kerro IFC-mallien vertailutarpeestasi, niin näytämme, miten BIMSpect tukee tarkastelua.",
     primaryCta: "Pyydä projektianalyysi",

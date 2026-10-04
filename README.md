@@ -11,7 +11,65 @@ npm run lint
 npm run build
 ```
 
-The site uses the App Router, TypeScript, `next/font/google` for DM Sans and DM Mono, extracted screenshot assets under `public/images/bimspect/`, and native CSS plus Intersection Observer animations. No animation library is used.
+The site uses the App Router, TypeScript, `next/font/google` for DM Sans and DM Mono, extracted screenshot assets under `public/images/bimspect/`, and native CSS plus Intersection Observer animations. The homepage hero additionally uses React Three Fiber / Three.js, and GSAP ScrollTrigger.
+
+## Homepage model storytelling
+
+The homepage has exactly three WebGL experiences: an architectural hero, a
+plumbing service-room comparison and an electrical ceiling/riser comparison.
+`HomePage.tsx` and `hero/HeroContent.tsx` keep copy, links and business flows
+server-rendered. All copy is localized in `content/home.ts`.
+
+- **Hero:** five-storey office with a three-storey connected cutaway wing. Six
+  illustrative architectural changes: wall moved 300 mm, resized window,
+  relocated entrance door, added partition, added facade panel and removed
+  canopy. The displayed 2 added / 3 changed / 1 removed counts match the geometry.
+  `useHeroAnimation` tells Version A → Version B → highlighted changes in 140vh
+  of pinned scrolling, only at >=1000px width and >=680px height. Mobile is not
+  pinned. No continuous rotation, technical disciplines or moving section planes.
+- **Plumbing:** placed at the model-context explanation, after category filtering.
+  Slab with open service shaft, two walls, columns, connected water/drainage
+  pipework, valves, supports and a simplified pump/manifold. Three service changes:
+  riser moved 400 mm, pipe rerouted 420 mm, new valve branch.
+- **Electrical:** later in the analytics/value section, with normal workflow and
+  dashboard content between examples. Slab, shaft, partial ceiling, walls,
+  columns, distribution board, suspended trays and junction box. Three service
+  changes: route around new partition, added branch, riser moved 400 mm.
+
+`models/useModelScrollReveal.ts` shares the two secondary ScrollTrigger reveals:
+78% → 32% viewport range, no pinning, no buttons, native scrolling. Mobile plays
+once on entry; reduced motion shows a static final comparison. Two HTML notes
+maximum accompany each model; accessible scene descriptions list every change.
+
+`InstancedParts`, `SceneLighting` and `change-palette.ts` are shared. Changed
+components use BIMSpect violet, added components a lighter violet, old components
+are transparent ghosts. Scenes use demand rendering with explicit scroll
+invalidation and a bounded 80ms smoothing tail, no idle loop, DPR capped at 1.5 and no HDR/textures/postprocessing/
+shadow maps. Secondary canvases initialize within 250px of the viewport and stop
+scheduling GPU work offscreen or in a hidden tab. Independent context-loss/error
+boundaries retain static illustrations, text and CTAs.
+
+The original product video, genuine screenshots, their attribution, pricing,
+campaign form, UTM/analytics, payment gating, EN/FI routes and SEO remain intact.
+DM Sans/DM Mono font aliases resolve on body (where `next/font` defines them).
+Homepage body copy is 18–20px, supporting copy generally 15–17px, with bounded
+line lengths, shorter localized headings and model/text layouts near 50/50.
+
+### Validation
+
+No host `node_modules` is needed. Test with the builder stage's locked dependencies:
+
+```bash
+docker build --target builder -t bimspect-hero-check .
+docker run --rm bimspect-hero-check sh -c 'npm run lint && npx tsc --noEmit && npm test'
+docker compose up -d --build
+docker compose ps
+docker compose logs --tail=100 web
+curl -I http://localhost:3000
+```
+
+Review `/` and `/fi` at 1440×900, 1280×800, 1024×768, 768×1024 and 390×844,
+including reduced motion, failed WebGL, CTAs, mobile menu and offscreen rendering.
 
 ## Campaign lead integration
 

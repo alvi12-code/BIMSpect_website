@@ -633,7 +633,7 @@
 .field label {
   color: var(--ink);
   display: block;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
   margin-bottom: 6px;
 }
@@ -694,8 +694,8 @@
 
 .privacyNote {
   border-top: 1px solid var(--rule);
-  color: var(--ink-muted);
-  font-size: 12px;
+  color: var(--ink-mid);
+  font-size: 15px;
   line-height: 1.55;
   padding-top: 15px;
 }

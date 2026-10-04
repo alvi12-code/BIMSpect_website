@@ -3,27 +3,22 @@ import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { HomeDemoVideo } from "@/components/HomeDemoVideo";
 import { LanguageSuggestion } from "@/components/LanguageSuggestion";
-import { CountdownTimer } from "@/components/launch/CountdownTimer";
+import { BimspectHero } from "@/components/hero/BimspectHero";
+import { HeroContent } from "@/components/hero/HeroContent";
+import { DisciplineModel } from "@/components/models/DisciplineModel";
+import modelStyles from "@/components/models/models.module.css";
 import { ModelAttribution } from "@/components/ModelAttribution";
 import { PricingSection } from "@/components/PricingSection";
 import { Reveal } from "@/components/Reveal";
 import { CampaignContactLink } from "@/components/campaign/CampaignContactLink";
 import { CampaignForm } from "@/components/campaign/CampaignForm";
-import type { HomeContent, Locale } from "@/content/home";
-import { getRemainingTime, hasLaunched, launchTimestamp } from "@/lib/launch";
+import type { HomeContent } from "@/content/home";
 
 type HomePageProps = {
   content: HomeContent;
   languageHref: string;
   shouldSuggestFinnish?: boolean;
 };
-
-function formatLaunchDate(locale: Locale) {
-  return new Intl.DateTimeFormat(locale === "fi" ? "fi-FI" : "en-GB", {
-    dateStyle: "medium",
-    timeZone: "Europe/Helsinki"
-  }).format(new Date(launchTimestamp));
-}
 
 function CredibilitySections({ content }: { content: HomeContent }) {
   return (
@@ -89,8 +84,6 @@ function CredibilitySections({ content }: { content: HomeContent }) {
 }
 
 export function HomePage({ content, languageHref, shouldSuggestFinnish = false }: HomePageProps) {
-  const isLaunched = hasLaunched();
-
   return (
     <>
       <script
@@ -128,67 +121,25 @@ export function HomePage({ content, languageHref, shouldSuggestFinnish = false }
         />
       ) : null}
       <main id="main-content" className="homepage">
-        <section id="home" className="home-hero" aria-labelledby="home-hero-title">
-          <div className="wrap home-wrap home-hero-grid">
-            <div className="home-hero-copy">
-              <p className="eyebrow">{content.hero.eyebrow}</p>
-              <h1 id="home-hero-title">
-                {content.hero.title}
-                <span>{content.hero.titleEmphasis}</span>
-              </h1>
-              <p className="home-hero-lead">{content.hero.description}</p>
-              <div className="home-hero-actions">
-                <a
-                  className="btn btn-primary"
-                  href={content.locale === "en" ? "#demo" : "#workflow"}
-                >
-                  {content.hero.primaryCta}
-                </a>
-                {content.locale === "en" ? (
-                  <CampaignContactLink
-                    className="btn btn-secondary"
-                    interest="a BIMSpect walkthrough"
-                    label={content.hero.secondaryCta}
-                  />
-                ) : (
-                  <a className="btn btn-secondary" href="#sample-report">
-                    {content.hero.secondaryCta}
-                  </a>
-                )}
-              </div>
-              <p className="home-capabilities">
-                {content.hero.capabilityOne} <span aria-hidden="true">·</span> IFC2x3 / IFC4
-                <span aria-hidden="true">·</span> {content.hero.capabilityTwo}
-              </p>
-              {!isLaunched ? (
-                <aside className="home-launch-status" aria-label={content.launch.ariaLabel}>
-                  <div>
-                    <span>{content.launch.label}</span>
-                    <strong>{formatLaunchDate(content.locale)}</strong>
-                  </div>
-                  <CountdownTimer
-                    initialRemaining={getRemainingTime()}
-                    labels={content.launch.countdownLabels}
-                    ariaLabel={content.launch.countdownAriaLabel}
-                  />
-                </aside>
-              ) : null}
-            </div>
-
-            <figure className="home-hero-visual">
-              <div className="home-hero-model">
+        <section id="home" className="bim-hero-section" aria-labelledby="home-hero-title">
+          <BimspectHero
+            content={content.hero.experience}
+            fallback={
+              <figure className="bim-hero-fallback">
                 <Image
                   src="/images/bimspect/bimspect-model-overview.webp"
                   alt={content.images.heroAlt}
                   width={1672}
                   height={941}
-                  sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1100px) 52vw, 720px"
+                  sizes="(max-width: 999px) 90vw, 55vw"
                   priority
                 />
-              </div>
-              <ModelAttribution className="home-hero-attribution" content={content.attribution} />
-            </figure>
-          </div>
+                <ModelAttribution content={content.attribution} />
+              </figure>
+            }
+          >
+            <HeroContent content={content} />
+          </BimspectHero>
         </section>
 
         <section className="home-problem" aria-labelledby="problem-title">
@@ -232,20 +183,10 @@ export function HomePage({ content, languageHref, shouldSuggestFinnish = false }
               <Reveal as="p" delay={130}>
                 {content.change.description}
               </Reveal>
-              <Reveal className="home-change-labels" delay={190}>
-                {content.change.labels.map((label) => (
-                  <span key={label}>{label}</span>
-                ))}
-              </Reveal>
             </div>
-            <Reveal as="figure" className="home-product-image home-change-image" delay={100}>
-              <Image
-                src="/images/bimspect/bimspect-model-change-intensity.webp"
-                alt={content.images.changeAlt}
-                width={1672}
-                height={941}
-                sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1100px) 52vw, 680px"
-              />
+            <Reveal as="figure" className="home-product-image home-change-image" delay={80}>
+              <Image src="/images/bimspect/bimspect-model-change-intensity.webp" alt={content.images.changeAlt}
+                width={1672} height={941} sizes="(max-width: 800px) 90vw, 50vw" />
               <figcaption>{content.change.caption}</figcaption>
               <ModelAttribution content={content.attribution} />
             </Reveal>
@@ -283,29 +224,23 @@ export function HomePage({ content, languageHref, shouldSuggestFinnish = false }
           </div>
         </section>
 
-        <section className="home-feature home-feature-context" aria-labelledby="context-title">
-          <div className="wrap home-wrap home-feature-grid">
+        <section className="home-feature home-feature-context" aria-labelledby="context-title" data-discipline-section="plumbing">
+          <div className="wrap home-wrap home-feature-grid home-feature-grid-reverse">
+            <div className="home-model-visual">
+              <DisciplineModel discipline="plumbing" content={content.disciplineModels.plumbing} controls={content.disciplineModels.controls} />
+            </div>
             <div className="home-feature-copy">
               <Reveal as="p" className="eyebrow">
                 {content.context.eyebrow}
               </Reveal>
               <Reveal as="h2" delay={70} id="context-title">
-                {content.context.title}
+                {content.disciplineModels.plumbing.title}
               </Reveal>
               <Reveal as="p" delay={130}>
                 {content.context.body}
               </Reveal>
+              <p className={modelStyles.exampleText}>{content.disciplineModels.plumbing.description}</p>
             </div>
-            <Reveal as="figure" className="home-product-image home-context-image" delay={100}>
-              <Image
-                src="/images/bimspect/bimspect-model-context.webp"
-                alt={content.images.contextAlt}
-                width={1536}
-                height={1024}
-                sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1100px) 52vw, 680px"
-              />
-              <ModelAttribution content={content.attribution} />
-            </Reveal>
           </div>
         </section>
 
@@ -323,7 +258,7 @@ export function HomePage({ content, languageHref, shouldSuggestFinnish = false }
               {content.workflow.steps.map((step, index) => (
                 <Reveal
                   className="home-workflow-step"
-                  delay={130 + index * 270}
+                  delay={90 + index * 70}
                   key={step.number}
                 >
                   <span className="home-workflow-number">{step.number}</span>
@@ -333,6 +268,7 @@ export function HomePage({ content, languageHref, shouldSuggestFinnish = false }
               ))}
             </Reveal>
           </div>
+
         </section>
 
         <section id="analytics" className="home-analytics" aria-labelledby="analytics-title">
@@ -358,6 +294,13 @@ export function HomePage({ content, languageHref, shouldSuggestFinnish = false }
               />
               <figcaption>{content.analytics.caption}</figcaption>
             </Reveal>
+          </div>
+          <div className={`wrap home-wrap home-feature-grid ${modelStyles.electricalRow}`} data-discipline-section="electrical">
+            <div className="home-feature-copy">
+              <h2>{content.disciplineModels.electrical.title}</h2>
+              <p>{content.disciplineModels.electrical.description}</p>
+            </div>
+            <DisciplineModel discipline="electrical" content={content.disciplineModels.electrical} controls={content.disciplineModels.controls} />
           </div>
         </section>
 
@@ -442,7 +385,7 @@ export function HomePage({ content, languageHref, shouldSuggestFinnish = false }
 
         {content.locale === "fi" ? <CredibilitySections content={content} /> : null}
 
-        {content.locale === "en" ? <PricingSection /> : null}
+        {content.locale === "en" ? <PricingSection heading={content.pricingHeading} /> : null}
 
         <section id="contact" className="home-final-cta" aria-labelledby="contact-title">
           <div className="wrap home-wrap">
