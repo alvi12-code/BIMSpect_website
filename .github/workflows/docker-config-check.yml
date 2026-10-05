@@ -1,0 +1,43 @@
+name: Docker configuration safety
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  production-compose-safety:
+    name: Production Compose safety
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Validate canonical production configuration
+        run: |
+          docker compose version
+          bash scripts/check-production-compose.sh
+      - name: Validate standalone local configuration
+        run: docker compose -f docker-compose.local.yml config --quiet
+      - name: Test unsafe configuration regressions
+        run: python3 test/docker_compose_safety_test.py
+      - name: Check shell script syntax
+        run: bash -n scripts/check-production-compose.sh scripts/deploy-production.sh scripts/docker-local.sh
+      - name: Reject tracked environment files
+        run: |
+          python3 - <<'PY'
+          from pathlib import PurePosixPath
+          import subprocess
+          import sys
+          files = subprocess.check_output(["git", "ls-files", "-z"]).decode().split("\0")
+          unsafe = [name for name in files if PurePosixPath(name).name.startswith(".env")
+                    and PurePosixPath(name).name != ".env.example"]
+          if unsafe:
+              print("ERROR: Environment files must not be tracked: " + ", ".join(unsafe))
+              sys.exit(1)
+          PY

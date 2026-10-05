@@ -39,19 +39,21 @@ test("architecture is finite, bounded and cheaper on mobile without losing the c
   assert.deepEqual(makeBuilding(true).changes, makeBuilding().changes);
 });
 
-test("hero changes reveal monotonically in a three-stage story", () => {
+test("hero changes reveal monotonically within the explicitly staged revision interval", () => {
   assert.equal(changeProgress(0), 0);
-  assert.equal(changeProgress(0.2), 0);
-  assert.equal(changeProgress(0.49), 1);
+  assert.ok(changeProgress(0.2) > 0 && changeProgress(0.2) < 0.5);
+  assert.equal(changeProgress(0.5), 0.5);
   assert.equal(changeProgress(1), 1);
   for (let i = 0; i <= 100; i++) assert.ok(changeProgress(i / 100) <= changeProgress((i + 1) / 100));
   assert.equal(smoothRange(0.5, 0, 1), 0.5);
 });
 
-test("only hero pins, for 140vh, and there is no idle render/rotation loop", async () => {
+test("only the fine-pointer desktop hero pins, for 220vh, and there is no idle render/rotation loop", async () => {
   const hook = await readFile(new URL("../components/hero/useHeroAnimation.ts", import.meta.url), "utf8");
-  assert.match(hook, /innerHeight \* 1\.4/);
-  assert.match(hook, /pin: desktop/);
+  assert.match(hook, /clientHeight \* HERO_TIMING.scrollVh/);
+  assert.match(hook, /pin: true, scrub: 0\.5/);
+  assert.match(hook, /pointer: fine/);
+  assert.match(hook, /playWhenVisible/);
   const scene = await readFile(new URL("../components/hero/BimScene.tsx", import.meta.url), "utf8");
   const building = await readFile(new URL("../components/hero/BimBuilding.tsx", import.meta.url), "utf8");
   assert.doesNotMatch(building, /elapsedTime|rotation\.y|gridHelper|CylinderGeometry/);

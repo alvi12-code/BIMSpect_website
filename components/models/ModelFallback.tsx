@@ -13,7 +13,7 @@ export function ModelFallback({ discipline }: { discipline: Discipline }) {
       <path d="M488 263V115l18 8v150z" fill="#a9b0b3" />
     </g>
     <g fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth={electrical ? 9 : 6}>
-      <path d="M174 248V105 M174 177l162-73 119 56v140" stroke={CHANGE_PALETTE.removed} strokeDasharray="7 7" opacity=".4" />
+      <path d="M174 248V105 M174 177l162-73 119 56v140" stroke={CHANGE_PALETTE.removed} strokeDasharray="7 7" opacity=".65" />
       <path d="M197 244V95 M197 167l104-46 39 36 115 55v88" stroke={CHANGE_PALETTE.changed} />
       <path d="M340 157l-47 31v87" stroke={CHANGE_PALETTE.added} />
       {!electrical ? <path d="M148 242V99 M148 209l165-75 68 32v137" stroke={CHANGE_PALETTE.normal} /> : null}

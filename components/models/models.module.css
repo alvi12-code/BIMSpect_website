@@ -1,6 +1,6 @@
 .frame {
-  --model-progress: 0;
-  --annotation: 0;
+  --model-progress: 1;
+  --annotation: 1;
   margin: 0;
   min-width: 0;
   font-family: var(--f-body);
@@ -9,15 +9,15 @@
 .version { position: relative; flex: 0 0 90px; text-align: right; min-height: 24px; }
 .version > span { position: absolute; inset: 0; }
 .version > span:first-child { opacity: calc(1 - var(--model-progress)); }
-.version > span:last-child { opacity: var(--model-progress); color: var(--accent); }
+.version > span:last-child { opacity: var(--model-progress); color: var(--ink); }
 .viewport { position: relative; height: clamp(350px, 33vw, 460px); width: 100%; }
 .canvas, .fallback { position: absolute; inset: 0; }
 .canvas { pointer-events: none; }
 .canvas canvas { display: block; outline: none; touch-action: pan-y; }
 .fallback[data-visible="false"] { opacity: 0; visibility: hidden; }
 .annotations { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 24px; min-height: 50px; opacity: var(--annotation); color: var(--ink); font-size: 16px; line-height: 1.5; }
-.annotations span::before { content: ""; display: inline-block; height: 6px; width: 6px; margin-right: 8px; background: var(--accent); border-radius: 50%; vertical-align: middle; }
-.annotations span[data-change-kind="added"]::before { background: #8c7df3; }
+.annotations span::before { content: ""; display: inline-block; height: 6px; width: 6px; margin-right: 8px; background: var(--change-changed); vertical-align: middle; }
+.annotations span[data-change-kind="added"]::before { background: var(--change-added); }
 .caption { text-align: center; color: var(--ink-mid); font-size: 15px; line-height: 1.5; margin-top: 12px; }
 .status { color: var(--ink-mid); text-align: center; font-size: 15px; margin-top: 12px; }
 .electricalRow { padding-top: clamp(70px, 10vw, 150px); }
@@ -30,3 +30,8 @@
 @media (prefers-reduced-motion: reduce) {
   .frame { --model-progress: 1; --annotation: 1; }
 }
+
+.key { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px 20px; font-size: 14px; color: var(--ink-mid); min-height: 32px; margin: 8px 0 10px; }
+.key span::before { content: ""; display: inline-block; width: 8px; height: 8px; vertical-align: middle; margin-right: 7px; background: var(--change-changed); }
+.key span[data-change-kind="added"]::before, .annotations span[data-change-kind="added"]::before { width: 8px; height: 8px; color: var(--change-added); background: linear-gradient(currentColor,currentColor) center/2px 8px no-repeat, linear-gradient(currentColor,currentColor) center/8px 2px no-repeat; }
+.key span[data-change-kind="removed"]::before { border: 1px dashed var(--change-removed); background: none; }

@@ -3,8 +3,10 @@ node_modules
 out
 dist
 build
-.env
-.env*.local
+.env*
+!.env.example
+__pycache__/
+*.py[cod]
 .vercel
 *.tsbuildinfo
 npm-debug.log*

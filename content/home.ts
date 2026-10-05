@@ -72,6 +72,8 @@ export type HomeDemoVideoContent = {
 };
 
 export type HeroExperienceContent = {
+  normalState: string;
+  changeCount: string;
   version: string;
   model: string;
   compare: string;
@@ -91,6 +93,7 @@ export type HeroExperienceContent = {
 };
 
 export type ModelControlsContent = {
+  changed: string; added: string; previous: string;
   modelState: string; changesState: string;
   caption: string; modelUnavailable: string;
 };
@@ -361,6 +364,7 @@ const en: HomeContent = {
     capabilityOne: "Browser-based",
     capabilityTwo: "No installation",
     experience: {
+      normalState: "Architectural model", changeCount: "6 changes detected",
       version: "Version", model: "Version A", compare: "Version B", result: "The changes",
       scroll: "Scroll to compare", illustration: "Illustrative model · Sample changes",
       sceneDescription: "A five-storey office with a three-storey connected wing. Version A becomes Version B: a wall moves 300 mm, a window enlarges and an entrance door relocates. A partition and facade panel are added; an old entrance canopy is removed and ghosted. Six illustrative changes: 2 added, 3 changed, 1 removed. Not project data.",
@@ -416,7 +420,7 @@ const en: HomeContent = {
       "Keep the surrounding building in view while you inspect a change. Its location and connections give the revision context."
   },
   disciplineModels: {
-    controls: { modelState: "Version A", changesState: "Version B",
+    controls: { changed: "Changed", added: "Added", previous: "Previous route", modelState: "Version A", changesState: "Version B",
       caption: "Illustrative comparison · 3 service changes", modelUnavailable: "Static comparison shown. The example changes are described above." },
     plumbing: {
       title: "A new route. Same context.", environment: "Plumbing / service room",
@@ -594,6 +598,7 @@ const fi: HomeContent = {
     capabilityOne: "Selainpohjainen",
     capabilityTwo: "Ei asennusta",
     experience: {
+      normalState: "Arkkitehtimalli", changeCount: "6 muutosta havaittu",
       version: "Versio", model: "Versio A", compare: "Versio B", result: "Muutokset",
       scroll: "Vieritä ja vertaile", illustration: "Havainnollistava malli · Esimerkkimuutokset",
       sceneDescription: "Viisikerroksinen toimistorakennus ja kolmikerroksinen siipi. Versio A vaihtuu versioon B: seinä siirtyy 300 mm, ikkuna suurenee ja sisäänkäynnin ovi siirtyy. Väliseinä ja julkisivupaneeli lisätään; vanha sisäänkäyntikatos poistetaan ja näytetään haamukuvana. Kuusi esimerkkimuutosta: 2 lisättyä, 3 muokattua, 1 poistettu. Ei projektidataa.",
@@ -649,7 +654,7 @@ const fi: HomeContent = {
       "Pidä ympäröivät rakennusosat näkyvissä, kun tarkastelet muutosta. Sijainti ja yhteydet auttavat ymmärtämään uuden version kokonaisuutta."
   },
   disciplineModels: {
-    controls: { modelState: "Versio A", changesState: "Versio B",
+    controls: { changed: "Muokattu", added: "Lisätty", previous: "Vanha reitti", modelState: "Versio A", changesState: "Versio B",
       caption: "Havainnollistava vertailu · 3 taloteknistä muutosta", modelUnavailable: "Näytetään staattinen vertailu. Esimerkkimuutokset on kuvattu yllä." },
     plumbing: {
       title: "Uusi reitti. Sama kokonaisuus.", environment: "Putkisto / tekninen tila",

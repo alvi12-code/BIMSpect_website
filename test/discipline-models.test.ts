@@ -55,14 +55,15 @@ test("pipe cylinder Euler rotations really connect the requested centerline endp
   });
 });
 
-test("secondary scenes share native ScrollTrigger without buttons, pins or idle loops", async () => {
+test("secondary scenes share readiness-gated once-only timelines without buttons, pins or idle loops", async () => {
   const files = await readdir(directory);
   assert.ok(!files.includes("ChangeToggle.tsx"));
   const hook = await readFile(new URL("useModelScrollReveal.ts", directory), "utf8");
-  assert.match(hook, /ScrollTrigger/);
+  assert.match(hook, /playWhenVisible/);
   assert.match(hook, /prefers-reduced-motion/);
-  assert.match(hook, /once: Boolean\(mobile\)/);
-  assert.doesNotMatch(hook, /pin:|scrollTo\(|Lenis/);
+  assert.match(hook, /completed.current = true/);
+  assert.match(hook, /!ready && !fallback/);
+  assert.doesNotMatch(hook, /pin:|scrub:|scrollTo\(|Lenis/);
   const source = await readFile(new URL("DisciplineModel.tsx", directory), "utf8");
   assert.match(source, /ssr: false/);
   assert.match(source, /IntersectionObserver/);

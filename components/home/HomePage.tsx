@@ -124,19 +124,7 @@ export function HomePage({ content, languageHref, shouldSuggestFinnish = false }
         <section id="home" className="bim-hero-section" aria-labelledby="home-hero-title">
           <BimspectHero
             content={content.hero.experience}
-            fallback={
-              <figure className="bim-hero-fallback">
-                <Image
-                  src="/images/bimspect/bimspect-model-overview.webp"
-                  alt={content.images.heroAlt}
-                  width={1672}
-                  height={941}
-                  sizes="(max-width: 999px) 90vw, 55vw"
-                  priority
-                />
-                <ModelAttribution content={content.attribution} />
-              </figure>
-            }
+
           >
             <HeroContent content={content} />
           </BimspectHero>

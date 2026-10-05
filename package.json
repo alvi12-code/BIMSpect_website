@@ -7,7 +7,15 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint . --max-warnings=0",
-    "test": "node --test --experimental-strip-types test/*.test.ts"
+    "test": "node --test --experimental-strip-types test/*.test.ts",
+    "docker:local:up": "bash scripts/docker-local.sh up",
+    "docker:local:down": "bash scripts/docker-local.sh down",
+    "docker:local:stop": "bash scripts/docker-local.sh stop",
+    "docker:local:build": "bash scripts/docker-local.sh build",
+    "docker:local:logs": "bash scripts/docker-local.sh logs",
+    "docker:local:ps": "bash scripts/docker-local.sh ps",
+    "docker:local:config": "bash scripts/docker-local.sh config",
+    "docker:production:check": "bash scripts/check-production-compose.sh"
   },
   "dependencies": {
     "@react-three/fiber": "9.8.1",

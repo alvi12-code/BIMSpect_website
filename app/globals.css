@@ -10,6 +10,9 @@
   --accent: #5b4ae8;
   --accent-dk: #4737cc;
   --accent-lt: #eeedfb;
+  --change-changed: #ff3b30;
+  --change-added: #00aeef;
+  --change-removed: #ff9500;
   --ok: #1a7a44;
   --ok-lt: #c7eddb;
   --warn: #c7410b;

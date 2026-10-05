@@ -2,7 +2,83 @@
 
 Production-ready Next.js migration of the original static BIMSpect page in `bimspect-redesign-for-business.html`.
 
-## Commands
+## LOCAL DOCKER DEVELOPMENT (Mac)
+
+> **IMPORTANT:** `docker-compose.yml` is production infrastructure. Do not change
+> its ports or networks to make local Docker work. Local-only settings belong in
+> the explicit, standalone `docker-compose.local.yml`. Never add an automatically
+> loaded `docker-compose.override.yml`.
+
+Prerequisites: Docker Desktop with Docker Compose, Bash, and Python 3 for safety
+checks. npm is only a convenient command launcher; dependency installation and
+Next.js builds happen inside Docker using `npm ci`, not Mac `node_modules`.
+
+```bash
+npm run docker:local:up       # Build and start web + local nginx test
+npm run docker:local:ps
+npm run docker:local:logs
+npm run docker:local:stop     # Stop, retaining containers
+npm run docker:local:down     # Remove only the isolated local project
+npm run docker:local:build    # Build; use :up to apply the new image
+```
+
+Without npm, use `bash scripts/docker-local.sh up`, or the exact Compose command:
+
+```bash
+docker compose -f docker-compose.local.yml up -d --build
+docker compose -f docker-compose.local.yml down
+```
+
+Website: **http://localhost:3000** (also `/fi`). Local nginx test:
+**http://127.0.0.1:8081**. Local project is `bimspect_website_local`, image is
+`bimspect-website:local`, and its Compose-managed bridge is `bimspect_local`.
+No production external network or production credentials are required for the
+basic website. The requested local web mapping `3000:3000` listens on all host
+interfaces; do not use this local definition on a public server.
+
+Optional local integrations use an ignored `.env` copied from `.env.example`;
+do not copy production secrets. CRM/Turnstile require their own credentials to
+work; checkout remains disabled by default. Public variable changes require a
+rebuild. This is a production-mode local preview, not a hot-reload dev server.
+
+If migrating from the old Mac configuration, stop only its old website containers
+first (after confirming their names/Compose labels):
+
+```bash
+docker stop bimspect_website-web-1 bimspect_website-nginx-test-1
+npm run docker:local:up
+```
+
+This is a **one-time Mac migration**, never a production shutdown instruction.
+It leaves the old containers/network available rather than deleting resources.
+
+## PRODUCTION DEPLOYMENT
+
+Production uses **only `docker-compose.yml`**: external network
+`bimspect_marketing_proxy`, service alias `marketing-web`, and loopback binding
+`127.0.0.1:${MARKETING_PORT:-3001}:3000`. nginx-test is also loopback-only.
+`docker compose up -d` therefore defaults to the production architecture.
+
+Validate without deploying or requiring the server's external network:
+
+```bash
+npm run docker:production:check
+# Equivalent: bash scripts/check-production-compose.sh
+```
+
+On the production server only:
+
+```bash
+cd /opt/bimspect-website
+./scripts/deploy-production.sh
+```
+
+The deploy script requires the existing external network; it never creates it.
+It builds before replacing **only web**, waits for health, and tests the actual
+configured loopback origin and public HTTPS endpoint. See [DEPLOYMENT.md](DEPLOYMENT.md)
+for server prerequisites, safety checks, CI protection and rollback.
+
+## Optional application commands without Docker
 
 ```bash
 npm install
@@ -24,9 +100,12 @@ server-rendered. All copy is localized in `content/home.ts`.
   illustrative architectural changes: wall moved 300 mm, resized window,
   relocated entrance door, added partition, added facade panel and removed
   canopy. The displayed 2 added / 3 changed / 1 removed counts match the geometry.
-  `useHeroAnimation` tells Version A → Version B → highlighted changes in 140vh
-  of pinned scrolling, only at >=1000px width and >=680px height. Mobile is not
-  pinned. No continuous rotation, technical disciplines or moving section planes.
+  `useHeroAnimation` reserves 220vh for fine-pointer/hover desktops >=1000×680:
+  normal 0–22%, stable Version A 22–40%, changed geometry 40–65%, final comparison
+  65–100% (closing headline at 80%). Scrub smoothing is 0.5; there is no snapping.
+  Touch/coarse-pointer/hover-none and smaller screens are never pinned: Version A
+  holds for 700ms, revisions take 1.7s, then the final result stays visible.
+  No continuous rotation, technical disciplines or moving section planes.
 - **Plumbing:** placed at the model-context explanation, after category filtering.
   Slab with open service shaft, two walls, columns, connected water/drainage
   pipework, valves, supports and a simplified pump/manifold. Three service changes:
@@ -36,16 +115,26 @@ server-rendered. All copy is localized in `content/home.ts`.
   columns, distribution board, suspended trays and junction box. Three service
   changes: route around new partition, added branch, riser moved 400 mm.
 
-`models/useModelScrollReveal.ts` shares the two secondary ScrollTrigger reveals:
-78% → 32% viewport range, no pinning, no buttons, native scrolling. Mobile plays
-once on entry; reduced motion shows a static final comparison. Two HTML notes
-maximum accompany each model; accessible scene descriptions list every change.
+`models/useModelScrollReveal.ts` plays a once-only 3.2s timeline on **all** devices,
+independent of scrolling: stable normal model, old-route ghosting at 0.5s, new
+geometry at 1.1s, highlight at 1.7s, notes at 2.2s, then a final hold. The actual
+ready model viewport must be >=45% visible; offscreen/hidden timelines pause and
+resume rather than restart. Reduced motion immediately shows final comparison
+with a fixed camera. Two HTML notes maximum accompany each model; accessible
+scene descriptions list every change. Readiness/fonts/meaningful viewport changes
+coalesce one safe ScrollTrigger refresh; matchMedia/observer cleanup prevents
+navigation/breakpoint duplicate pins. UI story channels are plain objects, not
+pin-cached animated CSS values.
 
-`InstancedParts`, `SceneLighting` and `change-palette.ts` are shared. Changed
-components use BIMSpect violet, added components a lighter violet, old components
-are transparent ghosts. Scenes use demand rendering with explicit scroll
-invalidation and a bounded 80ms smoothing tail, no idle loop, DPR capped at 1.5 and no HDR/textures/postprocessing/
-shadow maps. Secondary canvases initialize within 250px of the viewport and stop
+`InstancedParts`, `SceneLighting`, `ComparisonEdges` and `change-palette.ts` are
+shared. Architectural materials are warm concrete/slabs, graphite and blue-gray
+glass. Change semantics: changed red `#ff3b30`, added cyan `#00aeef`, previous/removed
+amber `#ff9500` with transparent ghosts and dashed edges. HTML square/plus/dashed
+keys explain these without relying on color alone. A single 700ms emissive emphasis
+settles to a steady highlight. Unchanged geometry softens but remains visible.
+Scenes use demand rendering with revision-only invalidation and a bounded 80ms
+tail, no idle loop, DPR 1 on compact/touch devices and <=1.5 on desktops; no
+HDR/textures/postprocessing/shadow maps. Secondary canvases initialize within 250px of the viewport and stop
 scheduling GPU work offscreen or in a hidden tab. Independent context-loss/error
 boundaries retain static illustrations, text and CTAs.
 
@@ -62,14 +151,17 @@ No host `node_modules` is needed. Test with the builder stage's locked dependenc
 ```bash
 docker build --target builder -t bimspect-hero-check .
 docker run --rm bimspect-hero-check sh -c 'npm run lint && npx tsc --noEmit && npm test'
-docker compose up -d --build
-docker compose ps
-docker compose logs --tail=100 web
+docker compose -f docker-compose.local.yml up -d --build
+docker compose -f docker-compose.local.yml ps
+docker compose -f docker-compose.local.yml logs --tail=100 web
 curl -I http://localhost:3000
 ```
 
 Review `/` and `/fi` at 1440×900, 1280×800, 1024×768, 768×1024 and 390×844,
 including reduced motion, failed WebGL, CTAs, mobile menu and offscreen rendering.
+Also check 430×932 and wide coarse-pointer devices. See
+[`docs/model-animation-review.md`](docs/model-animation-review.md) for the current
+18-point review, actual browser results and remaining limitations.
 
 ## Campaign lead integration
 
@@ -173,17 +265,11 @@ unsubscribes an entered address directly. The CRM creates a short-lived opaque
 token, persists only its hash, sends the raw token once to the mailbox, and the
 recipient must still explicitly confirm the unsubscribe action on the website.
 
-## Docker
+## Deployment-critical files
 
-Build and run the production image:
-
-```bash
-docker build -t bimspect-website .
-docker run --rm -p 3000:3000 bimspect-website
-```
-
-Or use Docker Compose:
-
-```bash
-docker compose up --build
-```
+Changes to `docker-compose.yml`, `Dockerfile`, `nginx/`, deployment scripts and
+`.github/workflows/` require production review. The Docker configuration workflow
+rejects wrong networks, missing alias and public production ports, and tests the
+original incident as a regression. Make **Production Compose safety** a required
+status check on `main`; adding a workflow alone does not enforce branch protection.
+No CODEOWNERS identities were invented.
