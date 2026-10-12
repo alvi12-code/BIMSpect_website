@@ -52,7 +52,7 @@ test("commercial values, checkout links, and shared form contracts remain intact
   assert.equal(data.includes('cta: "Buy now"'), true);
   assert.equal(data.includes('return { href: "#contact", label: "Contact us" }'), true);
   assert.equal(data.includes('cta: "Discuss project access"'), true);
-  assert.equal(data.includes('cta: "Discuss enterprise access"'), true);
+  assert.equal(data.includes('cta: "Contact sales"'), true);
   assert.equal(pricing.includes('id="pricing"'), true);
   assert.equal(home.includes('id="contact"'), true);
   assert.equal(home.includes('kind="homepage-enquiry"'), true);

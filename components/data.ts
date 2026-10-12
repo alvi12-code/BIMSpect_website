@@ -362,7 +362,7 @@ export const pricingPlans: PricingPlan[] = [
     tier: "Project",
     name: "BIMSpect Project",
     price: "€1,490",
-    priceSuffix: "/month",
+    priceSuffix: "/project",
     description:
       "For one active project and the team responsible for BIM and design coordination.",
     features: [
@@ -400,7 +400,7 @@ export const pricingPlans: PricingPlan[] = [
       { label: "Custom onboarding and support" },
       { label: "Flexible portfolio configuration" }
     ],
-    cta: "Discuss enterprise access",
+    cta: "Contact sales",
     href: "#contact",
     featured: false
   }

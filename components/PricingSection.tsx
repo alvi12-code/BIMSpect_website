@@ -8,6 +8,7 @@ import { CampaignContactLink } from "./campaign/CampaignContactLink";
 import { BuyNowLink } from "./payment/BuyNowLink";
 import { Reveal } from "./Reveal";
 import { StaggerContainer } from "./StaggerContainer";
+import { applicationPurchaseEntry, marketingPurchaseAction } from "@/lib/payment/application-entry";
 import { isCheckoutEnabled } from "@/lib/payment";
 import type { ReactNode } from "react";
 
@@ -32,7 +33,8 @@ export function PricingSection({
   contactLandingPage = "homepage",
   campaign
 }: PricingSectionProps = {}) {
-  const checkoutEnabled = isCheckoutEnabled();
+  const applicationMode = process.env.PAYMENT_PROVIDER === "bimspect";
+  const checkoutEnabled = isCheckoutEnabled() && (!applicationMode || Boolean(applicationPurchaseEntry(process.env, "individual")));
 
   return (
     <section id="pricing" className="section pricing-section">
@@ -51,7 +53,7 @@ export function PricingSection({
 
         <StaggerContainer className="pricing-grid" delay={80}>
           {pricingPlans.map((plan) => {
-            const action = pricingPlanAction(plan, checkoutEnabled);
+            const action = marketingPurchaseAction(process.env, plan.tier) ?? pricingPlanAction(plan, checkoutEnabled);
 
             return (
               <article

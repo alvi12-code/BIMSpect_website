@@ -30,7 +30,7 @@ test("homepage pricing contact CTAs preserve #contact and selected interest", as
 
   assert.equal(pricingData.includes('return { href: "#contact", label: "Contact us" }'), true);
   assert.equal(pricingData.includes('cta: "Discuss project access"'), true);
-  assert.equal(pricingData.includes('cta: "Discuss enterprise access"'), true);
+  assert.equal(pricingData.includes('cta: "Contact sales"'), true);
   assert.equal(pricingSection.includes("<CampaignContactLink"), true);
   assert.equal(pricingSection.includes("interest={plan.name}"), true);
   assert.equal(contactLink.includes('href="#contact"'), true);

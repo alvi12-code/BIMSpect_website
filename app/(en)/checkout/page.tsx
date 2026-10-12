@@ -1,3 +1,5 @@
+import { redirect } from "next/navigation";
+import { applicationBillingEntry } from "@/lib/payment/application-entry";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CheckoutForm } from "@/components/payment/CheckoutForm";
@@ -38,6 +40,9 @@ function CheckoutUnavailable() {
 }
 
 export default function CheckoutPage() {
+  const entry = applicationBillingEntry(process.env, "individual");
+  if (entry) redirect(entry);
+  if (process.env.PAYMENT_PROVIDER === "bimspect") return <CheckoutUnavailable />;
   const offer = getCurrentPurchasableOffer();
 
   if (!isCheckoutEnabled() || !offer) {

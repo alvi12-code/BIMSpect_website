@@ -93,7 +93,7 @@ test("checkout availability controls only the Individual purchase CTA", async ()
 
   assert.equal(pricingData.includes('return { href: "#contact", label: "Contact us" }'), true);
   assert.equal(pricingData.includes('cta: "Discuss project access"'), true);
-  assert.equal(pricingData.includes('cta: "Discuss enterprise access"'), true);
+  assert.equal(pricingData.includes('cta: "Contact sales"'), true);
   assert.equal(pricingData.includes('href: "#contact"'), true);
 });
 
