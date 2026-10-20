@@ -1,5 +1,9 @@
 # English homepage design story handoff
 
+This document records the first redesign. See the
+[connected history update](design-story-connected-history.md) for the subsequent
+interactive model and review improvements and their separate verification record.
+
 ## Purpose and scope
 
 The redesign presents BIMSpect as a way to understand an evolving design:
