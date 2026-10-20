@@ -1,14 +1,15 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useMemo, useRef } from "react";
-import { Canvas, useFrame, useThree, type ThreeEvent } from "@react-three/fiber";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import {
   BoxGeometry,
   BufferGeometry,
   Color,
   EdgesGeometry,
   Float32BufferAttribute,
+  LineDashedMaterial,
+  LineSegments,
   MeshStandardMaterial,
   PerspectiveCamera,
   Vector3,
@@ -18,21 +19,14 @@ import { useRenderBudget } from "@/components/models/useRenderBudget";
 import type { Vector } from "@/components/models/model-types";
 import { getStoryElements, type StoryElement } from "./story-data";
 import { makeStoryArchitecture, makeStoryGrid } from "./story-geometry";
+import { getStoryContextTreatment, getStoryElementTreatment, getStoryPreviousGeometry, isStoryInterfaceContext, resolveStoryRenderState, STORY_CONTEXT_LAYERS, type StoryRendererControls, type StoryRenderState } from "./story-rendering";
 
-export type StoryViewCommand = { kind: "reset" | "in" | "out"; id: number };
-
-export type StorySceneProps = {
+export type StorySceneProps = StoryRendererControls & {
   chapter: number;
   revision: number;
   selectedElementId: string | null;
-  hoveredElementId?: string | null;
   active: boolean;
   reduced: boolean;
-  // Fine pointers orbit by dragging; touch keeps native page scrolling.
-  orbit?: boolean;
-  viewCommand?: StoryViewCommand;
-  onHover?: (elementId: string | null) => void;
-  onSelect?: (elementId: string) => void;
   onReady: () => void;
   onFailure: () => void;
 };
@@ -73,36 +67,45 @@ function DrawingLines({ lines, color, opacity }: {
   </lineSegments>;
 }
 
-function ArchitecturalContext({ chapter, compact }: { chapter: number; compact: boolean }) {
+function ArchitecturalContext({ state, compact }: { state: StoryRenderState; compact: boolean }) {
   const model = useMemo(() => makeStoryArchitecture(compact), [compact]);
   const grid = useMemo(() => makeStoryGrid(), []);
   const resources = useMemo(() => ({
     box: new BoxGeometry(1, 1, 1),
-    concrete: new MeshStandardMaterial({ color: COLORS.concrete, roughness: 0.88, metalness: 0.02 }),
-    porcelain: new MeshStandardMaterial({ color: COLORS.porcelain, roughness: 0.72, metalness: 0.03 }),
-    fascia: new MeshStandardMaterial({ color: COLORS.fascia, roughness: 0.65 }),
-    structure: new MeshStandardMaterial({ color: COLORS.structure, roughness: 0.55, metalness: 0.24 }),
-    frame: new MeshStandardMaterial({ color: COLORS.frame, roughness: 0.45, metalness: 0.28 }),
-    glass: new MeshStandardMaterial({ color: COLORS.glass, roughness: 0.23, metalness: 0.12, transparent: true, opacity: 0.42, depthWrite: false }),
-    duct: new MeshStandardMaterial({ color: COLORS.duct, roughness: 0.46, metalness: 0.26 }),
-    service: new MeshStandardMaterial({ color: COLORS.service, roughness: 0.52, metalness: 0.26 }),
-    plant: new MeshStandardMaterial({ color: COLORS.plant, roughness: 0.67, metalness: 0.16 }),
-    detail: new MeshStandardMaterial({ color: COLORS.detail, roughness: 0.8 }),
+    layers: STORY_CONTEXT_LAYERS.map(layer => {
+      const material = () => new MeshStandardMaterial({ color: COLORS[layer.surface],
+        roughness: layer.surface === "glass" ? .23 : layer.discipline === "MEP" ? .48 : .7,
+        metalness: layer.discipline === "MEP" || layer.discipline === "STR" ? .2 : .04 });
+      return { focus: material(), surrounding: material() };
+    }),
   }), []);
   const materialRef = useRef(resources);
+  const batches = useMemo(() => STORY_CONTEXT_LAYERS.map(layer => ({
+    focus: model[layer.key].filter(isStoryInterfaceContext),
+    surrounding: model[layer.key].filter(part => !isStoryInterfaceContext(part)),
+  })), [model]);
 
   // Changes in attention are material updates, not a permanent animation loop.
   useLayoutEffect(() => {
     const materials = materialRef.current;
-    const focus = chapter === 3 ? 0.62 : chapter === 2 ? 0.31 : 0;
     const pale = new Color("#e4dfd6");
-    for (const key of ["concrete", "porcelain", "fascia", "structure", "frame", "duct", "service", "plant", "detail"] as const) {
-      materials[key].color.set(COLORS[key]).lerp(pale, focus);
-    }
-    materials.glass.color.set(COLORS.glass).lerp(pale, focus * 0.5);
-    materials.glass.opacity = chapter === 3 ? 0.13 : chapter === 2 ? 0.24 : 0.42;
-  }, [chapter]);
-  useEffect(() => () => Object.values(resources).forEach(resource => resource.dispose()), [resources]);
+    STORY_CONTEXT_LAYERS.forEach((layer, index) => {
+      for (const key of ["focus", "surrounding"] as const) {
+        const material = materials.layers[index][key];
+        const treatment = getStoryContextTreatment(layer.discipline, layer.surface, key === "focus", state);
+        material.color.set(COLORS[layer.surface]).lerp(pale, treatment.muted);
+        const transparent = treatment.opacity < 1;
+        if (material.transparent !== transparent) material.needsUpdate = true;
+        material.transparent = transparent;
+        material.depthWrite = !transparent;
+        material.opacity = treatment.opacity;
+      }
+    });
+  }, [state]);
+  useEffect(() => () => {
+    resources.box.dispose();
+    resources.layers.forEach(layer => { layer.focus.dispose(); layer.surrounding.dispose(); });
+  }, [resources]);
 
   return <group name="six-level-architectural-context">
     <group name="site-and-model-datum">
@@ -124,46 +127,30 @@ function ArchitecturalContext({ chapter, compact }: { chapter: number; compact: 
         <meshStandardMaterial color="#eee9e0" roughness={0.98} />
       </mesh>
       <group position={[0, 0.16, 0]}><DrawingLines lines={grid} color="#647083" opacity={0.115} /></group>
-      <InstancedParts name="site-paving-and-entrance-steps" parts={model.pavers} geometry={resources.box} material={resources.porcelain} />
     </group>
-    <InstancedParts name="six-storey-l-shaped-slabs" parts={model.slabs} geometry={resources.box} material={resources.concrete} />
-    <InstancedParts name="slab-section-fascias" parts={model.fascia} geometry={resources.box} material={resources.fascia} />
-    <InstancedParts name="envelope-and-circulation-core" parts={model.walls} geometry={resources.box} material={resources.porcelain} />
-    <InstancedParts name="structural-column-grid" parts={model.columns} geometry={resources.box} material={resources.structure} />
-    <InstancedParts name="structural-floor-beams" parts={model.beams} geometry={resources.box} material={resources.structure} />
-    <InstancedParts name="facade-mullions-and-roof-details" parts={model.frames} geometry={resources.box} material={resources.frame} />
-    <InstancedParts name="switchback-stair-flights" parts={model.stairs} geometry={resources.box} material={resources.porcelain} />
-    <InstancedParts name="atrium-and-stair-balustrades" parts={model.rails} geometry={resources.box} material={resources.frame} />
-    <InstancedParts name="context-supply-and-return-ducts" parts={model.ducts} geometry={resources.box} material={resources.duct} />
-    <InstancedParts name="context-service-routes" parts={model.services} geometry={resources.box} material={resources.service} />
-    <InstancedParts name="rooftop-plant-and-diffusers" parts={model.plant} geometry={resources.box} material={resources.plant} />
-    <InstancedParts name="interior-and-entrance-details" parts={model.details} geometry={resources.box} material={resources.detail} />
-    <InstancedParts name="glazed-envelope-and-atrium" parts={model.glass} geometry={resources.box} material={resources.glass} />
-    <DrawingLines lines={model.floorEdges} color="#837f7a" opacity={chapter === 3 ? 0.11 : 0.23} />
+    {STORY_CONTEXT_LAYERS.map((layer, index) => <group key={layer.key} name={`context-${layer.discipline ?? "site"}-${layer.key}`}>
+      <InstancedParts name={`${layer.name}-interface`} parts={batches[index].focus} geometry={resources.box} material={resources.layers[index].focus} />
+      <InstancedParts name={`${layer.name}-surrounding`} parts={batches[index].surrounding} geometry={resources.box} material={resources.layers[index].surrounding} />
+    </group>)}
+    <DrawingLines lines={model.floorEdges} color="#837f7a" opacity={state.modelView === "interface" || state.discipline !== "all" ? .045 : .2} />
   </group>;
 }
 
-function elementColor(element: StoryElement, chapter: number, selected: boolean) {
-  if (chapter === 3) return selected ? COLORS.purple : "#c7c5bf";
-  if (chapter === 2 || chapter === 4) {
-    if (element.revisionCount >= 3) return COLORS.amber;
-    if (element.revisionCount > 1) return COLORS.lightAmber;
-    return "#b6bab9";
-  }
-  if (element.changedNow) return COLORS.purple;
+function elementColor(element: StoryElement, state: StoryRenderState) {
+  const treatment = getStoryElementTreatment(element, state);
+  if (treatment.highlight === "selected" || treatment.highlight === "current") return COLORS.purple;
+  if (treatment.highlight === "repeated") return element.revisionCount >= 3 ? COLORS.amber : COLORS.lightAmber;
+  if (treatment.muted || state.viewMode === "history") return "#c7c5bf";
   if (element.kind === "panel") return COLORS.glass;
   if (element.kind === "partition") return COLORS.porcelain;
   if (element.kind === "beam") return COLORS.structure;
   return COLORS.duct;
 }
 
-function VersionedElements({ chapter, elements, selectedElementId, hoveredElementId, onHover, onSelect }: {
-  chapter: number;
+function VersionedElements({ state, elements, onSelectElement }: {
+  state: StoryRenderState;
   elements: StoryElement[];
-  selectedElementId: string | null;
-  hoveredElementId?: string | null;
-  onHover?: (elementId: string | null) => void;
-  onSelect?: (elementId: string) => void;
+  onSelectElement?: (id: string) => void;
 }) {
   const geometry = useMemo(() => {
     const box = new BoxGeometry(1, 1, 1);
@@ -172,55 +159,61 @@ function VersionedElements({ chapter, elements, selectedElementId, hoveredElemen
   useEffect(() => () => { geometry.box.dispose(); geometry.edges.dispose(); }, [geometry]);
   return <group name="illustrative-versioned-elements">
     {elements.map(element => {
-      const selected = element.id === selectedElementId;
-      const color = elementColor(element, chapter, selected);
-      const emphasized = chapter === 2 || chapter === 4 ? element.revisionCount > 1 : chapter === 3 ? selected : element.changedNow;
-      const hovered = element.id === hoveredElementId;
-      const outlined = emphasized || hovered;
+      const { selected, emphasized, muted, highlight } = getStoryElementTreatment(element, state);
+      const color = elementColor(element, state);
+      const outlined = emphasized;
       return <group key={element.id} name={`story-element-${element.id}`} position={element.position} scale={element.size}>
         {/* The external extent always matches the shared fixture exactly. */}
-        <mesh
-          geometry={geometry.box}
-          onPointerOver={(event: ThreeEvent<PointerEvent>) => { event.stopPropagation(); onHover?.(element.id); }}
-          onPointerOut={() => onHover?.(null)}
-          onClick={(event: ThreeEvent<MouseEvent>) => {
-            // A drag that ends on an element orbits; it does not select.
-            if (event.delta > 6) return;
-            event.stopPropagation();
-            onSelect?.(element.id);
-          }}
-        >
+        <mesh geometry={geometry.box} onClick={onSelectElement ? event => { event.stopPropagation(); onSelectElement(element.id); } : undefined}>
           <meshStandardMaterial
             color={color}
             roughness={element.kind === "panel" ? 0.28 : 0.58}
             metalness={element.kind === "beam" || element.kind === "duct" ? 0.18 : 0.04}
             emissive={color}
-            emissiveIntensity={hovered ? 0.22 : emphasized ? 0.055 : 0}
-            transparent={element.kind === "panel" && !emphasized}
-            opacity={element.kind === "panel" && !emphasized ? 0.58 : 1}
-            depthWrite={element.kind !== "panel" || emphasized}
+            emissiveIntensity={emphasized ? 0.055 : 0}
+            transparent={muted || element.kind === "panel" && !emphasized}
+            opacity={muted ? .18 : element.kind === "panel" && !emphasized ? .58 : 1}
+            depthWrite={!muted && (element.kind !== "panel" || emphasized)}
           />
         </mesh>
         {outlined ? <lineSegments geometry={geometry.edges} renderOrder={3}>
-          <lineBasicMaterial color={hovered ? "#4c2f86" : chapter === 2 || chapter === 4 ? "#9c6827" : "#674399"} transparent opacity={hovered || (selected && chapter === 3) ? 0.96 : 0.63} toneMapped={false} />
+          <lineBasicMaterial color={highlight === "repeated" ? "#9c6827" : "#674399"} transparent opacity={selected ? .96 : .63} toneMapped={false} />
         </lineSegments> : null}
       </group>;
     })}
   </group>;
 }
 
+function PreviousElementOutline({ element }: { element: StoryElement }) {
+  const ref = useRef<LineSegments<EdgesGeometry, LineDashedMaterial>>(null);
+  const geometry = useMemo(() => {
+    const box = new BoxGeometry(...element.size);
+    const edges = new EdgesGeometry(box);
+    box.dispose();
+    return edges;
+  }, [element.size]);
+  useLayoutEffect(() => { ref.current?.computeLineDistances(); }, [geometry]);
+  useEffect(() => () => geometry.dispose(), [geometry]);
+  return <lineSegments ref={ref} name={`previous-geometry-${element.id}`} geometry={geometry} position={element.position} renderOrder={4}>
+    {/* An earlier, smaller section may sit entirely inside the current solid.
+        Its dashed comparison outline must remain visible, as in the SVG view. */}
+    <lineDashedMaterial color="#655384" transparent opacity={.85} dashSize={.095} gapSize={.06} depthTest={false} depthWrite={false} toneMapped={false} />
+  </lineSegments>;
+}
+
 type View = { position: Vector3; target: Vector3 };
 
-function cameraView(camera: PerspectiveCamera, aspect: number, chapter: number, selected: StoryElement | undefined): View {
-  const target = new Vector3(0.55, 3.2, 0.6);
-  const direction = new Vector3(chapter === 1 ? 1.13 : 1.23, chapter === 2 ? 1.02 : 0.8, 1.65).normalize();
+function cameraView(camera: PerspectiveCamera, aspect: number, state: StoryRenderState): View {
+  const focused = state.modelView === "interface";
+  const target = focused ? new Vector3(3.45, 2.8, 2.6) : new Vector3(.55, 3.2, .6);
+  const direction = new Vector3(focused ? 1.0 : 1.23, focused ? 1.15 : state.viewMode === "history" ? 1.02 : .8, 1.65).normalize();
   const right = new Vector3().crossVectors(new Vector3(0, 1, 0), direction).normalize();
   const up = new Vector3().crossVectors(direction, right).normalize();
   const tangent = Math.tan(camera.fov * Math.PI / 360);
   let distance = 0;
   // Project the eight building extents into the camera basis and fit both axes.
   // The ground drawing can crop naturally; the building stays inside the frame.
-  for (const x of [-5.6, 6.7]) for (const y of [-0.35, 7.65]) for (const z of [-2.8, 4.7]) {
+  for (const x of focused ? [.7, 6.7] : [-5.6, 6.7]) for (const y of focused ? [1.4, 3.95] : [-.35, 7.65]) for (const z of focused ? [.8, 4.8] : [-2.8, 4.7]) {
     const point = new Vector3(x, y, z).sub(target);
     const depth = point.dot(direction);
     distance = Math.max(distance,
@@ -228,21 +221,11 @@ function cameraView(camera: PerspectiveCamera, aspect: number, chapter: number, 
       Math.abs(point.dot(right)) / (tangent * Math.max(aspect, 0.35)) + depth);
   }
   distance *= 1.075;
-  if (chapter === 3 && selected) {
-    target.lerp(new Vector3(...selected.position), 0.43);
-    distance *= 0.9;
-  }
   return { position: target.clone().addScaledVector(direction, distance), target };
 }
 
-const ZOOM_STEP = 0.8;
-
-function SceneLifecycle({ chapter, revision, selectedElementId, active, reduced, orbit = false, viewCommand, onReady, onFailure }: StorySceneProps) {
+function SceneLifecycle({ state: renderState, active, reduced, onReady, onFailure }: Pick<StorySceneProps, "active" | "reduced" | "onReady" | "onFailure"> & { state: StoryRenderState }) {
   const { camera, gl, size, invalidate } = useThree();
-  const controls = useRef<OrbitControls | null>(null);
-  const fittedDistance = useRef(20);
-  // A reset request re-runs the chapter framing below.
-  const resetId = viewCommand?.kind === "reset" ? viewCommand.id : -1;
   const announced = useRef(false);
   const callbacks = useRef({ onReady, onFailure });
   const view = useRef({
@@ -255,44 +238,6 @@ function SceneLifecycle({ chapter, revision, selectedElementId, active, reduced,
     toTarget: new Vector3(),
     currentTarget: new Vector3(),
   });
-
-  // Drag to orbit around the current target. Zoom is button-driven so the
-  // mouse wheel keeps scrolling the page.
-  useEffect(() => {
-    const orbitControls = new OrbitControls(camera, gl.domElement);
-    orbitControls.enabled = orbit;
-    orbitControls.enablePan = false;
-    orbitControls.enableZoom = false;
-    orbitControls.enableDamping = !reduced;
-    orbitControls.dampingFactor = 0.09;
-    orbitControls.rotateSpeed = 0.55;
-    orbitControls.minPolarAngle = 0.28;
-    orbitControls.maxPolarAngle = 1.42;
-    orbitControls.target.copy(view.current.currentTarget);
-    const onChange = () => invalidate();
-    const onStart = () => { view.current.running = false; };
-    orbitControls.addEventListener("change", onChange);
-    orbitControls.addEventListener("start", onStart);
-    controls.current = orbitControls;
-    return () => {
-      orbitControls.removeEventListener("change", onChange);
-      orbitControls.removeEventListener("start", onStart);
-      orbitControls.dispose();
-      controls.current = null;
-    };
-  }, [camera, gl, orbit, reduced, invalidate]);
-
-  useEffect(() => {
-    const orbitControls = controls.current;
-    if (!viewCommand || !orbitControls || viewCommand.kind === "reset") return;
-    const offset = camera.position.clone().sub(orbitControls.target);
-    const distance = offset.length() * (viewCommand.kind === "in" ? ZOOM_STEP : 1 / ZOOM_STEP);
-    const clamped = Math.min(fittedDistance.current * 1.35, Math.max(fittedDistance.current * 0.38, distance));
-    view.current.running = false;
-    camera.position.copy(orbitControls.target).addScaledVector(offset.normalize(), clamped);
-    orbitControls.update();
-    invalidate();
-  }, [camera, viewCommand, invalidate]);
   useLayoutEffect(() => { callbacks.current = { onReady, onFailure }; }, [onReady, onFailure]);
 
   useEffect(() => {
@@ -308,9 +253,7 @@ function SceneLifecycle({ chapter, revision, selectedElementId, active, reduced,
 
   useLayoutEffect(() => {
     if (!(camera instanceof PerspectiveCamera) || size.width <= 0 || size.height <= 0) return;
-    const selected = getStoryElements(revision).find(element => element.id === selectedElementId);
-    const next = cameraView(camera, size.width / size.height, chapter, selected);
-    fittedDistance.current = next.position.distanceTo(next.target);
+    const next = cameraView(camera, size.width / size.height, renderState);
     const state = view.current;
     state.fromPosition.copy(camera.position);
     state.fromTarget.copy(state.currentTarget);
@@ -324,11 +267,10 @@ function SceneLifecycle({ chapter, revision, selectedElementId, active, reduced,
       camera.position.copy(next.position);
       state.currentTarget.copy(next.target);
       camera.lookAt(next.target);
-      controls.current?.target.copy(next.target);
     }
     state.initialized = true;
     if (active) invalidate();
-  }, [camera, size.width, size.height, chapter, revision, selectedElementId, active, reduced, invalidate, resetId]);
+  }, [camera, size.width, size.height, renderState, active, reduced, invalidate]);
 
   useFrame((_, delta) => {
     if (!active || size.width <= 0 || size.height <= 0) return;
@@ -340,11 +282,8 @@ function SceneLifecycle({ chapter, revision, selectedElementId, active, reduced,
       camera.position.lerpVectors(state.fromPosition, state.toPosition, eased);
       state.currentTarget.lerpVectors(state.fromTarget, state.toTarget, eased);
       camera.lookAt(state.currentTarget);
-      controls.current?.target.copy(state.currentTarget);
       state.running = progress < 1;
       if (state.running) invalidate();
-    } else if (controls.current?.enabled && controls.current.update()) {
-      invalidate();
     }
     if (!announced.current) {
       announced.current = true;
@@ -357,6 +296,10 @@ function SceneLifecycle({ chapter, revision, selectedElementId, active, reduced,
 export function StoryScene(props: StorySceneProps) {
   const compact = useRenderBudget();
   const elements = useMemo(() => getStoryElements(props.revision), [props.revision]);
+  const state = useMemo(() => resolveStoryRenderState(props.chapter, props.selectedElementId, {
+    discipline: props.discipline, viewMode: props.viewMode, modelView: props.modelView,
+  }), [props.chapter, props.selectedElementId, props.discipline, props.viewMode, props.modelView]);
+  const previous = useMemo(() => getStoryPreviousGeometry(props.revision, props.selectedElementId, props.showPrevious), [props.revision, props.selectedElementId, props.showPrevious]);
   return <Canvas
     camera={{ position: [15, 12, 20], fov: 32, near: 0.1, far: 100 }}
     dpr={compact ? 1 : [1, 1.5]}
@@ -369,9 +312,10 @@ export function StoryScene(props: StorySceneProps) {
     <directionalLight position={[4, 12, 7]} intensity={2.65} color="#fff7e9" />
     <directionalLight position={[-7, 5, -4]} intensity={1.15} color="#d8e4ff" />
     <directionalLight position={[2, 3, -7]} intensity={0.5} color="#e8e9f6" />
-    <SceneLifecycle {...props} />
-    <ArchitecturalContext chapter={props.chapter} compact={compact} />
-    <VersionedElements chapter={props.chapter} elements={elements} selectedElementId={props.selectedElementId} hoveredElementId={props.hoveredElementId} onHover={props.onHover} onSelect={props.onSelect} />
+    <SceneLifecycle {...props} state={state} />
+    <ArchitecturalContext state={state} compact={compact} />
+    <VersionedElements state={state} elements={elements} onSelectElement={props.onSelectElement} />
+    {previous ? <PreviousElementOutline element={previous} /> : null}
   </Canvas>;
 }
 

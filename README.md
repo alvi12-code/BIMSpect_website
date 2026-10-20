@@ -101,7 +101,10 @@ project or an engineering assessment.
 
 See [the design story handoff](docs/design-story-redesign.md) for the current
 file map, data definitions, product and research evidence, local run commands,
-verification results and remaining GPU/browser checks. The English narrative
+verification results and remaining GPU/browser checks. The
+[connected history update](docs/design-story-connected-history.md) covers the
+source lanes, element selection, property evidence, captured reviews and live
+report preview added in the next iteration. The English narrative
 and metadata were updated; Finnish retains the legacy model experience below.
 The earlier local F02 enquiry remediation is not included in this checkout.
 No website deployment was performed for this redesign.
