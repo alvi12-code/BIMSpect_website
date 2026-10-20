@@ -5,6 +5,9 @@ import { HomeDemoVideo } from "@/components/HomeDemoVideo";
 import { LanguageSuggestion } from "@/components/LanguageSuggestion";
 import { BimspectHero } from "@/components/hero/BimspectHero";
 import { HeroContent } from "@/components/hero/HeroContent";
+import { DesignStoryHero } from "@/components/design-story/DesignStoryHero";
+import { DesignContextEvidence } from "@/components/design-story/DesignContextEvidence";
+import { DesignReportPreview } from "@/components/design-story/DesignReportPreview";
 import { DisciplineModel } from "@/components/models/DisciplineModel";
 import modelStyles from "@/components/models/models.module.css";
 import { ModelAttribution } from "@/components/ModelAttribution";
@@ -120,14 +123,13 @@ export function HomePage({ content, languageHref, shouldSuggestFinnish = false }
           dismiss={content.languageSuggestion.dismiss}
         />
       ) : null}
-      <main id="main-content" className="homepage">
-        <section id="home" className="bim-hero-section" aria-labelledby="home-hero-title">
-          <BimspectHero
-            content={content.hero.experience}
-
-          >
-            <HeroContent content={content} />
-          </BimspectHero>
+      <main id="main-content" className={`homepage${content.locale === "en" ? " homepage-story" : ""}`}>
+        <section id="home" className={content.locale === "en" ? "design-story-section" : "bim-hero-section"} aria-labelledby="home-hero-title">
+          {content.locale === "en" ? <DesignStoryHero content={content} /> : (
+            <BimspectHero content={content.hero.experience}>
+              <HeroContent content={content} />
+            </BimspectHero>
+          )}
         </section>
 
         <section className="home-problem" aria-labelledby="problem-title">
@@ -215,19 +217,19 @@ export function HomePage({ content, languageHref, shouldSuggestFinnish = false }
         <section className="home-feature home-feature-context" aria-labelledby="context-title" data-discipline-section="plumbing">
           <div className="wrap home-wrap home-feature-grid home-feature-grid-reverse">
             <div className="home-model-visual">
-              <DisciplineModel discipline="plumbing" content={content.disciplineModels.plumbing} controls={content.disciplineModels.controls} />
+              {content.locale === "en" ? <DesignContextEvidence /> : <DisciplineModel discipline="plumbing" content={content.disciplineModels.plumbing} controls={content.disciplineModels.controls} />}
             </div>
             <div className="home-feature-copy">
               <Reveal as="p" className="eyebrow">
                 {content.context.eyebrow}
               </Reveal>
               <Reveal as="h2" delay={70} id="context-title">
-                {content.disciplineModels.plumbing.title}
+                {content.locale === "en" ? content.context.title : content.disciplineModels.plumbing.title}
               </Reveal>
               <Reveal as="p" delay={130}>
                 {content.context.body}
               </Reveal>
-              <p className={modelStyles.exampleText}>{content.disciplineModels.plumbing.description}</p>
+              {content.locale === "fi" ? <p className={modelStyles.exampleText}>{content.disciplineModels.plumbing.description}</p> : null}
             </div>
           </div>
         </section>
@@ -283,13 +285,13 @@ export function HomePage({ content, languageHref, shouldSuggestFinnish = false }
               <figcaption>{content.analytics.caption}</figcaption>
             </Reveal>
           </div>
-          <div className={`wrap home-wrap home-feature-grid ${modelStyles.electricalRow}`} data-discipline-section="electrical">
+          {content.locale === "fi" ? <div className={`wrap home-wrap home-feature-grid ${modelStyles.electricalRow}`} data-discipline-section="electrical">
             <div className="home-feature-copy">
               <h2>{content.disciplineModels.electrical.title}</h2>
               <p>{content.disciplineModels.electrical.description}</p>
             </div>
             <DisciplineModel discipline="electrical" content={content.disciplineModels.electrical} controls={content.disciplineModels.controls} />
-          </div>
+          </div> : null}
         </section>
 
         <section id="sample-report" className="home-report" aria-labelledby="report-title">
@@ -313,7 +315,7 @@ export function HomePage({ content, languageHref, shouldSuggestFinnish = false }
                 </a>
               )}
             </Reveal>
-            <Reveal as="figure" className="home-report-preview" delay={100}>
+            {content.locale === "en" ? <Reveal delay={100}><DesignReportPreview /></Reveal> : <Reveal as="figure" className="home-report-preview" delay={100}>
               <div className="home-report-topline">
                 <span>{content.report.reportName}</span>
                 <span>{content.report.sampleLabel}</span>
@@ -346,7 +348,7 @@ export function HomePage({ content, languageHref, shouldSuggestFinnish = false }
                 </div>
               </div>
               <figcaption>{content.report.caption}</figcaption>
-            </Reveal>
+            </Reveal>}
           </div>
         </section>
 

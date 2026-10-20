@@ -302,14 +302,14 @@ const navigation = [
 ];
 
 const enDescription =
-  "BIMSpect compares IFC model versions and makes design changes visible for BIM coordinators, design managers and construction teams.";
+  "BIMSpect connects IFC revision history, visual change analysis and design analytics to help BIM coordinators and design managers focus their next review.";
 const enDemoDescription =
-  "See how BIMSpect turns IFC model changes into visual information that can be explored, filtered and reviewed in the browser.";
+  "Explore BIMSpect's model views and see how IFC changes become visual evidence for design review.";
 
 const en: HomeContent = {
   locale: "en",
   metadata: {
-    title: "BIMSpect | IFC Model Change Analysis for BIM Coordination",
+    title: "BIMSpect | Design Change Intelligence Across IFC Revisions",
     description: enDescription,
     openGraphLocale: "en_US",
     alternateOpenGraphLocale: "fi_FI"
@@ -354,11 +354,11 @@ const en: HomeContent = {
     countdownLabels: { days: "days", hours: "hours", minutes: "minutes", seconds: "seconds" }
   },
   hero: {
-    eyebrow: "IFC model change intelligence",
-    title: "Know",
-    titleEmphasis: "what changed.",
+    eyebrow: "Design change intelligence",
+    title: "Every revision.",
+    titleEmphasis: "A clearer picture.",
     description:
-      "BIMSpect compares BIM model versions and makes every design change immediately understandable.",
+      "Understand how your design evolves. Follow IFC revisions across disciplines, investigate recurring change, and bring evidence to your next review.",
     primaryCta: "See BIMSpect in action",
     secondaryCta: "Talk to BIMSpect",
     capabilityOne: "Browser-based",
@@ -368,23 +368,23 @@ const en: HomeContent = {
       version: "Version", model: "Version A", compare: "Version B", result: "The changes",
       scroll: "Scroll to compare", illustration: "Illustrative model · Sample changes",
       sceneDescription: "A five-storey office with a three-storey connected wing. Version A becomes Version B: a wall moves 300 mm, a window enlarges and an entrance door relocates. A partition and facade panel are added; an old entrance canopy is removed and ghosted. Six illustrative changes: 2 added, 3 changed, 1 removed. Not project data.",
-      finalTitle: "Every change.", finalEmphasis: "Clearly visible.",
+      finalTitle: "Every revision.", finalEmphasis: "A clearer picture.",
       added: "Added", removed: "Removed", changed: "Changed",
       wall: "Wall", moved: "Moved 300 mm",
       window: "Window", windowDetail: "Resized"
     }
   },
   problem: {
-    eyebrow: "A new IFC version arrives",
-    title: "What actually changed?",
+    eyebrow: "A design develops over many revisions",
+    title: "Follow the story behind the model.",
     description:
-      "Design teams receive revised IFC models continuously. Finding the meaningful difference means comparing complex versions and deciding what deserves attention before the next coordination conversation.",
+      "As models evolve, changes build on earlier decisions. Teams need to see what moved, which elements keep changing and where activity is concentrated across disciplines.",
     conclusion:
-      "BIMSpect makes the change visible first, so the review can become focused and useful."
+      "BIMSpect connects the latest change to the history behind it."
   },
   demo: {
     eyebrow: "Product demo",
-    title: "See BIMSpect in action",
+    title: "From model to understanding.",
     description: enDemoDescription,
     video: {
       ariaLabel: "BIMSpect product walkthrough showing IFC model change analysis",
@@ -395,29 +395,29 @@ const en: HomeContent = {
     }
   },
   change: {
-    eyebrow: "Change visibility",
-    title: "See the difference.",
+    eyebrow: "Design Buzz",
+    title: "Make change patterns visible.",
     description:
-      "BIMSpect identifies added, deleted and modified IFC objects between versions. Colour-coded model views make concentrated change areas easier to find before the detailed review begins.",
+      "Explore added, removed and modified elements in a colour-coded model. Separate geometry, movement and information changes, then investigate the areas that keep changing across revisions.",
     labels: ["Added", "Deleted", "Modified", "Change intensity"],
-    caption: "Change intensity can guide where to start the review."
+    caption: "Colour shows where change is concentrated; element history explains how it developed."
   },
   focus: {
-    eyebrow: "Relevant elements",
-    title: "Focus on what matters.",
+    eyebrow: "Element evolution",
+    title: "Follow the elements that keep changing.",
     description:
-      "Use model categories to focus the viewer on a meaningful set of elements. Isolate object types and levels so review time stays with the parts of the building that need it.",
+      "Trace an element through its recorded revisions. Filter by IFC category and change type, then inspect geometry, placement, property, type and material changes in the model.",
     items: [
-      "Walls, doors, slabs and other IFC object categories",
-      "Levels and project-relevant groups",
-      "A focused starting point for coordination review"
+      "See the revisions in which an element changed",
+      "Distinguish geometry, movement and information changes",
+      "Carry the selected evidence into a focused review"
     ]
   },
   context: {
-    eyebrow: "Model context",
-    title: "Change, in context.",
+    eyebrow: "Across disciplines",
+    title: "One project. Connected disciplines.",
     body:
-      "Keep the surrounding building in view while you inspect a change. Its location and connections give the revision context."
+      "Keep surrounding models in view while investigating a change. Review activity across disciplines and return to the relevant element, revision and model context."
   },
   disciplineModels: {
     controls: { changed: "Changed", added: "Added", previous: "Previous route", modelState: "Version A", changesState: "Version B",
@@ -436,27 +436,27 @@ const en: HomeContent = {
     }
   },
   workflow: {
-    eyebrow: "A clear review path",
-    title: "Compare. Understand. Act.",
+    eyebrow: "A connected workflow",
+    title: "From revision history to review.",
     steps: [
-      { number: "01", title: "Compare", body: "Upload IFC model versions for a structured comparison." },
-      { number: "02", title: "Understand", body: "See added, deleted and modified objects between versions." },
-      { number: "03", title: "Focus", body: "Inspect the relevant objects alongside their model context." },
-      { number: "04", title: "Communicate", body: "Use change information in coordination and reporting." }
+      { number: "01", title: "Build the history", body: "Organise IFC revisions by project and discipline, then compare the version sequence." },
+      { number: "02", title: "See the patterns", body: "Explore Design Buzz views and follow geometry, movement and information changes across revisions." },
+      { number: "03", title: "Focus the review", body: "Use Design Analytics to inspect recurring changes, discipline trends and the evidence behind review priorities." },
+      { number: "04", title: "Share the evidence", body: "Connect findings to model elements, create Reviews and prepare a stakeholder summary." }
     ]
   },
   analytics: {
-    eyebrow: "Analytics and management view",
-    title: "See the bigger picture.",
+    eyebrow: "Design Analytics",
+    title: "Understand the direction of change.",
     body:
-      "The same model-version information can be reviewed at a higher level: helping teams discuss design status, review priorities and the evidence behind the next coordination step.",
+      "See where change activity is rising or settling across disciplines. Examine repeated element changes, category trends and the comparison history behind the signals, so review priorities stay connected to evidence.",
     caption: "Genuine BIMSpect analytics view."
   },
   report: {
     eyebrow: "Sample report",
-    title: "Share the change.",
+    title: "Bring evidence to the next review.",
     description:
-      "BIMSpect Change Reports turn a version comparison into a concise basis for design coordination meetings and management review.",
+      "BIMSpect reports and stakeholder summaries bring model changes, review priorities and supporting evidence into the next coordination conversation.",
     cta: "Request sample report",
     reportName: "BIMSpect Change Report",
     sampleLabel: "Sample",

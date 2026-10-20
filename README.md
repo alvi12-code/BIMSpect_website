@@ -81,20 +81,37 @@ for server prerequisites, safety checks, CI protection and rollback.
 ## Optional application commands without Docker
 
 ```bash
-npm install
+npm ci
 npm run dev
 npm run lint
 npm run build
 ```
 
-The site uses the App Router, TypeScript, `next/font/google` for DM Sans and DM Mono, extracted screenshot assets under `public/images/bimspect/`, and native CSS plus Intersection Observer animations. The homepage hero additionally uses React Three Fiber / Three.js, and GSAP ScrollTrigger.
+The site uses the App Router, TypeScript, `next/font/google` for DM Sans and DM Mono, extracted screenshot assets under `public/images/bimspect/`, and native CSS plus Intersection Observer animations. WebGL scenes use React Three Fiber / Three.js; the legacy Finnish hero also uses GSAP ScrollTrigger.
 
-## Homepage model storytelling
+## English homepage: design history storytelling
 
-The homepage has exactly three WebGL experiences: an architectural hero, a
+The English homepage now introduces BIMSpect with **Every revision. A clearer
+picture.** A five-chapter experience connects IFC revision history, recurring
+element changes, patterns across disciplines, element investigation and a
+coordination review. One shared, synthetic history drives the model, SVG
+fallback, charts and report preview: six releases, twelve tracked example
+elements and three disciplines. It is a marketing illustration, not a customer
+project or an engineering assessment.
+
+See [the design story handoff](docs/design-story-redesign.md) for the current
+file map, data definitions, product and research evidence, local run commands,
+verification results and remaining GPU/browser checks. The English narrative
+and metadata were updated; Finnish retains the legacy model experience below.
+The earlier local F02 enquiry remediation is not included in this checkout.
+No website deployment was performed for this redesign.
+
+## Legacy Finnish model storytelling
+
+The legacy experience retained on `/fi` has exactly three WebGL experiences: an architectural hero, a
 plumbing service-room comparison and an electrical ceiling/riser comparison.
 `HomePage.tsx` and `hero/HeroContent.tsx` keep copy, links and business flows
-server-rendered. All copy is localized in `content/home.ts`.
+server-rendered. Legacy model copy is localized in `content/home.ts`.
 
 - **Hero:** five-storey office with a three-storey connected cutaway wing. Six
   illustrative architectural changes: wall moved 300 mm, resized window,
@@ -157,11 +174,14 @@ docker compose -f docker-compose.local.yml logs --tail=100 web
 curl -I http://localhost:3000
 ```
 
-Review `/` and `/fi` at 1440×900, 1280×800, 1024×768, 768×1024 and 390×844,
+Review the legacy `/fi` experience at 1440×900, 1280×800, 1024×768, 768×1024 and 390×844,
 including reduced motion, failed WebGL, CTAs, mobile menu and offscreen rendering.
 Also check 430×932 and wide coarse-pointer devices. See
-[`docs/model-animation-review.md`](docs/model-animation-review.md) for the current
-18-point review, actual browser results and remaining limitations.
+[`docs/model-animation-review.md`](docs/model-animation-review.md) for the legacy
+18-point review, actual browser results and remaining limitations. The old
+`test/model-browser-qa.mjs` assumes the former English three-model experience;
+update its selectors and expectations before using it to validate the new `/`
+flow. Use [the design story handoff](docs/design-story-redesign.md) for that flow.
 
 ## Campaign lead integration
 

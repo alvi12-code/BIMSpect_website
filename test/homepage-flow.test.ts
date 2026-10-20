@@ -3,17 +3,18 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 async function homepageSources() {
-  const [home, pricing, data, content, pilot, campaignForm, hero] = await Promise.all([
+  const [home, pricing, data, content, pilot, campaignForm, hero, storyHero] = await Promise.all([
     readFile(new URL("../components/home/HomePage.tsx", import.meta.url), "utf8"),
     readFile(new URL("../components/PricingSection.tsx", import.meta.url), "utf8"),
     readFile(new URL("../components/data.ts", import.meta.url), "utf8"),
     readFile(new URL("../content/home.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/(en)/pilot/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../components/campaign/CampaignForm.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../components/hero/HeroContent.tsx", import.meta.url), "utf8")
+    readFile(new URL("../components/hero/HeroContent.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../components/design-story/DesignStoryHero.tsx", import.meta.url), "utf8")
   ]);
 
-  return { home, pricing, data, content, pilot, campaignForm, hero };
+  return { home, pricing, data, content, pilot, campaignForm, hero, storyHero };
 }
 
 test("English homepage places pricing and contact before research and team", async () => {
@@ -72,6 +73,13 @@ test("English commercial CTAs use the shared contact path while Finnish fallback
   assert.equal(home.includes('interest="the BIMSpect sample report"'), true);
   assert.equal(home.includes('content.locale === "fi" ? ('), true);
   assert.equal(home.includes('fetch("/api/'), false);
+});
+
+test("the English design story retains the existing demo and walkthrough contact destinations", async () => {
+  const { home, storyHero } = await homepageSources();
+  assert.equal(storyHero.includes('href="#demo"'), true);
+  assert.equal(storyHero.includes('interest="a BIMSpect walkthrough"'), true);
+  assert.equal(home.includes('content.locale === "en" ? <DesignStoryHero content={content} />'), true);
 });
 
 test("important homepage anchors have one matching target", async () => {
