@@ -17,13 +17,11 @@ async function homepageSources() {
   return { home, pricing, data, content, pilot, campaignForm, hero, storyHero };
 }
 
-test("English homepage places pricing and contact before research and team", async () => {
+test("both locales place pricing and contact before research and team", async () => {
   const { home } = await homepageSources();
-  const pricing = home.indexOf('{content.locale === "en" ? <PricingSection heading={content.pricingHeading} /> : null}');
+  const pricing = home.indexOf("<PricingSection heading={content.pricingHeading} locale={content.locale} />");
   const contact = home.indexOf('id="contact"');
-  const credibility = home.lastIndexOf(
-    '{content.locale === "en" ? <CredibilitySections content={content} /> : null}'
-  );
+  const credibility = home.lastIndexOf("<CredibilitySections content={content} />");
 
   assert.ok(pricing > 0);
   assert.ok(contact > pricing);
@@ -62,24 +60,27 @@ test("commercial values, checkout links, and shared form contracts remain intact
   assert.equal(campaignForm.includes('fetch("/api/campaign/leads"'), false);
 });
 
-test("English commercial CTAs use the shared contact path while Finnish fallbacks remain separate", async () => {
-  const { home, content, hero } = await homepageSources();
+test("English and Finnish share the design-story homepage, CTAs and enquiry form", async () => {
+  const { home, content } = await homepageSources();
 
   assert.equal(content.includes('primaryCta: "See BIMSpect in action"'), true);
   assert.equal(content.includes('secondaryCta: "Talk to BIMSpect"'), true);
   assert.equal(content.includes('headerCta: "Talk to BIMSpect"'), true);
-  assert.equal(hero.includes('href={content.locale === "en" ? "#demo" : "#workflow"}'), true);
-  assert.equal(hero.includes('interest="a BIMSpect walkthrough"'), true);
-  assert.equal(home.includes('interest="the BIMSpect sample report"'), true);
-  assert.equal(home.includes('content.locale === "fi" ? ('), true);
+  assert.equal(home.includes("intent={SAMPLE_REPORT_REQUEST}"), true);
+  assert.equal(home.includes("locale={content.locale}"), true);
+  // Only the header switcher and the Finnish suggestion depend on the locale.
+  const main = home.slice(home.indexOf("<main"), home.indexOf("</main>"));
+  assert.equal(/content\.locale === "(en|fi)"/.test(main), false);
+  assert.equal(main.includes("mailto:"), false);
   assert.equal(home.includes('fetch("/api/'), false);
 });
 
-test("the English design story retains the existing demo and walkthrough contact destinations", async () => {
+test("the design story retains the existing demo and walkthrough contact destinations", async () => {
   const { home, storyHero } = await homepageSources();
   assert.equal(storyHero.includes('href="#demo"'), true);
-  assert.equal(storyHero.includes('interest="a BIMSpect walkthrough"'), true);
-  assert.equal(home.includes('content.locale === "en" ? <DesignStoryHero content={content} />'), true);
+  assert.equal(storyHero.includes("interest={content.hero.walkthroughInterest}"), true);
+  assert.equal(storyHero.includes("<DesignStory locale={content.locale} />"), true);
+  assert.equal(home.includes("<DesignStoryHero content={content} />"), true);
 });
 
 test("important homepage anchors have one matching target", async () => {

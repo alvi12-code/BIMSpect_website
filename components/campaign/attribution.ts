@@ -44,7 +44,12 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 function campaignLandingPage(): string | undefined {
   const { pathname } = window.location;
 
-  if (pathname !== "/" && pathname !== "/pilot" && pathname !== "/what-changed") {
+  if (
+    pathname !== "/" &&
+    pathname !== "/fi" &&
+    pathname !== "/pilot" &&
+    pathname !== "/what-changed"
+  ) {
     return undefined;
   }
 

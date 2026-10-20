@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
 import { Reveal } from "@/components/Reveal";
 import { StaggerContainer } from "@/components/StaggerContainer";
+import { enquiryPlanForTier, planEnquiry } from "@/lib/enquiry-intent";
+import { CampaignContactLink } from "./CampaignContactLink";
 import { CampaignForm } from "./CampaignForm";
 import { CampaignImageFrame } from "./CampaignMedia";
 import { SectionHeading } from "./CampaignLayout";
@@ -248,6 +250,10 @@ export function LeadSection({
 type PricingBridgeProps = {
   heading: string;
   copy: string;
+  // Page holding the plan enquiry form; the campaign page only has the
+  // sample-report form, so plan CTAs continue to the homepage enquiry.
+  enquiryPath: string;
+  landingPage: "pilot" | "what-changed";
 };
 
 function CampaignPrice({ availability }: { availability: string }) {
@@ -261,7 +267,12 @@ function CampaignPrice({ availability }: { availability: string }) {
   );
 }
 
-export function PricingBridge({ heading, copy }: PricingBridgeProps) {
+export function PricingBridge({
+  heading,
+  copy,
+  enquiryPath,
+  landingPage
+}: PricingBridgeProps) {
   return (
     <section id="pricing" className={styles.pricingBridge}>
       <div className="wrap">
@@ -279,28 +290,35 @@ export function PricingBridge({ heading, copy }: PricingBridgeProps) {
           </div>
         </div>
         <StaggerContainer className={styles.pricingGrid} stagger={80}>
-          {pilotPricing.map((plan) => (
-            <article
-              className={[
-                styles.pricingCard,
-                plan.featured ? styles.pricingFeatured : ""
-              ]
-                .filter(Boolean)
-                .join(" ")}
-              key={plan.name}
-            >
-              <p className={styles.pricingLabel}>{plan.tier}</p>
-              <h3>{plan.name}</h3>
-              <p>{plan.audience}</p>
-              <CampaignPrice availability={plan.availability} />
-              <a
-                className={plan.featured ? "btn-inv" : "btn btn-secondary"}
-                href="#sample-report"
+          {pilotPricing.map((plan) => {
+            const enquiryPlan = enquiryPlanForTier(plan.tier);
+
+            return (
+              <article
+                className={[
+                  styles.pricingCard,
+                  plan.featured ? styles.pricingFeatured : ""
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
+                key={plan.name}
               >
-                {plan.cta}
-              </a>
-            </article>
-          ))}
+                <p className={styles.pricingLabel}>{plan.tier}</p>
+                <h3>{plan.name}</h3>
+                <p>{plan.audience}</p>
+                <CampaignPrice availability={plan.availability} />
+                {enquiryPlan ? (
+                  <CampaignContactLink
+                    className={plan.featured ? "btn-inv" : "btn btn-secondary"}
+                    intent={planEnquiry(enquiryPlan)}
+                    path={enquiryPath}
+                    label={plan.cta}
+                    landingPage={landingPage}
+                  />
+                ) : null}
+              </article>
+            );
+          })}
         </StaggerContainer>
       </div>
     </section>

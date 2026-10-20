@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useMemo, useRef } from "react";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Canvas, useFrame, useThree, type ThreeEvent } from "@react-three/fiber";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import {
   BoxGeometry,
   BufferGeometry,
@@ -18,12 +19,20 @@ import type { Vector } from "@/components/models/model-types";
 import { getStoryElements, type StoryElement } from "./story-data";
 import { makeStoryArchitecture, makeStoryGrid } from "./story-geometry";
 
+export type StoryViewCommand = { kind: "reset" | "in" | "out"; id: number };
+
 export type StorySceneProps = {
   chapter: number;
   revision: number;
   selectedElementId: string | null;
+  hoveredElementId?: string | null;
   active: boolean;
   reduced: boolean;
+  // Fine pointers orbit by dragging; touch keeps native page scrolling.
+  orbit?: boolean;
+  viewCommand?: StoryViewCommand;
+  onHover?: (elementId: string | null) => void;
+  onSelect?: (elementId: string) => void;
   onReady: () => void;
   onFailure: () => void;
 };
@@ -148,10 +157,13 @@ function elementColor(element: StoryElement, chapter: number, selected: boolean)
   return COLORS.duct;
 }
 
-function VersionedElements({ chapter, elements, selectedElementId }: {
+function VersionedElements({ chapter, elements, selectedElementId, hoveredElementId, onHover, onSelect }: {
   chapter: number;
   elements: StoryElement[];
   selectedElementId: string | null;
+  hoveredElementId?: string | null;
+  onHover?: (elementId: string | null) => void;
+  onSelect?: (elementId: string) => void;
 }) {
   const geometry = useMemo(() => {
     const box = new BoxGeometry(1, 1, 1);
@@ -163,23 +175,34 @@ function VersionedElements({ chapter, elements, selectedElementId }: {
       const selected = element.id === selectedElementId;
       const color = elementColor(element, chapter, selected);
       const emphasized = chapter === 2 || chapter === 4 ? element.revisionCount > 1 : chapter === 3 ? selected : element.changedNow;
-      const outlined = emphasized;
+      const hovered = element.id === hoveredElementId;
+      const outlined = emphasized || hovered;
       return <group key={element.id} name={`story-element-${element.id}`} position={element.position} scale={element.size}>
         {/* The external extent always matches the shared fixture exactly. */}
-        <mesh geometry={geometry.box}>
+        <mesh
+          geometry={geometry.box}
+          onPointerOver={(event: ThreeEvent<PointerEvent>) => { event.stopPropagation(); onHover?.(element.id); }}
+          onPointerOut={() => onHover?.(null)}
+          onClick={(event: ThreeEvent<MouseEvent>) => {
+            // A drag that ends on an element orbits; it does not select.
+            if (event.delta > 6) return;
+            event.stopPropagation();
+            onSelect?.(element.id);
+          }}
+        >
           <meshStandardMaterial
             color={color}
             roughness={element.kind === "panel" ? 0.28 : 0.58}
             metalness={element.kind === "beam" || element.kind === "duct" ? 0.18 : 0.04}
             emissive={color}
-            emissiveIntensity={emphasized ? 0.055 : 0}
+            emissiveIntensity={hovered ? 0.22 : emphasized ? 0.055 : 0}
             transparent={element.kind === "panel" && !emphasized}
             opacity={element.kind === "panel" && !emphasized ? 0.58 : 1}
             depthWrite={element.kind !== "panel" || emphasized}
           />
         </mesh>
         {outlined ? <lineSegments geometry={geometry.edges} renderOrder={3}>
-          <lineBasicMaterial color={chapter === 2 || chapter === 4 ? "#9c6827" : "#674399"} transparent opacity={selected && chapter === 3 ? 0.96 : 0.63} toneMapped={false} />
+          <lineBasicMaterial color={hovered ? "#4c2f86" : chapter === 2 || chapter === 4 ? "#9c6827" : "#674399"} transparent opacity={hovered || (selected && chapter === 3) ? 0.96 : 0.63} toneMapped={false} />
         </lineSegments> : null}
       </group>;
     })}
@@ -212,8 +235,14 @@ function cameraView(camera: PerspectiveCamera, aspect: number, chapter: number, 
   return { position: target.clone().addScaledVector(direction, distance), target };
 }
 
-function SceneLifecycle({ chapter, revision, selectedElementId, active, reduced, onReady, onFailure }: StorySceneProps) {
+const ZOOM_STEP = 0.8;
+
+function SceneLifecycle({ chapter, revision, selectedElementId, active, reduced, orbit = false, viewCommand, onReady, onFailure }: StorySceneProps) {
   const { camera, gl, size, invalidate } = useThree();
+  const controls = useRef<OrbitControls | null>(null);
+  const fittedDistance = useRef(20);
+  // A reset request re-runs the chapter framing below.
+  const resetId = viewCommand?.kind === "reset" ? viewCommand.id : -1;
   const announced = useRef(false);
   const callbacks = useRef({ onReady, onFailure });
   const view = useRef({
@@ -226,6 +255,44 @@ function SceneLifecycle({ chapter, revision, selectedElementId, active, reduced,
     toTarget: new Vector3(),
     currentTarget: new Vector3(),
   });
+
+  // Drag to orbit around the current target. Zoom is button-driven so the
+  // mouse wheel keeps scrolling the page.
+  useEffect(() => {
+    const orbitControls = new OrbitControls(camera, gl.domElement);
+    orbitControls.enabled = orbit;
+    orbitControls.enablePan = false;
+    orbitControls.enableZoom = false;
+    orbitControls.enableDamping = !reduced;
+    orbitControls.dampingFactor = 0.09;
+    orbitControls.rotateSpeed = 0.55;
+    orbitControls.minPolarAngle = 0.28;
+    orbitControls.maxPolarAngle = 1.42;
+    orbitControls.target.copy(view.current.currentTarget);
+    const onChange = () => invalidate();
+    const onStart = () => { view.current.running = false; };
+    orbitControls.addEventListener("change", onChange);
+    orbitControls.addEventListener("start", onStart);
+    controls.current = orbitControls;
+    return () => {
+      orbitControls.removeEventListener("change", onChange);
+      orbitControls.removeEventListener("start", onStart);
+      orbitControls.dispose();
+      controls.current = null;
+    };
+  }, [camera, gl, orbit, reduced, invalidate]);
+
+  useEffect(() => {
+    const orbitControls = controls.current;
+    if (!viewCommand || !orbitControls || viewCommand.kind === "reset") return;
+    const offset = camera.position.clone().sub(orbitControls.target);
+    const distance = offset.length() * (viewCommand.kind === "in" ? ZOOM_STEP : 1 / ZOOM_STEP);
+    const clamped = Math.min(fittedDistance.current * 1.35, Math.max(fittedDistance.current * 0.38, distance));
+    view.current.running = false;
+    camera.position.copy(orbitControls.target).addScaledVector(offset.normalize(), clamped);
+    orbitControls.update();
+    invalidate();
+  }, [camera, viewCommand, invalidate]);
   useLayoutEffect(() => { callbacks.current = { onReady, onFailure }; }, [onReady, onFailure]);
 
   useEffect(() => {
@@ -243,6 +310,7 @@ function SceneLifecycle({ chapter, revision, selectedElementId, active, reduced,
     if (!(camera instanceof PerspectiveCamera) || size.width <= 0 || size.height <= 0) return;
     const selected = getStoryElements(revision).find(element => element.id === selectedElementId);
     const next = cameraView(camera, size.width / size.height, chapter, selected);
+    fittedDistance.current = next.position.distanceTo(next.target);
     const state = view.current;
     state.fromPosition.copy(camera.position);
     state.fromTarget.copy(state.currentTarget);
@@ -256,10 +324,11 @@ function SceneLifecycle({ chapter, revision, selectedElementId, active, reduced,
       camera.position.copy(next.position);
       state.currentTarget.copy(next.target);
       camera.lookAt(next.target);
+      controls.current?.target.copy(next.target);
     }
     state.initialized = true;
     if (active) invalidate();
-  }, [camera, size.width, size.height, chapter, revision, selectedElementId, active, reduced, invalidate]);
+  }, [camera, size.width, size.height, chapter, revision, selectedElementId, active, reduced, invalidate, resetId]);
 
   useFrame((_, delta) => {
     if (!active || size.width <= 0 || size.height <= 0) return;
@@ -271,8 +340,11 @@ function SceneLifecycle({ chapter, revision, selectedElementId, active, reduced,
       camera.position.lerpVectors(state.fromPosition, state.toPosition, eased);
       state.currentTarget.lerpVectors(state.fromTarget, state.toTarget, eased);
       camera.lookAt(state.currentTarget);
+      controls.current?.target.copy(state.currentTarget);
       state.running = progress < 1;
       if (state.running) invalidate();
+    } else if (controls.current?.enabled && controls.current.update()) {
+      invalidate();
     }
     if (!announced.current) {
       announced.current = true;
@@ -299,7 +371,7 @@ export function StoryScene(props: StorySceneProps) {
     <directionalLight position={[2, 3, -7]} intensity={0.5} color="#e8e9f6" />
     <SceneLifecycle {...props} />
     <ArchitecturalContext chapter={props.chapter} compact={compact} />
-    <VersionedElements chapter={props.chapter} elements={elements} selectedElementId={props.selectedElementId} />
+    <VersionedElements chapter={props.chapter} elements={elements} selectedElementId={props.selectedElementId} hoveredElementId={props.hoveredElementId} onHover={props.onHover} onSelect={props.onSelect} />
   </Canvas>;
 }
 

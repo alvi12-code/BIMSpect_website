@@ -3,19 +3,16 @@ import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { HomeDemoVideo } from "@/components/HomeDemoVideo";
 import { LanguageSuggestion } from "@/components/LanguageSuggestion";
-import { BimspectHero } from "@/components/hero/BimspectHero";
-import { HeroContent } from "@/components/hero/HeroContent";
 import { DesignStoryHero } from "@/components/design-story/DesignStoryHero";
 import { DesignContextEvidence } from "@/components/design-story/DesignContextEvidence";
 import { DesignReportPreview } from "@/components/design-story/DesignReportPreview";
-import { DisciplineModel } from "@/components/models/DisciplineModel";
-import modelStyles from "@/components/models/models.module.css";
 import { ModelAttribution } from "@/components/ModelAttribution";
 import { PricingSection } from "@/components/PricingSection";
 import { Reveal } from "@/components/Reveal";
 import { CampaignContactLink } from "@/components/campaign/CampaignContactLink";
 import { CampaignForm } from "@/components/campaign/CampaignForm";
 import type { HomeContent } from "@/content/home";
+import { SAMPLE_REPORT_REQUEST } from "@/lib/enquiry-intent";
 
 type HomePageProps = {
   content: HomeContent;
@@ -123,13 +120,9 @@ export function HomePage({ content, languageHref, shouldSuggestFinnish = false }
           dismiss={content.languageSuggestion.dismiss}
         />
       ) : null}
-      <main id="main-content" className={`homepage${content.locale === "en" ? " homepage-story" : ""}`}>
-        <section id="home" className={content.locale === "en" ? "design-story-section" : "bim-hero-section"} aria-labelledby="home-hero-title">
-          {content.locale === "en" ? <DesignStoryHero content={content} /> : (
-            <BimspectHero content={content.hero.experience}>
-              <HeroContent content={content} />
-            </BimspectHero>
-          )}
+      <main id="main-content" className="homepage homepage-story">
+        <section id="home" className="design-story-section" aria-labelledby="home-hero-title">
+          <DesignStoryHero content={content} />
         </section>
 
         <section className="home-problem" aria-labelledby="problem-title">
@@ -217,19 +210,18 @@ export function HomePage({ content, languageHref, shouldSuggestFinnish = false }
         <section className="home-feature home-feature-context" aria-labelledby="context-title" data-discipline-section="plumbing">
           <div className="wrap home-wrap home-feature-grid home-feature-grid-reverse">
             <div className="home-model-visual">
-              {content.locale === "en" ? <DesignContextEvidence /> : <DisciplineModel discipline="plumbing" content={content.disciplineModels.plumbing} controls={content.disciplineModels.controls} />}
+              <DesignContextEvidence locale={content.locale} />
             </div>
             <div className="home-feature-copy">
               <Reveal as="p" className="eyebrow">
                 {content.context.eyebrow}
               </Reveal>
               <Reveal as="h2" delay={70} id="context-title">
-                {content.locale === "en" ? content.context.title : content.disciplineModels.plumbing.title}
+                {content.context.title}
               </Reveal>
               <Reveal as="p" delay={130}>
                 {content.context.body}
               </Reveal>
-              {content.locale === "fi" ? <p className={modelStyles.exampleText}>{content.disciplineModels.plumbing.description}</p> : null}
             </div>
           </div>
         </section>
@@ -285,13 +277,6 @@ export function HomePage({ content, languageHref, shouldSuggestFinnish = false }
               <figcaption>{content.analytics.caption}</figcaption>
             </Reveal>
           </div>
-          {content.locale === "fi" ? <div className={`wrap home-wrap home-feature-grid ${modelStyles.electricalRow}`} data-discipline-section="electrical">
-            <div className="home-feature-copy">
-              <h2>{content.disciplineModels.electrical.title}</h2>
-              <p>{content.disciplineModels.electrical.description}</p>
-            </div>
-            <DisciplineModel discipline="electrical" content={content.disciplineModels.electrical} controls={content.disciplineModels.controls} />
-          </div> : null}
         </section>
 
         <section id="sample-report" className="home-report" aria-labelledby="report-title">
@@ -300,55 +285,13 @@ export function HomePage({ content, languageHref, shouldSuggestFinnish = false }
               <p className="eyebrow">{content.report.eyebrow}</p>
               <h2 id="report-title">{content.report.title}</h2>
               <p>{content.report.description}</p>
-              {content.locale === "en" ? (
-                <CampaignContactLink
-                  className="btn btn-secondary"
-                  interest="the BIMSpect sample report"
-                  label={content.report.cta}
-                />
-              ) : (
-                <a
-                  className="btn btn-secondary"
-                  href="mailto:hello@bimspect.com?subject=Request%20a%20BIMSpect%20sample%20report"
-                >
-                  {content.report.cta}
-                </a>
-              )}
+              <CampaignContactLink
+                className="btn btn-secondary"
+                intent={SAMPLE_REPORT_REQUEST}
+                label={content.report.cta}
+              />
             </Reveal>
-            {content.locale === "en" ? <Reveal delay={100}><DesignReportPreview /></Reveal> : <Reveal as="figure" className="home-report-preview" delay={100}>
-              <div className="home-report-topline">
-                <span>{content.report.reportName}</span>
-                <span>{content.report.sampleLabel}</span>
-              </div>
-              <div className="home-report-version">{content.report.versionLabel}</div>
-              <div className="home-report-summary">
-                <div>
-                  <strong>51</strong>
-                  <span>{content.report.totalChanges}</span>
-                </div>
-                <div>
-                  <strong>+14</strong>
-                  <span>{content.report.added}</span>
-                </div>
-                <div>
-                  <strong>−6</strong>
-                  <span>{content.report.deleted}</span>
-                </div>
-                <div>
-                  <strong>~31</strong>
-                  <span>{content.report.modified}</span>
-                </div>
-              </div>
-              <div className="home-report-detail">
-                <span>{content.report.intensityByDiscipline}</span>
-                <div className="home-report-bars" aria-hidden="true">
-                  <i />
-                  <i />
-                  <i />
-                </div>
-              </div>
-              <figcaption>{content.report.caption}</figcaption>
-            </Reveal>}
+            <Reveal delay={100}><DesignReportPreview locale={content.locale} /></Reveal>
           </div>
         </section>
 
@@ -373,9 +316,7 @@ export function HomePage({ content, languageHref, shouldSuggestFinnish = false }
           </div>
         </section>
 
-        {content.locale === "fi" ? <CredibilitySections content={content} /> : null}
-
-        {content.locale === "en" ? <PricingSection heading={content.pricingHeading} /> : null}
+        <PricingSection heading={content.pricingHeading} locale={content.locale} />
 
         <section id="contact" className="home-final-cta" aria-labelledby="contact-title">
           <div className="wrap home-wrap">
@@ -388,30 +329,19 @@ export function HomePage({ content, languageHref, shouldSuggestFinnish = false }
             <Reveal as="p" delay={130}>
               {content.contact.description}
             </Reveal>
-            {content.locale === "en" ? (
-              <Reveal className="home-contact-form" delay={170}>
-                <CampaignForm
-                  kind="homepage-enquiry"
-                  landingPage="homepage"
-                  submitLabel="Talk to BIMSpect"
-                  includeQuestion
-                />
-              </Reveal>
-            ) : null}
-            {content.locale === "fi" ? (
-              <Reveal className="home-final-actions" delay={190}>
-                <a className="btn btn-primary" href="mailto:hello@bimspect.com">
-                  {content.contact.primaryCta}
-                </a>
-                <a className="btn btn-secondary" href="mailto:hello@bimspect.com">
-                  {content.contact.secondaryCta}
-                </a>
-              </Reveal>
-            ) : null}
+            <Reveal className="home-contact-form" delay={170}>
+              <CampaignForm
+                kind="homepage-enquiry"
+                landingPage="homepage"
+                submitLabel={content.contact.submitLabel}
+                includeQuestion
+                locale={content.locale}
+              />
+            </Reveal>
           </div>
         </section>
 
-        {content.locale === "en" ? <CredibilitySections content={content} /> : null}
+        <CredibilitySections content={content} />
       </main>
       <Footer
         variant="technical"

@@ -7,7 +7,7 @@ import styles from "./design-story.module.css";
 
 /** Server-rendered story and enquiry links remain usable without WebGL. */
 export function DesignStoryHero({ content }: { content: HomeContent }) {
-  const launchDate = new Intl.DateTimeFormat("en-GB", {
+  const launchDate = new Intl.DateTimeFormat(content.locale === "fi" ? "fi-FI" : "en-GB", {
     dateStyle: "medium", timeZone: "Europe/Helsinki",
   }).format(new Date(launchTimestamp));
   return (
@@ -21,12 +21,12 @@ export function DesignStoryHero({ content }: { content: HomeContent }) {
           <p>{content.hero.description}</p>
           <div className={styles.actions}>
             <a className="btn btn-primary" href="#demo">{content.hero.primaryCta}<span aria-hidden="true">↗</span></a>
-            <CampaignContactLink className={styles.textLink} interest="a BIMSpect walkthrough" label={content.hero.secondaryCta} />
+            <CampaignContactLink className={styles.textLink} interest={content.hero.walkthroughInterest} label={content.hero.secondaryCta} />
           </div>
           <p className={styles.capabilities}>{content.hero.capabilityOne}<span>·</span>IFC2x3 / IFC4<span>·</span>{content.hero.capabilityTwo}</p>
         </div>
       </div>
-      <DesignStory />
+      <DesignStory locale={content.locale} />
       {!hasLaunched() ? (
         <aside className={`home-launch-status ${styles.launch}`} aria-label={content.launch.ariaLabel}>
           <div><span>{content.launch.label}</span><strong>{launchDate}</strong></div>

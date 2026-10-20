@@ -75,16 +75,14 @@ test("secondary scenes share readiness-gated once-only timelines without buttons
   assert.doesNotMatch(canvas, /elapsedTime|gridHelper|wireframe|if \(active && !reduced\)/);
 });
 
-test("exactly three experiences are distributed through retained homepage content", async () => {
+test("both homepage languages use the design story instead of the legacy model scenes", async () => {
   const source = await readFile(new URL("../components/home/HomePage.tsx", import.meta.url), "utf8");
-  assert.equal((source.match(/<BimspectHero\b/g) ?? []).length, 1);
-  assert.equal((source.match(/<DisciplineModel\b/g) ?? []).length, 2);
-  assert.doesNotMatch(source, /discipline="architecture"/);
-  for (const discipline of disciplines) assert.equal((source.match(new RegExp(`discipline="${discipline}"`, "g")) ?? []).length, 1);
-  assert.ok(source.indexOf('aria-labelledby="focus-title"') < source.indexOf('discipline="plumbing"'));
-  assert.ok(source.indexOf('discipline="plumbing"') < source.indexOf('id="workflow"'));
-  assert.ok(source.indexOf('id="analytics"') < source.indexOf('discipline="electrical"'));
-  assert.ok(source.indexOf('discipline="electrical"') < source.indexOf('id="sample-report"'));
+  assert.equal((source.match(/<DesignStoryHero\b/g) ?? []).length, 1);
+  assert.doesNotMatch(source, /<BimspectHero\b|<DisciplineModel\b/);
+  assert.match(source, /<DesignContextEvidence locale=\{content\.locale\} \/>/);
+  assert.match(source, /<DesignReportPreview locale=\{content\.locale\} \/>/);
+  assert.ok(source.indexOf('aria-labelledby="focus-title"') < source.indexOf("<DesignContextEvidence"));
+  assert.ok(source.indexOf("<DesignContextEvidence") < source.indexOf('id="workflow"'));
   assert.match(source, /bimspect-discipline-analytics-dashboard\.png/);
 });
 

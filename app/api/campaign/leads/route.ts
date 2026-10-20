@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { leadMessageWithContext, parseEnquiryContext } from "@/lib/enquiry-intent";
 import { campaignCrmConfiguration, forwardCampaignRequest } from "../crm";
 
 const MAX_REQUEST_BYTES = 16 * 1024;
@@ -185,6 +186,17 @@ function parseRequest(value: unknown): ParsedRequest | null {
     if (fieldValue) {
       parsed[field] = fieldValue;
     }
+  }
+
+  // Purpose and plan arrive as finite ids and leave as a server-written
+  // header on the existing message field, ahead of the visitor's own text.
+  const enquiry = parseEnquiryContext(input);
+  if (enquiry === null) {
+    return null;
+  }
+
+  if (enquiry) {
+    parsed.message = leadMessageWithContext(enquiry, parsed.message);
   }
 
   Object.assign(parsed, {

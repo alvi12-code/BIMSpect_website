@@ -233,3 +233,31 @@
 @media (prefers-reduced-motion: reduce) {
   .canvas, .fallback, .disciplineBars i, .releaseButtons button { transition: none; }
 }
+
+/* Interactive model: orbit, hover card and view controls */
+.sceneWrap { position: relative; flex: 1; display: flex; flex-direction: column; min-height: 0; }
+.sceneWrap > .scene { flex: 1; }
+.sceneWrap[data-orbit] .canvas { cursor: grab; }
+.sceneWrap[data-orbit] .canvas:active { cursor: grabbing; }
+.sceneWrap[data-hovering] .canvas { cursor: pointer; }
+/* OrbitControls sets touch-action inline; touch devices keep page scrolling. */
+.sceneWrap:not([data-orbit]) .canvas canvas { touch-action: pan-y !important; }
+.hoverCard { position: absolute; z-index: 3; left: 26px; bottom: 18px; display: grid; gap: 2px; max-width: 280px; padding: 10px 13px; border: 1px solid #cfd7d3; border-radius: 8px; background: #fbfcfbe8; box-shadow: 0 10px 28px #1b1f2c1f; pointer-events: none; animation: storyCardIn 180ms ease-out both; }
+.hoverCard span { font: 10px/1.4 var(--f-mono); color: #5d6a6b; }
+.hoverCard strong { font-size: 13px; line-height: 1.35; color: #24302f; }
+.hoverCard small { font-size: 11px; color: #4f4499; }
+.viewControls { position: absolute; z-index: 3; right: 22px; bottom: 16px; display: flex; align-items: center; gap: 6px; }
+.viewHint { margin-right: 6px; font: 10px/1.4 var(--f-mono); color: #5b6869; background: #f5f8f4c9; border-radius: 4px; padding: 3px 7px; }
+.viewControls button { width: 32px; height: 32px; display: grid; place-items: center; border: 1px solid #c4cec9; border-radius: 6px; background: #fbfcfbf0; color: #34413f; font-size: 16px; line-height: 1; cursor: pointer; transition: background 160ms ease, border-color 160ms ease, transform 120ms ease; }
+.viewControls button:hover { background: #ffffff; border-color: #8f86d6; }
+.viewControls button:active { transform: scale(0.94); }
+.viewControls button:focus-visible { outline: 2px solid #6f5abe; outline-offset: 2px; }
+.elementPicker { display: grid; gap: 5px; margin-bottom: 14px; font-size: 11px; color: #5b6869; }
+.elementPicker select { width: 100%; padding: 7px 9px; border: 1px solid #cdd6d1; border-radius: 6px; background: #fff; color: #24302f; font: 12px/1.4 var(--f-body); }
+.elementPicker select:focus-visible { outline: 2px solid #6f5abe; outline-offset: 1px; }
+@keyframes storyCardIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+@media (max-width: 560px) {
+  .viewHint { display: none; }
+  .hoverCard { left: 14px; right: 14px; max-width: none; }
+}
+@media (prefers-reduced-motion: reduce) { .hoverCard { animation: none; } }

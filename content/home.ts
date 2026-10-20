@@ -155,6 +155,8 @@ export type HomeContent = {
     secondaryCta: string;
     capabilityOne: string;
     capabilityTwo: string;
+    // Prefilled into an empty enquiry question by the walkthrough CTA.
+    walkthroughInterest: string;
     experience: HeroExperienceContent;
   };
   problem: {
@@ -229,6 +231,7 @@ export type HomeContent = {
     description: string;
     primaryCta: string;
     secondaryCta: string;
+    submitLabel: string;
   };
   images: {
     heroAlt: string;
@@ -363,6 +366,7 @@ const en: HomeContent = {
     secondaryCta: "Talk to BIMSpect",
     capabilityOne: "Browser-based",
     capabilityTwo: "No installation",
+    walkthroughInterest: "a BIMSpect walkthrough",
     experience: {
       normalState: "Architectural model", changeCount: "6 changes detected",
       version: "Version", model: "Version A", compare: "Version B", result: "The changes",
@@ -511,7 +515,8 @@ const en: HomeContent = {
     title: "Talk to BIMSpect",
     description: "Tell us about your project, access needs or questions.",
     primaryCta: "Request project analysis",
-    secondaryCta: "Book a product walkthrough"
+    secondaryCta: "Book a product walkthrough",
+    submitLabel: "Talk to BIMSpect"
   },
   images: {
     heroAlt: "Colour-coded BIM model overview showing areas of different change intensity",
@@ -530,36 +535,35 @@ const en: HomeContent = {
 };
 
 const fiDescription =
-  "BIMSpect vertailee IFC-malliversioita ja tekee suunnittelumuutokset näkyviksi BIM-koordinaattoreille, suunnittelupäälliköille ja rakentamisen tiimeille.";
+  "BIMSpect yhdistää IFC-revisiohistorian, visuaalisen muutosanalyysin ja suunnitteluanalytiikan, jotta BIM-koordinaattorit ja suunnittelupäälliköt voivat kohdistaa seuraavan tarkastelunsa olennaiseen.";
 const fiDemoDescription =
-  "Katso, miten BIMSpect muuttaa IFC-mallien muutokset selaimessa tutkittavaksi, suodatettavaksi ja tarkasteltavaksi visuaaliseksi tiedoksi.";
+  "Tutustu BIMSpectin mallinäkymiin ja katso, miten IFC-muutoksista tulee visuaalista näyttöä suunnittelun tarkasteluun.";
+
+const fiNavigation = [
+  { href: "#workflow", label: "Näin se toimii" },
+  { href: "#analytics", label: "Analytiikka" },
+  { href: "#sample-report", label: "Esimerkkiraportti" },
+  { href: "#pricing", label: "Hinnoittelu" },
+  { href: "#security", label: "Tietojen käsittely" },
+  { href: "#about", label: "Tiimi" }
+];
 
 const fi: HomeContent = {
   locale: "fi",
   metadata: {
-    title: "BIMSpect | BIM- ja IFC-mallimuutosten tunnistaminen",
+    title: "BIMSpect | Suunnittelumuutosten analytiikka IFC-revisioissa",
     description: fiDescription,
     openGraphLocale: "fi_FI",
     alternateOpenGraphLocale: "en_US"
   },
   structuredData: createStructuredData(fiDescription, "BIMSpect-tuote-esittely", fiDemoDescription),
-  navigation: [
-    { href: "#workflow", label: "Näin se toimii" },
-    { href: "#analytics", label: "Analytiikka" },
-    { href: "#sample-report", label: "Esimerkkiraportti" },
-    { href: "#security", label: "Tietojen käsittely" },
-    { href: "#about", label: "Tiimi" }
-  ],
+  navigation: fiNavigation,
   footerLinks: [
-    { href: "#workflow", label: "Näin se toimii" },
-    { href: "#analytics", label: "Analytiikka" },
-    { href: "#sample-report", label: "Esimerkkiraportti" },
-    { href: "#security", label: "Tietojen käsittely" },
-    { href: "#about", label: "Tiimi" },
+    ...fiNavigation,
     { href: "#research", label: "Tutkimustausta" },
     { href: "https://www.linkedin.com/company/bimspect", label: "LinkedIn", external: true }
   ],
-  headerCta: "Pyydä analyysi",
+  headerCta: "Ota yhteyttä",
   pricingHeading: "Yksilö. Projekti. Portfolio.",
   languageSwitcher: {
     currentLabel: "FI",
@@ -588,37 +592,38 @@ const fi: HomeContent = {
     countdownLabels: { days: "päivää", hours: "tuntia", minutes: "minuuttia", seconds: "sekuntia" }
   },
   hero: {
-    eyebrow: "IFC-mallimuutosten hallinta",
-    title: "Näe muutos.",
-    titleEmphasis: "Ymmärrä ero.",
+    eyebrow: "Suunnittelumuutosten analytiikka",
+    title: "Jokainen revisio.",
+    titleEmphasis: "Selkeämpi kokonaiskuva.",
     description:
-      "BIMSpect vertailee IFC-malliversioita ja muuttaa suunnittelumuutokset selkeäksi visuaaliseksi tiedoksi BIM-koordinointia ja suunnittelun hallintaa varten.",
-    primaryCta: "Katso, miten se toimii",
-    secondaryCta: "Katso esimerkkiraportti",
+      "Ymmärrä, miten suunnitelma kehittyy. Seuraa IFC-revisioita suunnittelualoittain, tutki toistuvia muutoksia ja tuo näyttö seuraavaan tarkasteluun.",
+    primaryCta: "Katso BIMSpect käytössä",
+    secondaryCta: "Ota yhteyttä",
     capabilityOne: "Selainpohjainen",
     capabilityTwo: "Ei asennusta",
+    walkthroughInterest: "BIMSpect-esittelystä",
     experience: {
       normalState: "Arkkitehtimalli", changeCount: "6 muutosta havaittu",
       version: "Versio", model: "Versio A", compare: "Versio B", result: "Muutokset",
       scroll: "Vieritä ja vertaile", illustration: "Havainnollistava malli · Esimerkkimuutokset",
       sceneDescription: "Viisikerroksinen toimistorakennus ja kolmikerroksinen siipi. Versio A vaihtuu versioon B: seinä siirtyy 300 mm, ikkuna suurenee ja sisäänkäynnin ovi siirtyy. Väliseinä ja julkisivupaneeli lisätään; vanha sisäänkäyntikatos poistetaan ja näytetään haamukuvana. Kuusi esimerkkimuutosta: 2 lisättyä, 3 muokattua, 1 poistettu. Ei projektidataa.",
-      finalTitle: "Jokainen muutos.", finalEmphasis: "Selvästi näkyviin.",
+      finalTitle: "Näe, mikä muuttui.", finalEmphasis: "Keskity olennaiseen.",
       added: "Lisätty", removed: "Poistettu", changed: "Muokattu",
       wall: "Seinä", moved: "Siirretty 300 mm",
       window: "Ikkuna", windowDetail: "Kokoa muutettu"
     }
   },
   problem: {
-    eyebrow: "Uusi IFC-versio saapuu",
-    title: "Mikä oikeastaan muuttui?",
+    eyebrow: "Suunnitelma kehittyy monen revision kautta",
+    title: "Seuraa mallin taustalla olevaa tarinaa.",
     description:
-      "Suunnittelutiimit saavat jatkuvasti uusia IFC-malliversioita. Olennaisten muutosten löytäminen edellyttää monimutkaisten versioiden vertailua ja sen arviointia, mikä vaatii huomiota ennen seuraavaa koordinointikeskustelua.",
+      "Mallien kehittyessä muutokset rakentuvat aiempien päätösten varaan. Tiimien on nähtävä, mikä siirtyi, mitkä elementit muuttuvat yhä uudelleen ja mihin muutokset keskittyvät eri suunnittelualoilla.",
     conclusion:
-      "BIMSpect tekee muutokset näkyviksi ensin, jotta tarkastelu voidaan kohdistaa olennaiseen."
+      "BIMSpect yhdistää viimeisimmän muutoksen sen taustalla olevaan historiaan."
   },
   demo: {
     eyebrow: "Tuote-esittely",
-    title: "Katso BIMSpect käytännössä",
+    title: "Mallista ymmärrykseen.",
     description: fiDemoDescription,
     video: {
       ariaLabel: "BIMSpect-tuote-esittely IFC-mallimuutosten analysoinnista",
@@ -629,29 +634,29 @@ const fi: HomeContent = {
     }
   },
   change: {
-    eyebrow: "Muutosten näkyvyys",
-    title: "Näe mallien erot.",
+    eyebrow: "Design Buzz",
+    title: "Tee muutosten kuviot näkyviksi.",
     description:
-      "BIMSpect tunnistaa malliversioiden välillä lisätyt, poistetut ja muokatut IFC-objektit. Värikoodatut mallinäkymät helpottavat muutosten keskittymien löytämistä ennen yksityiskohtaista tarkastelua.",
+      "Tutki lisättyjä, poistettuja ja muokattuja elementtejä värikoodatussa mallissa. Erottele geometria-, sijainti- ja tietomuutokset ja tutki alueita, jotka muuttuvat revisiosta toiseen.",
     labels: ["Lisätty", "Poistettu", "Muokattu", "Muutoksen voimakkuus"],
-    caption: "Muutoksen voimakkuus auttaa valitsemaan tarkastelun aloituskohdan."
+    caption: "Väri näyttää, mihin muutokset keskittyvät; elementin historia kertoo, miten ne kehittyivät."
   },
   focus: {
-    eyebrow: "Olennaiset kohteet",
-    title: "Keskity olennaiseen.",
+    eyebrow: "Elementin kehitys",
+    title: "Seuraa elementtejä, jotka muuttuvat yhä uudelleen.",
     description:
-      "Rajaa näkymä malliluokkien avulla merkitykselliseen kohdejoukkoon. Erottele objektityypit ja tasot, jotta tarkasteluaika kohdistuu rakennuksen osiin, jotka sitä tarvitsevat.",
+      "Jäljitä elementti sen kirjattujen revisioiden läpi. Suodata IFC-luokan ja muutostyypin mukaan ja tarkastele mallissa geometria-, sijoitus-, ominaisuus-, tyyppi- ja materiaalimuutoksia.",
     items: [
-      "Seinät, ovet, laatat ja muut IFC-objektiluokat",
-      "Tasot ja projektin kannalta olennaiset ryhmät",
-      "Kohdennettu lähtökohta koordinointitarkastelulle"
+      "Näe revisiot, joissa elementti muuttui",
+      "Erottele geometria-, sijainti- ja tietomuutokset",
+      "Vie valittu näyttö kohdennettuun tarkasteluun"
     ]
   },
   context: {
-    eyebrow: "Mallikonteksti",
-    title: "Muutos osana kokonaisuutta.",
+    eyebrow: "Suunnittelualojen yli",
+    title: "Yksi hanke. Yhdistetyt suunnittelualat.",
     body:
-      "Pidä ympäröivät rakennusosat näkyvissä, kun tarkastelet muutosta. Sijainti ja yhteydet auttavat ymmärtämään uuden version kokonaisuutta."
+      "Pidä ympäröivät mallit näkyvissä, kun tutkit muutosta. Tarkastele muutoksia suunnittelualojen yli ja palaa olennaiseen elementtiin, revisioon ja mallikontekstiin."
   },
   disciplineModels: {
     controls: { changed: "Muokattu", added: "Lisätty", previous: "Vanha reitti", modelState: "Versio A", changesState: "Versio B",
@@ -670,27 +675,27 @@ const fi: HomeContent = {
     }
   },
   workflow: {
-    eyebrow: "Selkeä tarkastuspolku",
-    title: "Vertaile. Ymmärrä. Toimi.",
+    eyebrow: "Yhtenäinen työnkulku",
+    title: "Revisiohistoriasta tarkasteluun.",
     steps: [
-      { number: "01", title: "Vertaile", body: "Lataa IFC-malliversiot jäsenneltyä vertailua varten." },
-      { number: "02", title: "Ymmärrä", body: "Näe lisätyt, poistetut ja muokatut objektit versioiden välillä." },
-      { number: "03", title: "Kohdenna", body: "Tarkastele olennaisia objekteja niiden mallikontekstissa." },
-      { number: "04", title: "Viestitä", body: "Hyödynnä muutostietoa koordinoinnissa ja raportoinnissa." }
+      { number: "01", title: "Kokoa historia", body: "Järjestä IFC-revisiot hankkeittain ja suunnittelualoittain ja vertaile versiosarjaa." },
+      { number: "02", title: "Näe kuviot", body: "Tutki Design Buzz -näkymiä ja seuraa geometria-, sijainti- ja tietomuutoksia revisiosta toiseen." },
+      { number: "03", title: "Kohdenna tarkastelu", body: "Tarkastele Design Analyticsilla toistuvia muutoksia, suunnittelualojen trendejä ja tarkastelun painopisteiden taustalla olevaa näyttöä." },
+      { number: "04", title: "Jaa näyttö", body: "Liitä havainnot mallin elementteihin, luo tarkasteluja (Reviews) ja valmistele yhteenveto sidosryhmille." }
     ]
   },
   analytics: {
-    eyebrow: "Analytiikan ja johdon näkymä",
-    title: "Näe kokonaiskuva.",
+    eyebrow: "Design Analytics",
+    title: "Ymmärrä muutoksen suunta.",
     body:
-      "Samaa malliversiotietoa voidaan tarkastella myös ylemmällä tasolla: se auttaa tiimejä keskustelemaan suunnittelun tilasta, tarkastelun painopisteistä ja seuraavan koordinointivaiheen taustalla olevasta tiedosta.",
+      "Näe, missä muutosaktiivisuus kasvaa tai tasaantuu suunnittelualoittain. Tarkastele toistuvia elementtimuutoksia, luokkakohtaisia trendejä ja signaalien taustalla olevaa vertailuhistoriaa, jotta tarkastelun painopisteet pysyvät kytkettyinä näyttöön.",
     caption: "Aito BIMSpect-analytiikkanäkymä."
   },
   report: {
     eyebrow: "Esimerkkiraportti",
-    title: "Jaa muutostieto.",
+    title: "Tuo näyttö seuraavaan tarkasteluun.",
     description:
-      "BIMSpect-muutosraportit tekevät malliversioiden vertailusta tiiviin pohjan suunnittelun koordinointipalavereihin ja johdon tarkasteluun.",
+      "BIMSpectin raportit ja sidosryhmäyhteenvedot tuovat mallimuutokset, tarkastelun painopisteet ja niitä tukevan näytön seuraavaan koordinointikeskusteluun.",
     cta: "Pyydä esimerkkiraportti",
     reportName: "BIMSpect-muutosraportti",
     sampleLabel: "Esimerkki",
@@ -742,11 +747,11 @@ const fi: HomeContent = {
   },
   contact: {
     eyebrow: "Seuraava malliversio",
-    title: "Puhutaan mallimuutoksista.",
-    description:
-      "Kerro IFC-mallien vertailutarpeestasi, niin näytämme, miten BIMSpect tukee tarkastelua.",
+    title: "Ota yhteyttä BIMSpectiin",
+    description: "Kerro hankkeestasi, käyttötarpeistasi tai kysymyksistäsi.",
     primaryCta: "Pyydä projektianalyysi",
-    secondaryCta: "Varaa tuote-esittely"
+    secondaryCta: "Varaa tuote-esittely",
+    submitLabel: "Lähetä tiedustelu"
   },
   images: {
     heroAlt: "Värikoodattu BIM-mallin yleisnäkymä, joka näyttää eri voimakkuuksilla muuttuneet alueet",

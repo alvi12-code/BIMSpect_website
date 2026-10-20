@@ -1,3 +1,7 @@
+import {
+  enquiryContextFields,
+  type EnquiryIntent
+} from "../../lib/enquiry-intent.ts";
 import type { CampaignAttribution } from "./attribution";
 
 export type CampaignRequestKind =
@@ -11,6 +15,8 @@ type CampaignRequest = {
   email: string;
   company?: string;
   message?: string;
+  // Validated again by the lead route; omitted by older callers.
+  intent?: EnquiryIntent;
   campaign: string;
   attribution: CampaignAttribution;
   turnstile_token?: string;
@@ -24,7 +30,7 @@ export type CampaignSubmissionResult = {
 export async function submitCampaignRequest(
   request: CampaignRequest
 ): Promise<CampaignSubmissionResult> {
-  const { kind, attribution, idempotencyKey, ...lead } = request;
+  const { kind, attribution, idempotencyKey, intent, ...lead } = request;
   void kind;
 
   const response = await fetch("/api/campaign/leads", {
@@ -33,7 +39,11 @@ export async function submitCampaignRequest(
       "Content-Type": "application/json",
       ...(idempotencyKey ? { "Idempotency-Key": idempotencyKey } : {})
     },
-    body: JSON.stringify({ ...lead, ...attribution })
+    body: JSON.stringify({
+      ...lead,
+      ...attribution,
+      ...(intent ? enquiryContextFields(intent) : {})
+    })
   });
 
   if (!response.ok) {

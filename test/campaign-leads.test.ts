@@ -21,7 +21,7 @@ test("homepage and pilot reuse one CampaignForm implementation", async () => {
   assert.equal(campaignForm.includes("submitCampaignRequest"), true);
 });
 
-test("homepage pricing contact CTAs preserve #contact and selected interest", async () => {
+test("homepage pricing contact CTAs carry the selected plan in a #contact link", async () => {
   const [pricingData, pricingSection, contactLink] = await Promise.all([
     readFile(new URL("../components/data.ts", import.meta.url), "utf8"),
     readFile(new URL("../components/PricingSection.tsx", import.meta.url), "utf8"),
@@ -32,8 +32,9 @@ test("homepage pricing contact CTAs preserve #contact and selected interest", as
   assert.equal(pricingData.includes('cta: "Discuss project access"'), true);
   assert.equal(pricingData.includes('cta: "Contact sales"'), true);
   assert.equal(pricingSection.includes("<CampaignContactLink"), true);
-  assert.equal(pricingSection.includes("interest={plan.name}"), true);
-  assert.equal(contactLink.includes('href="#contact"'), true);
+  assert.equal(pricingSection.includes("intent={planEnquiry(enquiryPlan)}"), true);
+  assert.equal(contactLink.includes("enquiryHref("), true);
+  assert.equal(contactLink.includes("href={href}"), true);
   assert.equal(contactLink.includes("CAMPAIGN_ENQUIRY_INTEREST_EVENT"), true);
 });
 
