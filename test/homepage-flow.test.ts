@@ -3,27 +3,24 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 async function homepageSources() {
-  const [home, pricing, data, content, pilot, campaignForm, hero, storyHero] = await Promise.all([
+  const [home, pricing, data, content, pilot, campaignForm, hero] = await Promise.all([
     readFile(new URL("../components/home/HomePage.tsx", import.meta.url), "utf8"),
     readFile(new URL("../components/PricingSection.tsx", import.meta.url), "utf8"),
     readFile(new URL("../components/data.ts", import.meta.url), "utf8"),
     readFile(new URL("../content/home.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/(en)/pilot/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../components/campaign/CampaignForm.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../components/hero/HeroContent.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../components/design-story/DesignStoryHero.tsx", import.meta.url), "utf8")
+    readFile(new URL("../components/hero/HeroContent.tsx", import.meta.url), "utf8")
   ]);
 
-  return { home, pricing, data, content, pilot, campaignForm, hero, storyHero };
+  return { home, pricing, data, content, pilot, campaignForm, hero };
 }
 
-test("English homepage places pricing and contact before research and team", async () => {
+test("both locales place pricing and contact before research and team", async () => {
   const { home } = await homepageSources();
-  const pricing = home.indexOf('{content.locale === "en" ? <PricingSection heading={content.pricingHeading} /> : null}');
+  const pricing = home.indexOf("<PricingSection heading={content.pricingHeading} locale={content.locale} />");
   const contact = home.indexOf('id="contact"');
-  const credibility = home.lastIndexOf(
-    '{content.locale === "en" ? <CredibilitySections content={content} /> : null}'
-  );
+  const credibility = home.lastIndexOf("<CredibilitySections content={content} />");
 
   assert.ok(pricing > 0);
   assert.ok(contact > pricing);
@@ -62,24 +59,28 @@ test("commercial values, checkout links, and shared form contracts remain intact
   assert.equal(campaignForm.includes('fetch("/api/campaign/leads"'), false);
 });
 
-test("English commercial CTAs use the shared contact path while Finnish fallbacks remain separate", async () => {
+test("English and Finnish share one layout, CTAs and the enquiry form", async () => {
   const { home, content, hero } = await homepageSources();
 
   assert.equal(content.includes('primaryCta: "See BIMSpect in action"'), true);
   assert.equal(content.includes('secondaryCta: "Talk to BIMSpect"'), true);
   assert.equal(content.includes('headerCta: "Talk to BIMSpect"'), true);
-  assert.equal(hero.includes('href={content.locale === "en" ? "#demo" : "#workflow"}'), true);
-  assert.equal(hero.includes('interest="a BIMSpect walkthrough"'), true);
-  assert.equal(home.includes('interest="the BIMSpect sample report"'), true);
-  assert.equal(home.includes('content.locale === "fi" ? ('), true);
+  assert.equal(hero.includes('href="#demo"'), true);
+  assert.equal(hero.includes("interest={content.hero.walkthroughInterest}"), true);
+  assert.equal(home.includes("intent={SAMPLE_REPORT_REQUEST}"), true);
+  assert.equal(home.includes("locale={content.locale}"), true);
+  // Only the header switcher and the Finnish suggestion depend on the locale.
+  const main = home.slice(home.indexOf("<main"), home.indexOf("</main>"));
+  assert.equal(/content\.locale === "(en|fi)"/.test(main), false);
+  assert.equal(main.includes("mailto:"), false);
   assert.equal(home.includes('fetch("/api/'), false);
 });
 
-test("the English design story retains the existing demo and walkthrough contact destinations", async () => {
-  const { home, storyHero } = await homepageSources();
-  assert.equal(storyHero.includes('href="#demo"'), true);
-  assert.equal(storyHero.includes('interest="a BIMSpect walkthrough"'), true);
-  assert.equal(home.includes('content.locale === "en" ? <DesignStoryHero content={content} />'), true);
+test("the Northline illustrative design story is removed", async () => {
+  const { home, content } = await homepageSources();
+  assert.equal(home.includes("design-story"), false);
+  assert.equal(`${home}${content}`.includes("Northline"), false);
+  await assert.rejects(readFile(new URL("../components/design-story/DesignStory.tsx", import.meta.url), "utf8"));
 });
 
 test("important homepage anchors have one matching target", async () => {

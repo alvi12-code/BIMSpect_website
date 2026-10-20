@@ -87,28 +87,20 @@ npm run lint
 npm run build
 ```
 
-The site uses the App Router, TypeScript, `next/font/google` for DM Sans and DM Mono, extracted screenshot assets under `public/images/bimspect/`, and native CSS plus Intersection Observer animations. WebGL scenes use React Three Fiber / Three.js; the legacy Finnish hero also uses GSAP ScrollTrigger.
+The site uses the App Router, TypeScript, `next/font/google` for DM Sans and DM Mono, extracted screenshot assets under `public/images/bimspect/`, and native CSS plus Intersection Observer animations. WebGL scenes use React Three Fiber / Three.js; the hero also uses GSAP ScrollTrigger.
 
-## English homepage: design history storytelling
+## Homepage: one design, two languages
 
-The English homepage now introduces BIMSpect with **Every revision. A clearer
-picture.** A five-chapter experience connects IFC revision history, recurring
-element changes, patterns across disciplines, element investigation and a
-coordination review. One shared, synthetic history drives the model, SVG
-fallback, charts and report preview: six releases, twelve tracked example
-elements and three disciplines. It is a marketing illustration, not a customer
-project or an engineering assessment.
+`/` and `/fi` render the same `HomePage` sections in the same order, with copy
+from `content/home.ts` (English and Finnish) and `content/pricing.ts` (Finnish
+plan display copy; English stays in `components/data.ts`). Every anchor, the
+pricing section and the enquiry form exist in both languages, so switching
+language keeps the visitor's place on the page. The former Northline
+"illustrative design history" story was removed in October 2026.
 
-See [the design story handoff](docs/design-story-redesign.md) for the current
-file map, data definitions, product and research evidence, local run commands,
-verification results and remaining GPU/browser checks. The English narrative
-and metadata were updated; Finnish retains the legacy model experience below.
-The earlier local F02 enquiry remediation is not included in this checkout.
-No website deployment was performed for this redesign.
+### Model storytelling
 
-## Legacy Finnish model storytelling
-
-The legacy experience retained on `/fi` has exactly three WebGL experiences: an architectural hero, a
+The homepage has exactly three WebGL experiences: an architectural hero, a
 plumbing service-room comparison and an electrical ceiling/riser comparison.
 `HomePage.tsx` and `hero/HeroContent.tsx` keep copy, links and business flows
 server-rendered. Legacy model copy is localized in `content/home.ts`.
@@ -178,10 +170,8 @@ Review the legacy `/fi` experience at 1440×900, 1280×800, 1024×768, 768×1024
 including reduced motion, failed WebGL, CTAs, mobile menu and offscreen rendering.
 Also check 430×932 and wide coarse-pointer devices. See
 [`docs/model-animation-review.md`](docs/model-animation-review.md) for the legacy
-18-point review, actual browser results and remaining limitations. The old
-`test/model-browser-qa.mjs` assumes the former English three-model experience;
-update its selectors and expectations before using it to validate the new `/`
-flow. Use [the design story handoff](docs/design-story-redesign.md) for that flow.
+18-point review, actual browser results and remaining limitations. `test/model-browser-qa.mjs`
+targets this three-model experience on both `/` and `/fi`.
 
 ## Campaign lead integration
 

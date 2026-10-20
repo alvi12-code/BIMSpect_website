@@ -4170,3 +4170,415 @@ html.motion-ready .home-workflow-step.reveal {
   .nav-links, .nav-cta, .desktop-language-switcher { display: none; }
   .mobile-menu-btn { display: inline-flex; }
 }
+
+/* ------------------------------------------------------------------
+   Premium layer (October 2026): shared by / and /fi.
+   Static styling first; motion only under no-preference / motion-ready.
+   ------------------------------------------------------------------ */
+
+@property --glow-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+/* Industry strip under the hero */
+.home-industry {
+  background: var(--white);
+  border-block: 1px solid var(--rule);
+  padding: 20px 0;
+}
+
+.home-industry-inner {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+}
+
+.home-industry-label {
+  color: var(--ink-muted);
+  font-family: var(--f-mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.home-industry-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.home-industry-list li {
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.4;
+  padding: 6px 14px;
+}
+
+.home-industry-standards li {
+  align-items: center;
+  background: var(--accent-lt);
+  border-color: transparent;
+  color: var(--accent-dk);
+  display: inline-flex;
+  font-family: var(--f-mono);
+  font-size: 12.5px;
+  gap: 8px;
+}
+
+.home-industry-standards li::before {
+  background: var(--accent);
+  border-radius: 50%;
+  content: "";
+  height: 6px;
+  width: 6px;
+}
+
+.home-industry-divider {
+  background: var(--rule);
+  height: 22px;
+  width: 1px;
+}
+
+@media (max-width: 767px) {
+  .home-industry-label {
+    width: 100%;
+  }
+
+  .home-industry-divider {
+    display: none;
+  }
+}
+
+/* Buttons: depth and a light sheen on hover */
+.btn-primary {
+  box-shadow: 0 8px 22px rgba(91, 74, 232, 0.26);
+  overflow: hidden;
+  position: relative;
+}
+
+.btn-primary::after {
+  background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.28) 50%, transparent 70%);
+  content: "";
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+  transform: translateX(-120%);
+}
+
+.btn-primary:hover {
+  box-shadow: 0 12px 30px rgba(91, 74, 232, 0.34);
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .btn-primary::after {
+    transition: transform 800ms var(--motion-ease);
+  }
+
+  .btn-primary:hover::after {
+    transform: translateX(120%);
+  }
+}
+
+/* Eyebrows gain a short accent rule */
+.home-section-heading .eyebrow,
+.home-feature-copy > .eyebrow,
+.home-analytics-copy > .eyebrow,
+.home-report-copy > .eyebrow,
+.pricing-header .eyebrow {
+  align-items: center;
+  display: inline-flex;
+  gap: 10px;
+}
+
+.home-section-heading .eyebrow::before,
+.home-feature-copy > .eyebrow::before,
+.home-analytics-copy > .eyebrow::before,
+.home-report-copy > .eyebrow::before,
+.pricing-header .eyebrow::before {
+  background: var(--accent);
+  content: "";
+  height: 2px;
+  width: 18px;
+}
+
+/* Product imagery: rounded frames and a gentle lift */
+.home-product-image img,
+.home-analytics-image img {
+  border: 1px solid rgba(35, 37, 44, 0.08);
+  border-radius: 14px;
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .home-product-image img,
+  .home-analytics-image img {
+    transition: transform 700ms var(--motion-ease), box-shadow 700ms var(--motion-ease);
+  }
+
+  .home-product-image:hover img,
+  .home-analytics-image:hover img {
+    box-shadow: 0 34px 80px rgba(27, 31, 44, 0.16);
+    transform: translateY(-4px) scale(1.01);
+  }
+}
+
+/* Workflow: dark band with glow and a progress rail that draws in */
+.home-workflow {
+  background:
+    radial-gradient(900px 380px at 88% 0%, rgba(91, 74, 232, 0.24), transparent 65%),
+    var(--ink);
+}
+
+.home-workflow-steps {
+  padding-top: 30px;
+  position: relative;
+}
+
+.home-workflow-steps::before {
+  background: linear-gradient(90deg, #aaa3ff, var(--accent) 55%, rgba(170, 163, 255, 0));
+  content: "";
+  height: 2px;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transform-origin: left center;
+}
+
+.home-workflow-number {
+  border: 1px solid rgba(170, 163, 255, 0.42);
+  border-radius: 999px;
+  display: inline-block;
+  padding: 2px 10px;
+}
+
+html.motion-ready .home-workflow-steps.reveal::before {
+  transform: scaleX(0);
+  transition: transform 1600ms var(--motion-ease) 200ms;
+}
+
+html.motion-ready .home-workflow-steps.reveal.is-visible::before {
+  transform: scaleX(1);
+}
+
+/* Sample report: a crisper document card */
+.home-report-preview {
+  border-radius: 16px;
+  box-shadow: 0 30px 70px rgba(27, 31, 44, 0.12);
+}
+
+.home-report-topline span:first-child {
+  align-items: center;
+  display: inline-flex;
+  gap: 8px;
+}
+
+.home-report-topline span:first-child::before {
+  background: #73dfa3;
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px rgba(115, 223, 163, 0.18);
+  content: "";
+  height: 7px;
+  width: 7px;
+}
+
+.home-report-topline span:last-child {
+  border-radius: 999px;
+}
+
+.home-report-summary strong {
+  font-variant-numeric: tabular-nums;
+}
+
+.home-report-bars i {
+  border-radius: 999px;
+  transform-origin: left center;
+}
+
+html.motion-ready .home-report-preview.reveal .home-report-bars i {
+  transform: scaleX(0);
+  transition: transform 1200ms var(--motion-ease) 350ms;
+}
+
+html.motion-ready .home-report-preview.reveal .home-report-bars i:nth-child(2) {
+  transition-delay: 480ms;
+}
+
+html.motion-ready .home-report-preview.reveal .home-report-bars i:nth-child(3) {
+  transition-delay: 610ms;
+}
+
+html.motion-ready .home-report-preview.reveal.is-visible .home-report-bars i {
+  transform: scaleX(1);
+}
+
+/* Data handling: numbered points with an accent marker */
+.home-trust-index {
+  align-items: center;
+  color: var(--accent);
+  display: flex;
+  font-family: var(--f-mono);
+  font-size: 12px;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.home-trust-index::after {
+  background: var(--accent);
+  content: "";
+  height: 2px;
+  transform-origin: left center;
+  width: 36px;
+}
+
+html.motion-ready .home-trust-point.reveal .home-trust-index::after {
+  transform: scaleX(0);
+  transition: transform 900ms var(--motion-ease) calc(var(--reveal-delay, 0ms) + 200ms);
+}
+
+html.motion-ready .home-trust-point.reveal.is-visible .home-trust-index::after {
+  transform: scaleX(1);
+}
+
+/* Pricing: separated cards; the featured plan gets a slow glowing edge */
+.pricing-grid {
+  align-items: stretch;
+  background: transparent;
+  border: 0;
+  gap: 20px;
+  overflow: visible;
+}
+
+.pricing-card {
+  border: 1px solid var(--rule);
+  border-radius: 16px;
+  box-shadow: 0 12px 32px rgba(27, 31, 44, 0.05);
+}
+
+.pricing-card.featured {
+  background: linear-gradient(160deg, #2c2e38 0%, #1b1c22 100%);
+  border-color: transparent;
+  box-shadow: 0 30px 70px rgba(43, 32, 140, 0.28);
+  isolation: isolate;
+}
+
+.pricing-card.featured::before {
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  background: conic-gradient(from var(--glow-angle), rgba(170, 163, 255, 0.15), #8b7dff, rgba(0, 174, 239, 0.5), rgba(170, 163, 255, 0.15) 60%);
+  border-radius: inherit;
+  content: "";
+  inset: 0;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  padding: 1px;
+  pointer-events: none;
+  position: absolute;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .pricing-card {
+    transition: border-color 300ms ease, box-shadow 300ms ease;
+  }
+
+  .pricing-card:hover {
+    --hover-offset: -6px;
+    border-color: color-mix(in srgb, var(--accent) 35%, var(--rule));
+    box-shadow: 0 26px 60px rgba(27, 31, 44, 0.12);
+  }
+
+  .pricing-card.featured:hover {
+    border-color: transparent;
+    box-shadow: 0 36px 80px rgba(43, 32, 140, 0.36);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .pricing-card.featured::before {
+    animation: bimspect-glow-spin 7s linear infinite;
+  }
+}
+
+@keyframes bimspect-glow-spin {
+  to {
+    --glow-angle: 360deg;
+  }
+}
+
+/* Contact: slow aurora behind the form */
+.home-final-cta {
+  isolation: isolate;
+  overflow: hidden;
+  position: relative;
+}
+
+.home-final-cta::before {
+  background:
+    radial-gradient(38% 48% at 28% 30%, rgba(91, 74, 232, 0.38), transparent 70%),
+    radial-gradient(32% 42% at 76% 22%, rgba(0, 174, 239, 0.16), transparent 70%);
+  content: "";
+  height: 120%;
+  inset: -20% -10% auto;
+  pointer-events: none;
+  position: absolute;
+  z-index: -1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .home-final-cta::before {
+    animation: bimspect-aurora 18s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes bimspect-aurora {
+  from {
+    transform: translate3d(-4%, 0, 0) scale(1);
+  }
+
+  to {
+    transform: translate3d(4%, 6%, 0) scale(1.08);
+  }
+}
+
+/* Industry chips arrive in sequence */
+@media (prefers-reduced-motion: no-preference) {
+  html.motion-ready .home-industry-inner.reveal.is-visible li {
+    animation: bimspect-chip-in 600ms var(--motion-ease) both;
+  }
+
+  html.motion-ready .home-industry-inner.reveal.is-visible li:nth-child(2) {
+    animation-delay: 80ms;
+  }
+
+  html.motion-ready .home-industry-inner.reveal.is-visible li:nth-child(3) {
+    animation-delay: 160ms;
+  }
+
+  html.motion-ready .home-industry-inner.reveal.is-visible .home-industry-standards li {
+    animation-delay: 240ms;
+  }
+
+  html.motion-ready .home-industry-inner.reveal.is-visible .home-industry-standards li:nth-child(2) {
+    animation-delay: 320ms;
+  }
+
+  html.motion-ready .home-industry-inner.reveal.is-visible .home-industry-standards li:nth-child(3) {
+    animation-delay: 400ms;
+  }
+}
+
+@keyframes bimspect-chip-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

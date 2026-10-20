@@ -639,6 +639,7 @@
 }
 
 .field input,
+.field select,
 .field textarea {
   background: var(--white);
   border: 1.5px solid var(--rule);
@@ -652,11 +653,13 @@
 }
 
 .field input:hover,
+.field select:hover,
 .field textarea:hover {
   border-color: color-mix(in srgb, var(--ink-muted) 60%, var(--rule));
 }
 
 .field input:focus,
+.field select:focus,
 .field textarea:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px var(--accent-lt);

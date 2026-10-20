@@ -23,14 +23,10 @@ export function HeroContent({ content }: { content: HomeContent }) {
       </div>
       <p className={`home-hero-lead ${styles.lead}`}>{content.hero.description}</p>
       <div className={`home-hero-actions ${styles.actions}`}>
-        <a className="btn btn-primary" href={content.locale === "en" ? "#demo" : "#workflow"}>
+        <a className="btn btn-primary" href="#demo">
           {content.hero.primaryCta}<span aria-hidden="true">↗</span>
         </a>
-        {content.locale === "en" ? (
-          <CampaignContactLink className="btn btn-secondary" interest="a BIMSpect walkthrough" label={content.hero.secondaryCta} />
-        ) : (
-          <a className="btn btn-secondary" href="#sample-report">{content.hero.secondaryCta}</a>
-        )}
+        <CampaignContactLink className="btn btn-secondary" interest={content.hero.walkthroughInterest} label={content.hero.secondaryCta} />
       </div>
       <p className="home-capabilities">
         {content.hero.capabilityOne} <span aria-hidden="true">·</span> IFC2x3 / IFC4

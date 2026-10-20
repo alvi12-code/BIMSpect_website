@@ -202,6 +202,8 @@ export default function WhatChangedPage() {
       <PricingBridge
         heading="Ready to use BIMSpect on your project?"
         copy="Explore BIMSpect options for individuals, projects and organisations."
+        enquiryPath="/"
+        landingPage="what-changed"
       />
 
       <FinalCta
