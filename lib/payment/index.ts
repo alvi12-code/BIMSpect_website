@@ -10,7 +10,14 @@ export * from "./offer.ts";
 export * from "./types.ts";
 
 export function isCheckoutEnabled() {
-  return process.env.CHECKOUT_ENABLED?.trim().toLowerCase() === "true";
+  if (process.env.CHECKOUT_ENABLED?.trim().toLowerCase() !== "true") return false;
+  if (process.env.PAYMENT_PROVIDER === "bimspect") return true;
+  // Legacy mock/Revolut routes are confined to an explicitly marked local
+  // development sandbox. A production build can never expose them by setting
+  // CHECKOUT_ENABLED alone.
+  return process.env.NODE_ENV !== "production" &&
+    process.env.BIMSPECT_LOCAL_SANDBOX === "true" &&
+    ["mock", "revolut"].includes(process.env.PAYMENT_PROVIDER || "");
 }
 
 function configuredProviderName(): PaymentProviderName {

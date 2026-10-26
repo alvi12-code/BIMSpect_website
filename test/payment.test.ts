@@ -60,6 +60,7 @@ async function mockWebhook(orderId: string, outcome: "paid" | "failed" | "cancel
 function useMockProvider() {
   process.env.PAYMENT_PROVIDER = "mock";
   process.env.CHECKOUT_ENABLED = "true";
+  process.env.BIMSPECT_LOCAL_SANDBOX = "true";
   delete process.env.REVOLUT_MERCHANT_SECRET_KEY;
   delete process.env.REVOLUT_WEBHOOK_SECRET;
   delete process.env.REVOLUT_MERCHANT_API_VERSION;
@@ -99,6 +100,7 @@ test("checkout availability controls only the Individual purchase CTA", async ()
 
 test("checkout defaults to disabled and only enables explicitly", () => {
   const previous = process.env.CHECKOUT_ENABLED;
+  useMockProvider();
 
   try {
     delete process.env.CHECKOUT_ENABLED;
@@ -113,6 +115,20 @@ test("checkout defaults to disabled and only enables explicitly", () => {
     } else {
       process.env.CHECKOUT_ENABLED = previous;
     }
+  }
+});
+
+test("production cannot expose the legacy payment provider", async () => {
+  useMockProvider();
+  const previous = process.env.NODE_ENV;
+  try {
+    Reflect.set(process.env, "NODE_ENV", "production");
+    assert.equal(isCheckoutEnabled(), false);
+    const response = await createPaymentOrderPost(request("/api/payments/orders", checkoutInput()));
+    assert.equal(response.status, 503);
+  } finally {
+    if (previous === undefined) Reflect.deleteProperty(process.env, "NODE_ENV");
+    else Reflect.set(process.env, "NODE_ENV", previous);
   }
 });
 
