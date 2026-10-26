@@ -361,8 +361,8 @@ export const pricingPlans: PricingPlan[] = [
   {
     tier: "Project",
     name: "BIMSpect Project",
-    price: "€1,490",
-    priceSuffix: "/project",
+    price: "By quotation",
+    priceSuffix: null,
     description:
       "For one active project and the team responsible for BIM and design coordination.",
     features: [
@@ -379,8 +379,8 @@ export const pricingPlans: PricingPlan[] = [
         note: "Available at a preferential rate for larger project teams."
       }
     ],
-    cta: "Discuss project access",
-    href: "#contact",
+    cta: "Request a quote",
+    href: "/?enquiry=plan&plan=project#contact",
     featured: true,
     featuredLabel: "Best for project teams"
   },

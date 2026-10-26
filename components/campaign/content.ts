@@ -129,7 +129,7 @@ export const pilotPricing = [
     name: "BIMSpect Project",
     audience:
       "For one active project and the team responsible for BIM and design coordination.",
-    availability: "€1,490 / month",
+    availability: "By quotation",
     cta: "Discuss project access",
     featured: true
   },

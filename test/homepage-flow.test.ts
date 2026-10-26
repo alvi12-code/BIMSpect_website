@@ -46,11 +46,11 @@ test("pricing shows plan cards before the tax disclosure and comparison", async 
 test("commercial values, checkout links, and shared form contracts remain intact", async () => {
   const { home, pricing, data, pilot, campaignForm } = await homepageSources();
 
-  assert.equal(data.includes('price: "€1,490"'), true);
+  assert.equal(data.includes('price: "By quotation"'), true);
   assert.equal(data.includes('price: "Custom pricing"'), true);
   assert.equal(data.includes('cta: "Buy now"'), true);
   assert.equal(data.includes('return { href: "#contact", label: "Contact us" }'), true);
-  assert.equal(data.includes('cta: "Discuss project access"'), true);
+  assert.equal(data.includes('cta: "Request a quote"'), true);
   assert.equal(data.includes('cta: "Contact sales"'), true);
   assert.equal(pricing.includes('id="pricing"'), true);
   assert.equal(home.includes('id="contact"'), true);

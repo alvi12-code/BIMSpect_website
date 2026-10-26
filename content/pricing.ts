@@ -32,9 +32,10 @@ export const finnishPricing: PricingTranslation = {
     "Buy now": "Osta nyt",
     "Contact us": "Ota yhteyttä",
     "Discuss project access": "Keskustele projektikäytöstä",
+    "Request a quote": "Pyydä tarjous",
     "Contact sales": "Ota yhteyttä myyntiin",
-    "Buy Project": "Osta Project",
-    "Get started": "Aloita"
+    "Get started": "Aloita",
+    "Purchase Individual": "Osta Individual"
   },
   plans: {
     Individual: {
@@ -51,9 +52,9 @@ export const finnishPricing: PricingTranslation = {
       ]
     },
     Project: {
+      price: "Tarjouksen mukaan",
       description:
         "Yhdelle aktiiviselle projektille ja tiimille, joka vastaa BIM- ja suunnittelukoordinoinnista.",
-      priceSuffix: "/projekti",
       featuredLabel: "Paras projektitiimeille",
       features: [
         { label: "Yksi aktiivinen projekti" },

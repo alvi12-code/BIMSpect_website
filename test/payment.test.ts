@@ -92,7 +92,7 @@ test("checkout availability controls only the Individual purchase CTA", async ()
   const pricingData = await readFile(new URL("../components/data.ts", import.meta.url), "utf8");
 
   assert.equal(pricingData.includes('return { href: "#contact", label: "Contact us" }'), true);
-  assert.equal(pricingData.includes('cta: "Discuss project access"'), true);
+  assert.equal(pricingData.includes('cta: "Request a quote"'), true);
   assert.equal(pricingData.includes('cta: "Contact sales"'), true);
   assert.equal(pricingData.includes('href: "#contact"'), true);
 });
