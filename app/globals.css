@@ -1,24 +1,24 @@
 /* Tokens */
 :root {
-  --ink: #23252c;
-  --ink-mid: #4a4d58;
-  --ink-muted: #606570;
-  --rule: #e0ddd7;
-  --bg: #f5f4f1;
-  --surface: #eceae5;
+  --ink: #111111;
+  --ink-mid: #4d4d4d;
+  --ink-muted: #636363;
+  --rule: #dedede;
+  --bg: #ffffff;
+  --surface: #eeeeee;
   --white: #ffffff;
-  --accent: #5b4ae8;
-  --accent-dk: #4737cc;
-  --accent-lt: #eeedfb;
-  --change-changed: #ff3b30;
-  --change-added: #00aeef;
-  --change-removed: #ff9500;
-  --ok: #1a7a44;
-  --ok-lt: #c7eddb;
-  --warn: #c7410b;
-  --warn-lt: #f8cbbe;
-  --mod: #7a5c00;
-  --mod-lt: #fff3c4;
+  --accent: #111111;
+  --accent-dk: #333333;
+  --accent-lt: #eeeeee;
+  --change-changed: #555555;
+  --change-added: #222222;
+  --change-removed: #888888;
+  --ok: #333333;
+  --ok-lt: #e6e6e6;
+  --warn: #444444;
+  --warn-lt: #dddddd;
+  --mod: #555555;
+  --mod-lt: #f0f0f0;
   --f-mono: monospace;
   --f-body: system-ui, sans-serif;
   --radius: 6px;
@@ -42,6 +42,8 @@
 }
 
 html {
+  /* Keep imagery, video, WebGL scenes and embedded UI monochrome too. */
+  filter: grayscale(1);
   scroll-behavior: smooth;
 }
 
